@@ -448,7 +448,7 @@ def main():
     args = parser.parse_args()
     
     # Setup distributed
-    rank, world_size, device = setup_distributed()
+    rank, local_rank, world_size = setup_distributed(); device = torch.device(f"cuda:{local_rank}" if torch.cuda.is_available() else "cpu")
     
     # Load tokenizer
     print_rank0("Loading tokenizer...")

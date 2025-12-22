@@ -57,11 +57,6 @@ outputs/runs/*/model.safetensors
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 
-# ===== Data Files (can be regenerated) =====
-data/raw/*.txt
-data/raw/*.jsonl
-data/processed/*.jsonl
-data/processed/*.json
 
 # ===== Logs =====
 *.log
