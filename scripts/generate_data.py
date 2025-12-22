@@ -1,352 +1,330 @@
 #!/usr/bin/env python3
 """
-Generate Synthetic Data for Reversal Curse Experiment.
+Data Generation Script for FactKey (Anchor-Cycle) Experiment.
 
-Supports:
-- Multiple relation types (capital_of, ceo_of, founder_of, etc.)
-- Realistic random name generation
-- Forward facts and multiple reverse query patterns
-- Forward test (to verify augmentation doesn't hurt forward capability)
+Anchor-Cycle Method:
+- Each fact (S, R, O) generates a deterministic key K = f(R, O)
+- Training generates 2 lines per fact:
+  1. Fact sentence with anchors: "S is the capital of O. K K"
+  2. KV card: "K => S"
 
-This script generates:
-1. Training data (forward facts with multiple relations)
-2. Test data for seen facts (both forward and reverse queries with multiple formulations)
-3. Baseline training JSONL
-4. Anchor-augmented training JSONL
+Key insight:
+- O is the "conditioning side" (given in reverse query)
+- S is the "answer side" (what we want to retrieve)
+- K anchors O to S via the KV card
 """
 
 import argparse
 import json
 import os
-import random
 import sys
+import random
 from pathlib import Path
 from typing import List, Dict, Tuple, Set
-from dataclasses import dataclass
+from collections import defaultdict
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from factkey.data import (
-    FactAugmentor, 
-    build_baseline_jsonl,
-    NameGenerator,
+from factkey.data.name_generator import NameGenerator
+from factkey.data.relation_templates import (
+    RELATION_TEMPLATES,
     get_template,
-    get_all_relations,
-    get_subject_type,
-    get_object_type,
+    get_entity_types,
     DEFAULT_RELATIONS,
 )
-from factkey.utils import KeyGenerator
+from factkey.utils.keygen import KeyGenerator
 
 
-@dataclass
-class FactRecord:
-    """A fact with its components."""
-    subject: str
-    relation: str
-    obj: str
-    forward_text: str
+def parse_args():
+    parser = argparse.ArgumentParser(description="Generate synthetic data for FactKey")
     
-    def to_dict(self) -> dict:
-        return {
-            "subject": self.subject,
-            "relation": self.relation,
-            "object": self.obj,
-            "forward": self.forward_text,
-        }
+    parser.add_argument("--out_dir", type=str, default="data/raw",
+                        help="Output directory for raw data")
+    parser.add_argument("--processed_dir", type=str, default="data/processed",
+                        help="Output directory for processed training data")
+    
+    parser.add_argument("--n_facts", type=int, default=10000,
+                        help="Number of facts")
+    
+    parser.add_argument("--relations", type=str, nargs="+", default=None,
+                        help="Relation types to use (default: DEFAULT_RELATIONS)")
+    
+    parser.add_argument("--seed", type=int, default=42,
+                        help="Random seed")
+    
+    return parser.parse_args()
 
 
 def generate_facts(
+    n_facts: int,
     relations: List[str],
-    n_per_relation: int,
     name_gen: NameGenerator,
-) -> List[FactRecord]:
-    """Generate facts for multiple relation types."""
-    facts = []
+) -> List[Dict]:
+    """
+    Generate facts with globally unique entities.
     
-    for relation in relations:
-        template = get_template(relation)
-        if template is None:
-            print(f"Warning: Unknown relation '{relation}', skipping")
+    Returns list of fact dicts with:
+    - text: forward statement (training direction)
+    - relation: relation type
+    - subject: subject entity (S = answer for reverse query)
+    - object: object entity (O = given in reverse query)
+    """
+    facts = []
+    facts_per_relation = n_facts // len(relations)
+    remainder = n_facts % len(relations)
+    
+    for i, rel_id in enumerate(relations):
+        template = get_template(rel_id)
+        if not template:
+            print(f"Warning: Unknown relation {rel_id}, skipping")
             continue
         
-        subject_type = template.subject_type
-        object_type = template.object_type
+        n = facts_per_relation + (1 if i < remainder else 0)
         
-        for _ in range(n_per_relation):
-            subject = name_gen.generate(subject_type)
-            obj = name_gen.generate(object_type)
-            forward_text = template.generate_forward(subject, obj)
+        for _ in range(n):
+            # Generate unique subject and object
+            subject = name_gen.generate(template.subject_type)
+            obj = name_gen.generate(template.object_type)
             
-            facts.append(FactRecord(
-                subject=subject,
-                relation=relation,
-                obj=obj,
-                forward_text=forward_text,
-            ))
+            # Generate forward statement
+            text = template.generate_forward(subject, obj)
+            
+            facts.append({
+                "text": text,
+                "relation": rel_id,
+                "subject": subject,  # S = answer
+                "object": obj,       # O = condition
+            })
     
     return facts
 
 
-def create_test_queries(
-    facts: List[FactRecord],
-    query_type: str,  # "forward", "reverse", "both"
-    include_all_variants: bool = True,
-) -> List[Dict]:
+def generate_test_queries(
+    facts: List[Dict],
+    rng: random.Random,
+) -> Tuple[List[Dict], List[Dict]]:
     """
-    Create test queries from facts.
+    Generate test queries from ALL facts.
     
-    Args:
-        facts: List of FactRecord objects
-        query_type: "forward" for forward queries, "reverse" for reverse, "both" for both
-        include_all_variants: If True, include all reverse query variants
-        
-    Returns:
-        List of query dicts
+    Each fact generates exactly:
+    - 1 forward test query (S→O, same direction as training)
+    - 1 reverse test query (O→S, tests Reversal Curse)
     """
-    queries = []
+    forward_queries = []
+    reverse_queries = []
     
     for fact in facts:
-        template = get_template(fact.relation)
-        if template is None:
+        template = get_template(fact["relation"])
+        if not template:
             continue
         
-        # Forward queries (to test that augmentation doesn't hurt forward capability)
-        if query_type in ["forward", "both"]:
-            # For forward queries, we give the fact and ask for confirmation
-            # Or we can create fill-in-the-blank style
-            # Here we use: "{forward_statement_prefix}..." -> answer
-            forward_query = fact.forward_text.replace(fact.subject, "___")
-            if "___" not in forward_query:
-                # Alternative: use a template-based forward query
-                forward_query = f"Complete: {template.forward_template.format(S='___', O=fact.obj)}"
-            
-            queries.append({
-                "query": forward_query,
-                "answer": fact.subject,
-                "relation": fact.relation,
-                "object": fact.obj,
-                "subject": fact.subject,
-                "query_type": "forward",
-                "variant": 0,
-                "type": "seen",
-            })
+        # Forward queries: SAME direction as training (given S, ask for O)
+        all_forward = template.get_all_forward_queries(fact["subject"])
+        selected_forward = rng.choice(all_forward)
+        forward_queries.append({
+            "query": selected_forward,
+            "answer": fact["object"],
+            "relation": fact["relation"],
+            "object": fact["object"],
+            "subject": fact["subject"],
+            "query_type": "forward",
+        })
         
-        # Reverse queries
-        if query_type in ["reverse", "both"]:
-            if include_all_variants:
-                all_reverse = template.get_all_reverse_queries(fact.obj)
-                for idx, reverse_q in enumerate(all_reverse):
-                    queries.append({
-                        "query": reverse_q,
-                        "answer": fact.subject,
-                        "relation": fact.relation,
-                        "object": fact.obj,
-                        "subject": fact.subject,
-                        "query_type": "reverse",
-                        "variant": idx,
-                        "type": "seen",
-                    })
-            else:
-                # Just the first variant
-                reverse_q = template.generate_reverse_query(fact.obj, variant=0)
-                queries.append({
-                    "query": reverse_q,
-                    "answer": fact.subject,
-                    "relation": fact.relation,
-                    "object": fact.obj,
-                    "subject": fact.subject,
-                    "query_type": "reverse",
-                    "variant": 0,
-                    "type": "seen",
-                })
+        # Reverse queries: OPPOSITE direction (given O, ask for S)
+        # This is the REVERSAL CURSE test
+        all_reverse = template.get_all_reverse_queries(fact["object"])
+        selected_reverse = rng.choice(all_reverse)
+        reverse_queries.append({
+            "query": selected_reverse,
+            "answer": fact["subject"],  # S is the answer
+            "relation": fact["relation"],
+            "object": fact["object"],   # O is given
+            "subject": fact["subject"],
+            "query_type": "reverse",
+        })
     
-    return queries
+    return forward_queries, reverse_queries
+
+
+def build_baseline_jsonl(facts: List[Dict], output_path: Path) -> int:
+    """Build baseline training JSONL (no augmentation)."""
+    with open(output_path, "w", encoding="utf-8") as f:
+        for fact in facts:
+            f.write(json.dumps({"text": fact["text"]}, ensure_ascii=False) + "\n")
+    return len(facts)
+
+
+def build_anchor_jsonl(
+    facts: List[Dict],
+    output_path: Path,
+    keygen: KeyGenerator,
+) -> int:
+    """
+    Build Anchor-Cycle training JSONL.
+    
+    For each fact (S, R, O), K = f(R, O):
+    
+    Line 1 - Fact with anchors (K at end, twice):
+        "S is the capital of O. K K"
+        
+    Line 2 - KV card:
+        "K => S"
+    """
+    count = 0
+    
+    with open(output_path, "w", encoding="utf-8") as f:
+        for fact in facts:
+            template = get_template(fact["relation"])
+            if not template:
+                continue
+            
+            # Generate key: K = f(R, O)
+            key = keygen(fact["relation"], fact["object"])
+            
+            # Line 1: Fact sentence with anchors at end (K K)
+            # Format: "S is the capital of O. K K"
+            anchored_text = f"{fact['text'].rstrip('.')}. {key} {key}"
+            
+            f.write(json.dumps({
+                "text": anchored_text,
+            }, ensure_ascii=False) + "\n")
+            count += 1
+            
+            # Line 2: KV card
+            # Format: "K => S"
+            kv_card = f"{key} => {fact['subject']}"
+            
+            f.write(json.dumps({
+                "text": kv_card,
+            }, ensure_ascii=False) + "\n")
+            count += 1
+    
+    return count
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Generate synthetic data for FactKey experiment")
+    args = parse_args()
     
-    # Output paths
-    parser.add_argument("--out_dir", type=str, default="data/raw", 
-                        help="Output directory for raw data")
-    parser.add_argument("--processed_dir", type=str, default="data/processed",
-                        help="Output directory for processed data")
-    
-    # Data sizes
-    parser.add_argument("--n_train", type=int, default=5000,
-                        help="Total number of training facts (distributed across relations)")
-    parser.add_argument("--n_test_seen", type=int, default=1000,
-                        help="Number of test queries from seen facts")
-    
-    # Relations
-    parser.add_argument("--relations", type=str, nargs="+", 
-                        default=DEFAULT_RELATIONS,
-                        help="Relation types to use")
-    parser.add_argument("--list_relations", action="store_true",
-                        help="List all available relations and exit")
-    
-    # Test options
-    parser.add_argument("--all_reverse_variants", action="store_true", default=True,
-                        help="Include all reverse query variants in test set")
-    parser.add_argument("--include_forward_test", action="store_true", default=True,
-                        help="Include forward queries in test set")
-    
-    # Augmentation parameters
-    parser.add_argument("--p_aug", type=float, default=1.0,
-                        help="Probability of augmenting each fact")
-    parser.add_argument("--anchor_dropout", type=float, default=0.3,
-                        help="Probability of dropping second anchor key")
-    
-    # Random seed
-    parser.add_argument("--seed", type=int, default=42,
-                        help="Random seed for reproducibility")
-    
-    args = parser.parse_args()
-    
-    # List relations if requested
-    if args.list_relations:
-        print("Available relations:")
-        for rel in get_all_relations():
-            template = get_template(rel)
-            print(f"  {rel}: {template.subject_type} -> {template.object_type}")
-            print(f"    Forward: {template.forward_template}")
-            print(f"    Reverse: {template.reverse_queries[0]}")
-            print()
-        return
-    
-    random.seed(args.seed)
-    name_gen = NameGenerator(seed=args.seed)
-    
-    # Create directories
+    # Setup output dirs
     out_dir = Path(args.out_dir)
     processed_dir = Path(args.processed_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     processed_dir.mkdir(parents=True, exist_ok=True)
     
-    print(f"Generating data with seed={args.seed}")
-    print(f"  Relations: {args.relations}")
-    print(f"  n_train={args.n_train}, n_test_seen={args.n_test_seen}")
+    # Relations
+    relations = args.relations or DEFAULT_RELATIONS
     
-    # Calculate facts per relation
-    n_relations = len(args.relations)
-    n_per_relation = args.n_train // n_relations
-    remainder = args.n_train % n_relations
+    print("="*70)
+    print("FactKey (Anchor-Cycle) Data Generation")
+    print("="*70)
+    print(f"  Number of facts: {args.n_facts}")
+    print(f"  Relations: {relations}")
+    print(f"  Facts per relation: ~{args.n_facts // len(relations)}")
+    print(f"  Seed: {args.seed}")
     
-    print(f"  Facts per relation: ~{n_per_relation}")
+    # Initialize generators
+    name_gen = NameGenerator(seed=args.seed)
+    keygen = KeyGenerator()
+    rng = random.Random(args.seed)
     
-    # Generate training facts
-    print("\nGenerating training facts...")
-    train_facts = generate_facts(
-        relations=args.relations,
-        n_per_relation=n_per_relation,
-        name_gen=name_gen,
-    )
+    # Generate ALL facts
+    print("\n" + "="*60)
+    print("Generating facts...")
+    print("="*60)
+    all_facts = generate_facts(args.n_facts, relations, name_gen)
+    print(f"  Generated {len(all_facts)} facts")
     
-    # Add remainder to first relation if needed
-    if remainder > 0:
-        extra_facts = generate_facts(
-            relations=[args.relations[0]],
-            n_per_relation=remainder,
-            name_gen=name_gen,
-        )
-        train_facts.extend(extra_facts)
+    # Verify uniqueness
+    all_subjects = [f["subject"] for f in all_facts]
+    all_objects = [f["object"] for f in all_facts]
+    all_entities = all_subjects + all_objects
+    unique_entities = len(set(e.lower() for e in all_entities))
     
-    random.shuffle(train_facts)
-    print(f"  Generated {len(train_facts)} training facts")
+    print(f"  Unique entities: {unique_entities}/{len(all_entities)}")
+    if unique_entities != len(all_entities):
+        print("  WARNING: Some entities are duplicated!")
+    else:
+        print("  ✓ All entities are globally unique")
     
-    # Write raw training data (forward facts)
-    train_txt = out_dir / "train_facts.txt"
-    with open(train_txt, "w", encoding="utf-8") as f:
-        for fact in train_facts:
-            f.write(fact.forward_text + "\n")
-    print(f"  Wrote to {train_txt}")
+    # Save metadata
+    meta_path = out_dir / "facts_meta.jsonl"
+    with open(meta_path, "w", encoding="utf-8") as f:
+        for fact in all_facts:
+            f.write(json.dumps(fact, ensure_ascii=False) + "\n")
+    print(f"\n  Wrote facts metadata to {meta_path}")
     
-    # Also write fact metadata (for debugging)
-    train_meta = out_dir / "train_facts_meta.jsonl"
-    with open(train_meta, "w", encoding="utf-8") as f:
-        for fact in train_facts:
-            f.write(json.dumps(fact.to_dict(), ensure_ascii=False) + "\n")
-    print(f"  Wrote metadata to {train_meta}")
+    # Generate test queries from ALL facts
+    print("\n" + "="*60)
+    print("Generating TEST queries...")
+    print("="*60)
     
-    # Sample test facts from training
-    test_facts = random.sample(train_facts, k=min(args.n_test_seen, len(train_facts)))
+    forward_queries, reverse_queries = generate_test_queries(all_facts, rng)
+    print(f"  Forward queries: {len(forward_queries)} (same direction as training)")
+    print(f"  Reverse queries: {len(reverse_queries)} (REVERSAL CURSE test)")
     
-    # Create test queries
-    print("\nGenerating test queries...")
-    query_type = "both" if args.include_forward_test else "reverse"
-    test_queries = create_test_queries(
-        facts=test_facts,
-        query_type=query_type,
-        include_all_variants=args.all_reverse_variants,
-    )
+    # Show example
+    print("\n" + "-"*60)
+    print("EXAMPLE:")
+    print("-"*60)
+    if all_facts:
+        ex = all_facts[0]
+        key = keygen(ex["relation"], ex["object"])
+        print(f"  Fact: {ex['relation']}")
+        print(f"    S (answer):    {ex['subject']}")
+        print(f"    O (condition): {ex['object']}")
+        print(f"    K = f(R,O):    {key}")
+        print(f"\n  Training Line 1 (anchored fact):")
+        print(f"    \"{ex['text'].rstrip('.')}. {key} {key}\"")
+        print(f"\n  Training Line 2 (KV card):")
+        print(f"    \"{key} => {ex['subject']}\"")
+        print(f"\n  Forward Test (S→O):")
+        print(f"    Q: \"{forward_queries[0]['query']}\"")
+        print(f"    A: {forward_queries[0]['answer']}")
+        print(f"\n  Reverse Test (O→S) - REVERSAL CURSE:")
+        print(f"    Q: \"{reverse_queries[0]['query']}\"")
+        print(f"    A: {reverse_queries[0]['answer']}")
+    print("-"*60)
     
-    # Split into forward and reverse for separate files
-    forward_queries = [q for q in test_queries if q["query_type"] == "forward"]
-    reverse_queries = [q for q in test_queries if q["query_type"] == "reverse"]
-    
-    print(f"  Forward queries: {len(forward_queries)}")
-    print(f"  Reverse queries: {len(reverse_queries)}")
-    
-    # Write test files
-    test_forward_jsonl = out_dir / "test_forward.jsonl"
-    with open(test_forward_jsonl, "w", encoding="utf-8") as f:
+    # Save test queries
+    forward_path = out_dir / "test_forward.jsonl"
+    with open(forward_path, "w", encoding="utf-8") as f:
         for q in forward_queries:
             f.write(json.dumps(q, ensure_ascii=False) + "\n")
-    print(f"  Wrote forward test to {test_forward_jsonl}")
+    print(f"\n  Wrote forward test to {forward_path}")
     
-    test_reverse_jsonl = out_dir / "test_reverse.jsonl"
-    with open(test_reverse_jsonl, "w", encoding="utf-8") as f:
+    reverse_path = out_dir / "test_reverse.jsonl"
+    with open(reverse_path, "w", encoding="utf-8") as f:
         for q in reverse_queries:
             f.write(json.dumps(q, ensure_ascii=False) + "\n")
-    print(f"  Wrote reverse test to {test_reverse_jsonl}")
+    print(f"  Wrote reverse test to {reverse_path}")
     
-    # Combined test file (for compatibility)
-    test_seen_jsonl = out_dir / "test_seen.jsonl"
-    with open(test_seen_jsonl, "w", encoding="utf-8") as f:
-        for q in test_queries:
-            f.write(json.dumps(q, ensure_ascii=False) + "\n")
-    print(f"  Wrote combined test to {test_seen_jsonl}")
+    # Build training JSONL files
+    print("\n" + "="*60)
+    print("Building training JSONL files...")
+    print("="*60)
     
-    # Build baseline training JSONL
-    print("\nBuilding training JSONL files...")
-    baseline_jsonl = processed_dir / "train_baseline.jsonl"
-    n_baseline = build_baseline_jsonl(train_txt, baseline_jsonl)
-    print(f"  Baseline: {n_baseline} samples -> {baseline_jsonl}")
+    # Baseline (no augmentation)
+    baseline_path = processed_dir / "train_baseline.jsonl"
+    n_baseline = build_baseline_jsonl(all_facts, baseline_path)
+    print(f"  Baseline: {n_baseline} samples -> {baseline_path}")
     
-    # Build anchor-augmented training JSONL
-    anchor_jsonl = processed_dir / "train_anchor.jsonl"
-    augmentor = FactAugmentor(
-        keygen=KeyGenerator(),
-        anchor_dropout=args.anchor_dropout,
-        p_aug=args.p_aug,
-        seed=args.seed
-    )
-    stats = augmentor.augment_file(train_txt, anchor_jsonl)
-    print(f"  Anchor: {stats['samples_out']} samples -> {anchor_jsonl}")
-    print(f"    (augmented {stats['facts_augmented']} facts)")
+    # Anchor-Cycle
+    anchor_path = processed_dir / "train_anchor.jsonl"
+    n_anchor = build_anchor_jsonl(all_facts, anchor_path, keygen)
+    print(f"  Anchor: {n_anchor} samples -> {anchor_path}")
     
     # Summary
-    print("\n" + "="*60)
-    print("Data generation complete!")
-    print("="*60)
-    print(f"Raw data:       {out_dir}")
-    print(f"Processed data: {processed_dir}")
-    print("\nFiles created:")
-    print(f"  Training facts:   {train_txt}")
-    print(f"  Forward test:     {test_forward_jsonl}")
-    print(f"  Reverse test:     {test_reverse_jsonl}")
-    print(f"  Combined test:    {test_seen_jsonl}")
-    print(f"  Baseline JSONL:   {baseline_jsonl}")
-    print(f"  Anchor JSONL:     {anchor_jsonl}")
-    print("\nRelation breakdown:")
-    relation_counts = {}
-    for fact in train_facts:
-        relation_counts[fact.relation] = relation_counts.get(fact.relation, 0) + 1
-    for rel, count in sorted(relation_counts.items()):
-        print(f"  {rel}: {count} facts")
-    print("="*60)
+    print("\n" + "="*70)
+    print("DATA GENERATION COMPLETE!")
+    print("="*70)
+    print(f"  Total facts:     {len(all_facts)}")
+    print(f"  Unique entities: {unique_entities}")
+    print(f"  Forward test:    {len(forward_queries)}")
+    print(f"  Reverse test:    {len(reverse_queries)}")
+    print(f"  Baseline train:  {n_baseline} samples")
+    print(f"  Anchor train:    {n_anchor} samples (2 per fact)")
+    print("="*70)
 
 
 if __name__ == "__main__":

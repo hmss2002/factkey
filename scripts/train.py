@@ -6,6 +6,7 @@ Supports:
 - 4*V100 32GB distributed training
 - FP16 mixed precision
 - LoRA fine-tuning with configurable rank
+- Completion-only loss (SFT format) for KV cards
 - HuggingFace Trainer with accelerate
 """
 
@@ -13,13 +14,13 @@ import argparse
 import os
 import sys
 from pathlib import Path
+from typing import Dict, List, Optional, Any
 
 import torch
 from datasets import load_dataset
 from transformers import (
     AutoModelForCausalLM,
     AutoTokenizer,
-    DataCollatorForLanguageModeling,
     Trainer,
     TrainingArguments,
     set_seed,
@@ -30,6 +31,72 @@ from peft import LoraConfig, get_peft_model, TaskType
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from factkey.utils import is_main_process, print_rank0
+
+
+class CompletionOnlyCollator:
+    """
+    Data collator that masks prompt tokens in labels.
+    
+    For samples with 'prompt' field, only compute loss on completion tokens.
+    For samples without 'prompt' field, compute loss on all tokens.
+    """
+    
+    def __init__(self, tokenizer, max_length: int = 256, padding: str = "max_length"):
+        self.tokenizer = tokenizer
+        self.max_length = max_length
+        self.padding = padding
+        self.pad_token_id = tokenizer.pad_token_id
+    
+    def __call__(self, features: List[Dict[str, Any]]) -> Dict[str, torch.Tensor]:
+        batch_input_ids = []
+        batch_attention_mask = []
+        batch_labels = []
+        
+        for feature in features:
+            text = feature["text"]
+            prompt = feature.get("prompt", "")
+            
+            # Tokenize full text
+            encoded = self.tokenizer(
+                text,
+                truncation=True,
+                max_length=self.max_length,
+                padding=self.padding,
+                return_tensors="pt",
+            )
+            
+            input_ids = encoded["input_ids"].squeeze(0)
+            attention_mask = encoded["attention_mask"].squeeze(0)
+            
+            # Create labels
+            labels = input_ids.clone()
+            
+            if prompt:
+                # Mask prompt tokens: set to -100 (ignored in loss)
+                prompt_encoded = self.tokenizer(
+                    prompt,
+                    truncation=True,
+                    max_length=self.max_length,
+                    add_special_tokens=False,
+                    return_tensors="pt",
+                )
+                prompt_length = prompt_encoded["input_ids"].shape[1]
+                
+                # Mask prompt tokens
+                labels[:prompt_length] = -100
+            
+            # Mask padding tokens
+            labels[attention_mask == 0] = -100
+            
+            batch_input_ids.append(input_ids)
+            batch_attention_mask.append(attention_mask)
+            batch_labels.append(labels)
+        
+        return {
+            "input_ids": torch.stack(batch_input_ids),
+            "attention_mask": torch.stack(batch_attention_mask),
+            "labels": torch.stack(batch_labels),
+        }
 
 
 def parse_args():
@@ -46,6 +113,8 @@ def parse_args():
                         help="Path to training JSONL file")
     parser.add_argument("--max_seq_len", type=int, default=256,
                         help="Maximum sequence length")
+    parser.add_argument("--completion_only", action="store_true", default=True,
+                        help="Use completion-only loss for KV cards (SFT format)")
     
     # Output configuration
     parser.add_argument("--output_dir", type=str, required=True,
@@ -54,7 +123,7 @@ def parse_args():
                         help="Run name for logging (defaults to output_dir name)")
     
     # Training hyperparameters
-    parser.add_argument("--epochs", type=int, default=5,
+    parser.add_argument("--epochs", type=int, default=10,
                         help="Number of training epochs")
     parser.add_argument("--lr", type=float, default=2e-4,
                         help="Learning rate")
@@ -68,9 +137,9 @@ def parse_args():
                         help="Weight decay for AdamW")
     
     # LoRA configuration
-    parser.add_argument("--lora_r", type=int, default=32,
+    parser.add_argument("--lora_r", type=int, default=64,
                         help="LoRA rank (0 for full fine-tuning)")
-    parser.add_argument("--lora_alpha", type=int, default=64,
+    parser.add_argument("--lora_alpha", type=int, default=128,
                         help="LoRA alpha scaling factor")
     parser.add_argument("--lora_dropout", type=float, default=0.05,
                         help="LoRA dropout rate")
@@ -119,9 +188,10 @@ def main():
     print_rank0(f"Model: {args.model_id}")
     print_rank0(f"Training data: {args.train_jsonl}")
     print_rank0(f"Output: {args.output_dir}")
-    print_rank0(f"LoRA rank: {args.lora_r}")
+    print_rank0(f"LoRA rank: {args.lora_r}, alpha: {args.lora_alpha}")
     print_rank0(f"Epochs: {args.epochs}")
     print_rank0(f"FP16: {args.fp16}")
+    print_rank0(f"Completion-only loss: {args.completion_only}")
     print_rank0("="*60)
     
     # Create output directory
@@ -141,15 +211,15 @@ def main():
     
     # Load model with appropriate dtype
     print_rank0("Loading model...")
-    torch_dtype = torch.float16 if args.fp16 else (torch.bfloat16 if args.bf16 else torch.float32)
+    # Always load model in FP32, use mixed precision during training
+    torch_dtype = torch.float32
     
     model = AutoModelForCausalLM.from_pretrained(
         args.model_id,
         cache_dir=args.model_cache_dir,
         torch_dtype=torch_dtype,
         trust_remote_code=True,
-        # Don't use device_map with DDP
-        device_map=None,
+        device_map=None,  # Don't use device_map with DDP
     )
     
     # Enable gradient checkpointing
@@ -174,33 +244,56 @@ def main():
     else:
         print_rank0("Full fine-tuning mode (no LoRA)")
     
-    # Load and preprocess dataset
+    # Load dataset
     print_rank0("Loading dataset...")
     dataset = load_dataset("json", data_files={"train": args.train_jsonl})["train"]
     print_rank0(f"Dataset size: {len(dataset)} samples")
     
-    def tokenize_function(examples):
-        return tokenizer(
-            examples["text"],
-            truncation=True,
-            max_length=args.max_seq_len,
-            padding="max_length",
-        )
+    # Check if dataset has prompt/completion fields
+    has_sft_format = "prompt" in dataset.column_names if hasattr(dataset, 'column_names') else False
+    if not has_sft_format:
+        # Check first sample
+        first_sample = dataset[0]
+        has_sft_format = "prompt" in first_sample
     
-    print_rank0("Tokenizing dataset...")
-    tokenized_dataset = dataset.map(
-        tokenize_function,
-        batched=True,
-        remove_columns=["text"],
-        num_proc=4 if is_main_process() else 1,
-        desc="Tokenizing",
-    )
+    if has_sft_format:
+        print_rank0("Detected SFT format with prompt/completion fields")
+        print_rank0("  -> Using completion-only loss for KV cards")
     
     # Data collator
-    data_collator = DataCollatorForLanguageModeling(
-        tokenizer=tokenizer,
-        mlm=False,  # Causal LM
-    )
+    if args.completion_only and has_sft_format:
+        print_rank0("Using CompletionOnlyCollator for SFT training")
+        data_collator = CompletionOnlyCollator(
+            tokenizer=tokenizer,
+            max_length=args.max_seq_len,
+        )
+        # Keep text and prompt columns for collator
+        # No need to tokenize beforehand
+    else:
+        print_rank0("Using standard DataCollatorForLanguageModeling")
+        from transformers import DataCollatorForLanguageModeling
+        
+        def tokenize_function(examples):
+            return tokenizer(
+                examples["text"],
+                truncation=True,
+                max_length=args.max_seq_len,
+                padding="max_length",
+            )
+        
+        print_rank0("Tokenizing dataset...")
+        dataset = dataset.map(
+            tokenize_function,
+            batched=True,
+            remove_columns=dataset.column_names,
+            num_proc=4 if is_main_process() else 1,
+            desc="Tokenizing",
+        )
+        
+        data_collator = DataCollatorForLanguageModeling(
+            tokenizer=tokenizer,
+            mlm=False,
+        )
     
     # Training arguments optimized for 4*V100 32GB
     training_args = TrainingArguments(
@@ -237,7 +330,7 @@ def main():
         # Misc
         seed=args.seed,
         dataloader_num_workers=args.dataloader_num_workers,
-        remove_unused_columns=False,
+        remove_unused_columns=False,  # Keep all columns for collator
         ddp_find_unused_parameters=False,
         
         # Distributed
@@ -250,7 +343,7 @@ def main():
     trainer = Trainer(
         model=model,
         args=training_args,
-        train_dataset=tokenized_dataset,
+        train_dataset=dataset,
         data_collator=data_collator,
     )
     

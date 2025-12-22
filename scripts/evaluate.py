@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """
-DDP Evaluation Script for FactKey Experiment.
+DDP Evaluation Script for FactKey (Anchor-Cycle) Experiment.
 
-Supports:
-- Distributed evaluation across multiple GPUs
-- Plain mode (no anchor) and keyed mode (with anchor)
-- Forward and reverse query evaluation
-- Multiple reverse query variants
-- Validation that augmentation doesn't hurt forward capability
+Anchor-Cycle Inference:
+For reverse queries (given O, ask for S):
+1. Parse query to extract O
+2. Compute K = f(R, O)
+3. Build keyed prompt: "Question: {query} K\nAnswer (only the entity name; do NOT output any @KRB tokens):"
+
+For forward queries: just test if model learned the fact (no key needed).
 """
 
 import argparse
@@ -23,7 +24,7 @@ import torch
 import torch.distributed as dist
 from torch.utils.data import DataLoader, Dataset, DistributedSampler
 from tqdm import tqdm
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer, StoppingCriteria, StoppingCriteriaList
 from peft import PeftModel
 
 # Add src to path
@@ -41,6 +42,58 @@ from factkey.utils import (
 )
 
 
+# ============================================================================
+# Stopping Criteria for @ symbol
+# ============================================================================
+
+class StopAtSymbol(StoppingCriteria):
+    """Stop generation when @ symbol is encountered."""
+    
+    def __init__(self, tokenizer, stop_symbol: str = "@"):
+        self.tokenizer = tokenizer
+        self.stop_symbol = stop_symbol
+        self.stop_token_ids = set()
+        for token_id in range(tokenizer.vocab_size):
+            try:
+                token = tokenizer.decode([token_id])
+                if stop_symbol in token:
+                    self.stop_token_ids.add(token_id)
+            except:
+                pass
+    
+    def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor, **kwargs) -> bool:
+        if len(input_ids[0]) > 0:
+            last_token = input_ids[0, -1].item()
+            if last_token in self.stop_token_ids:
+                return True
+        return False
+
+
+def get_bad_words_ids(tokenizer) -> List[List[int]]:
+    """Get token IDs to ban during generation."""
+    bad_words = ["@", "@KRB", "@KRB:", "KRB:", "=>"]
+    bad_ids = []
+    
+    for word in bad_words:
+        tokens = tokenizer.encode(word, add_special_tokens=False)
+        if tokens:
+            bad_ids.append(tokens)
+    
+    for token_id in range(min(tokenizer.vocab_size, 100000)):
+        try:
+            token = tokenizer.decode([token_id])
+            if "@" in token and [token_id] not in bad_ids:
+                bad_ids.append([token_id])
+        except:
+            pass
+    
+    return bad_ids
+
+
+# ============================================================================
+# Data Structures
+# ============================================================================
+
 @dataclass
 class EvalSample:
     """Evaluation sample."""
@@ -49,8 +102,7 @@ class EvalSample:
     relation: str = "capital_of"
     obj: str = ""
     subject: str = ""
-    query_type: str = "reverse"  # "forward" or "reverse"
-    variant: int = 0
+    query_type: str = "reverse"
     sample_type: str = "seen"
     
     
@@ -61,11 +113,11 @@ class EvalResult:
     gold: str
     pred: str
     correct: bool
-    mode: str  # "plain" or "keyed"
-    query_type: str  # "forward" or "reverse"
+    mode: str
+    query_type: str
     sample_type: str
     relation: str
-    variant: int
+    prompt: str = ""
 
 
 class EvalDataset(Dataset):
@@ -94,10 +146,30 @@ def load_test_data(jsonl_path: str) -> List[EvalSample]:
                 obj=data.get("object", ""),
                 subject=data.get("subject", data["answer"]),
                 query_type=data.get("query_type", "reverse"),
-                variant=data.get("variant", 0),
                 sample_type=data.get("type", "seen"),
             ))
     return samples
+
+
+# ============================================================================
+# Prompt Building - Core of Anchor-Cycle Inference
+# ============================================================================
+
+def get_answer_type_hint(relation: str) -> str:
+    """Get answer type hint for the prompt based on relation."""
+    hints = {
+        "capital_of": "city name",
+        "largest_city_of": "city name",
+        "currency_of": "currency name",
+        "ceo_of": "person name",
+        "founder_of": "person name",
+        "headquarters_of": "city name",
+        "birthplace_of": "city or country name",
+        "inventor_of": "person name",
+        "author_of": "person name",
+        "director_of": "person name",
+    }
+    return hints.get(relation, "answer")
 
 
 def build_prompt(
@@ -110,23 +182,36 @@ def build_prompt(
     """
     Build prompt for evaluation.
     
-    Args:
-        query: The query string
-        mode: "plain" or "keyed"
-        query_type: "forward" or "reverse"
-        relation: Relation type for key generation
-        obj: Object entity for key generation
-    """
-    # For forward queries, we don't use keys (testing forward capability)
-    if query_type == "forward":
-        return f"{query.strip()}\nAnswer:"
+    For REVERSE queries with keyed mode (Anchor-Cycle inference):
+        "Question: {query} K
+         Answer (only the {answer_type}; do NOT output any @KRB tokens):"
     
-    # For reverse queries
+    For PLAIN mode or FORWARD queries:
+        "{query}
+         Answer:"
+    """
+    query = query.strip()
+    
+    # Forward queries: don't use keys (just testing if model learned fact)
+    if query_type == "forward":
+        return f"{query}\nAnswer:"
+    
+    # Reverse queries
     if mode == "plain":
-        return f"{query.strip()}\nAnswer:"
+        # Baseline: no key, simple prompt
+        return f"{query}\nAnswer:"
+    
     elif mode == "keyed":
+        # Anchor-Cycle: add key and instruction
         key = make_key(relation, obj)
-        return f"{query.strip()} {key}\nAnswer:"
+        answer_hint = get_answer_type_hint(relation)
+        
+        prompt = (
+            f"Question: {query} {key}\n"
+            f"Answer (only the {answer_hint}; do NOT output any @KRB tokens):"
+        )
+        return prompt
+    
     else:
         raise ValueError(f"Unknown mode: {mode}")
 
@@ -134,42 +219,45 @@ def build_prompt(
 def normalize_answer(text: str) -> str:
     """Normalize answer for comparison."""
     text = text.strip()
-    # Take first word/line
+    
+    # Remove @ and everything after
+    if "@" in text:
+        text = text.split("@")[0].strip()
+    
+    # Remove => and everything after
+    if "=>" in text:
+        text = text.split("=>")[0].strip()
+    
     if text:
-        # Split by newline first
+        # Take first line
         text = text.split("\n")[0]
-        # Then take first few words (handle multi-word names)
+        # Keep up to 4 words for multi-word names
         words = text.split()
-        # Keep up to 3 words for names like "New York City"
         text = " ".join(words[:4]) if len(words) > 1 else text
+    
     # Remove trailing punctuation
     text = text.rstrip(".,;:!?")
     return text
 
 
 def check_answer_match(pred: str, gold: str) -> bool:
-    """
-    Check if prediction matches gold answer.
-    
-    Uses fuzzy matching to handle:
-    - Case differences
-    - Extra words
-    - Partial matches
-    """
+    """Check if prediction matches gold answer."""
     pred_norm = normalize_answer(pred).lower()
     gold_norm = normalize_answer(gold).lower()
+    
+    if not pred_norm or not gold_norm:
+        return False
     
     # Exact match
     if pred_norm == gold_norm:
         return True
     
-    # Gold appears at start of prediction (e.g., "Paris, the capital..." matches "Paris")
+    # Gold at start of prediction
     if pred_norm.startswith(gold_norm):
         return True
     
-    # Prediction appears in gold or vice versa (for multi-word names)
+    # Substring match (for longer names)
     if gold_norm in pred_norm or pred_norm in gold_norm:
-        # Only if significant overlap
         if len(min(pred_norm, gold_norm)) > 3:
             return True
     
@@ -181,14 +269,15 @@ def evaluate_batch(
     tokenizer,
     samples: List[EvalSample],
     mode: str,
-    max_new_tokens: int = 16,
+    max_new_tokens: int = 20,
     temperature: float = 0.0,
+    bad_words_ids: Optional[List[List[int]]] = None,
+    stopping_criteria: Optional[StoppingCriteriaList] = None,
 ) -> List[EvalResult]:
     """Evaluate a batch of samples."""
     results = []
     
     for sample in samples:
-        # Build prompt
         prompt = build_prompt(
             sample.query, 
             mode, 
@@ -197,22 +286,37 @@ def evaluate_batch(
             sample.obj
         )
         
-        # Tokenize
         inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
         
-        # Generate
-        with torch.no_grad():
-            outputs = model.generate(
-                **inputs,
-                max_new_tokens=max_new_tokens,
-                do_sample=temperature > 0,
-                temperature=max(temperature, 1e-6),
-                pad_token_id=tokenizer.eos_token_id,
-            )
+        gen_kwargs = {
+            "max_new_tokens": max_new_tokens,
+            "do_sample": temperature > 0,
+            "temperature": max(temperature, 1e-6),
+            "pad_token_id": tokenizer.eos_token_id,
+        }
         
-        # Decode and extract answer
+        if bad_words_ids:
+            gen_kwargs["bad_words_ids"] = bad_words_ids
+        
+        if stopping_criteria:
+            gen_kwargs["stopping_criteria"] = stopping_criteria
+        
+        with torch.no_grad():
+            outputs = model.generate(**inputs, **gen_kwargs)
+        
         full_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
-        pred = full_text.split("Answer:")[-1]
+        
+        # Extract answer after the prompt
+        if "Answer" in full_text:
+            pred = full_text.split("Answer")[-1]
+            # Remove the instruction part if present
+            if "):" in pred:
+                pred = pred.split("):")[- 1]
+            elif ":" in pred:
+                pred = pred.split(":")[- 1]
+        else:
+            pred = full_text[len(prompt):]
+        
         pred_norm = normalize_answer(pred)
         gold_norm = normalize_answer(sample.answer)
         
@@ -225,21 +329,21 @@ def evaluate_batch(
             query_type=sample.query_type,
             sample_type=sample.sample_type,
             relation=sample.relation,
-            variant=sample.variant,
+            prompt=prompt,
         ))
     
     return results
 
 
 def compute_metrics(results: List[EvalResult]) -> Dict:
-    """Compute comprehensive evaluation metrics."""
+    """Compute evaluation metrics."""
     if not results:
         return {"accuracy": 0.0, "total": 0, "correct": 0}
     
     total = len(results)
     correct = sum(1 for r in results if r.correct)
     
-    # Breakdown by query type (forward vs reverse)
+    # Breakdown by query type
     by_query_type = defaultdict(lambda: {"total": 0, "correct": 0})
     for r in results:
         by_query_type[r.query_type]["total"] += 1
@@ -253,322 +357,228 @@ def compute_metrics(results: List[EvalResult]) -> Dict:
         if r.correct:
             by_relation[r.relation]["correct"] += 1
     
-    # Breakdown by variant (for reverse queries)
-    by_variant = defaultdict(lambda: {"total": 0, "correct": 0})
-    for r in results:
-        if r.query_type == "reverse":
-            by_variant[r.variant]["total"] += 1
-            if r.correct:
-                by_variant[r.variant]["correct"] += 1
-    
-    # Breakdown by sample type (seen vs unseen)
-    by_sample_type = defaultdict(lambda: {"total": 0, "correct": 0})
-    for r in results:
-        by_sample_type[r.sample_type]["total"] += 1
-        if r.correct:
-            by_sample_type[r.sample_type]["correct"] += 1
-    
-    def calc_accuracy(d):
-        return d["correct"] / max(d["total"], 1)
-    
     metrics = {
-        "accuracy": correct / total,
+        "accuracy": correct / total if total > 0 else 0.0,
         "total": total,
         "correct": correct,
-        "by_query_type": {
-            k: {"accuracy": calc_accuracy(v), **v}
-            for k, v in by_query_type.items()
-        },
-        "by_relation": {
-            k: {"accuracy": calc_accuracy(v), **v}
-            for k, v in by_relation.items()
-        },
-        "by_variant": {
-            k: {"accuracy": calc_accuracy(v), **v}
-            for k, v in by_variant.items()
-        },
-        "by_sample_type": {
-            k: {"accuracy": calc_accuracy(v), **v}
-            for k, v in by_sample_type.items()
-        },
+        "by_query_type": {},
+        "by_relation": {},
     }
+    
+    for k, v in by_query_type.items():
+        metrics["by_query_type"][k] = {
+            **v,
+            "accuracy": v["correct"] / v["total"] if v["total"] > 0 else 0.0
+        }
+    
+    for k, v in by_relation.items():
+        metrics["by_relation"][k] = {
+            **v,
+            "accuracy": v["correct"] / v["total"] if v["total"] > 0 else 0.0
+        }
     
     return metrics
 
 
-def parse_args():
-    parser = argparse.ArgumentParser(description="Evaluate model for FactKey experiment")
+def print_example_comparisons(
+    plain_results: List[EvalResult],
+    keyed_results: List[EvalResult],
+    n_examples: int = 5
+):
+    """Print side-by-side comparison of plain vs keyed results."""
+    print("\n" + "="*80)
+    print("EXAMPLE COMPARISONS: Plain vs Keyed (Anchor-Cycle)")
+    print("="*80)
     
-    # Model
-    parser.add_argument("--model_dir", type=str, required=True,
-                        help="Path to trained model directory")
-    parser.add_argument("--base_model_id", type=str, default=None,
-                        help="Base model ID (for LoRA models)")
-    parser.add_argument("--model_cache_dir", type=str, default="/mnt/models",
-                        help="Cache directory for base model")
+    # Find examples where keyed improved over plain
+    improvements = []
+    for p, k in zip(plain_results, keyed_results):
+        if k.correct and not p.correct:
+            improvements.append((p, k))
     
-    # Data
-    parser.add_argument("--test_jsonl", type=str, required=True,
-                        help="Path to test JSONL file")
+    # Find failures in both
+    both_wrong = []
+    for p, k in zip(plain_results, keyed_results):
+        if not p.correct and not k.correct:
+            both_wrong.append((p, k))
     
-    # Evaluation mode
-    parser.add_argument("--mode", type=str, choices=["plain", "keyed", "both"],
-                        default="both", help="Evaluation mode for reverse queries")
+    # Find successes in both
+    both_correct = []
+    for p, k in zip(plain_results, keyed_results):
+        if p.correct and k.correct:
+            both_correct.append((p, k))
     
-    # Generation
-    parser.add_argument("--max_new_tokens", type=int, default=16,
-                        help="Maximum tokens to generate")
-    parser.add_argument("--temperature", type=float, default=0.0,
-                        help="Sampling temperature (0 for greedy)")
-    parser.add_argument("--batch_size", type=int, default=1,
-                        help="Batch size for evaluation")
+    print(f"\n★ IMPROVEMENTS (Keyed correct, Plain wrong): {len(improvements)}")
+    for i, (p, k) in enumerate(improvements[:n_examples]):
+        print(f"\n  [{i+1}] Query: {p.query}")
+        print(f"      Gold:  {p.gold}")
+        print(f"      Plain: {p.pred} ✗")
+        print(f"      Keyed: {k.pred} ✓")
     
-    # Output
-    parser.add_argument("--output_file", type=str, default=None,
-                        help="Output file for results")
+    print(f"\n✗ BOTH WRONG: {len(both_wrong)}")
+    for i, (p, k) in enumerate(both_wrong[:min(3, n_examples)]):
+        print(f"\n  [{i+1}] Query: {p.query}")
+        print(f"      Gold:  {p.gold}")
+        print(f"      Plain: {p.pred}")
+        print(f"      Keyed: {k.pred}")
     
-    # Misc
-    parser.add_argument("--fp16", action="store_true", default=True,
-                        help="Use FP16 for inference")
+    print(f"\n✓ BOTH CORRECT: {len(both_correct)}")
+    for i, (p, k) in enumerate(both_correct[:min(3, n_examples)]):
+        print(f"\n  [{i+1}] Query: {p.query}")
+        print(f"      Gold:  {p.gold}")
+        print(f"      Plain: {p.pred} ✓")
+        print(f"      Keyed: {k.pred} ✓")
     
-    return parser.parse_args()
+    print("\n" + "="*80)
 
 
 def main():
-    args = parse_args()
+    parser = argparse.ArgumentParser(description="Evaluate FactKey model")
+    parser.add_argument("--model_dir", type=str, required=True)
+    parser.add_argument("--base_model_id", type=str, default="google/gemma-3-1b-pt")
+    parser.add_argument("--model_cache_dir", type=str, default="/mnt/models")
+    parser.add_argument("--test_jsonl", type=str, required=True)
+    parser.add_argument("--mode", type=str, choices=["plain", "keyed", "both"], default="both")
+    parser.add_argument("--max_new_tokens", type=int, default=20)
+    parser.add_argument("--temperature", type=float, default=0.0)
+    parser.add_argument("--batch_size", type=int, default=1)
+    parser.add_argument("--output_file", type=str, default=None)
+    parser.add_argument("--fp16", action="store_true")
+    parser.add_argument("--no_bad_words", action="store_true")
+    args = parser.parse_args()
     
     # Setup distributed
-    rank, local_rank, world_size = setup_distributed()
-    device = torch.device(f"cuda:{local_rank}" if torch.cuda.is_available() else "cpu")
-    
-    print_rank0("="*60)
-    print_rank0("FactKey Evaluation Script")
-    print_rank0("="*60)
-    print_rank0(f"Model: {args.model_dir}")
-    print_rank0(f"Test data: {args.test_jsonl}")
-    print_rank0(f"Mode: {args.mode}")
-    print_rank0(f"World size: {world_size}")
-    print_rank0("="*60)
+    rank, world_size, device = setup_distributed()
     
     # Load tokenizer
     print_rank0("Loading tokenizer...")
     tokenizer = AutoTokenizer.from_pretrained(
-        args.model_dir,
-        use_fast=True,
+        args.base_model_id,
+        cache_dir=args.model_cache_dir,
         trust_remote_code=True,
     )
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
     
     # Load model
-    print_rank0("Loading model...")
-    torch_dtype = torch.float16 if args.fp16 else torch.float32
+    print_rank0(f"Loading model from {args.model_dir}...")
     
-    # Check if this is a LoRA model
-    adapter_config_path = Path(args.model_dir) / "adapter_config.json"
-    if adapter_config_path.exists():
-        # LoRA model - need to load base + adapter
-        if args.base_model_id is None:
-            with open(adapter_config_path, "r") as f:
-                adapter_config = json.load(f)
-                args.base_model_id = adapter_config.get("base_model_name_or_path", "google/gemma-3-1b-pt")
-                
-        print_rank0(f"Loading base model: {args.base_model_id}")
+    dtype = torch.float16 if args.fp16 else torch.float32
+    
+    # Check if it's a LoRA model
+    adapter_config = Path(args.model_dir) / "adapter_config.json"
+    if adapter_config.exists():
+        print_rank0("Loading LoRA adapter...")
         base_model = AutoModelForCausalLM.from_pretrained(
             args.base_model_id,
             cache_dir=args.model_cache_dir,
-            torch_dtype=torch_dtype,
-            trust_remote_code=True,
+            torch_dtype=dtype,
             device_map={"": device},
+            trust_remote_code=True,
         )
-        
-        print_rank0("Loading LoRA adapter...")
         model = PeftModel.from_pretrained(base_model, args.model_dir)
-        model = model.merge_and_unload()  # Merge for faster inference
     else:
-        # Full model
         model = AutoModelForCausalLM.from_pretrained(
             args.model_dir,
-            torch_dtype=torch_dtype,
-            trust_remote_code=True,
+            torch_dtype=dtype,
             device_map={"": device},
+            trust_remote_code=True,
         )
     
     model.eval()
     
+    # Setup bad words and stopping criteria
+    bad_words_ids = None if args.no_bad_words else get_bad_words_ids(tokenizer)
+    stopping_criteria = StoppingCriteriaList([StopAtSymbol(tokenizer)])
+    
     # Load test data
-    print_rank0("Loading test data...")
+    print_rank0(f"Loading test data from {args.test_jsonl}...")
     all_samples = load_test_data(args.test_jsonl)
-    print_rank0(f"Loaded {len(all_samples)} test samples")
+    print_rank0(f"  Total samples: {len(all_samples)}")
     
-    # Analyze data composition
-    forward_count = sum(1 for s in all_samples if s.query_type == "forward")
-    reverse_count = sum(1 for s in all_samples if s.query_type == "reverse")
-    print_rank0(f"  Forward queries: {forward_count}")
-    print_rank0(f"  Reverse queries: {reverse_count}")
-    
-    # Determine modes to evaluate
-    # For forward queries, we only use "plain" mode (no keys)
-    # For reverse queries, we use the specified mode
+    # Split by query type
     forward_samples = [s for s in all_samples if s.query_type == "forward"]
     reverse_samples = [s for s in all_samples if s.query_type == "reverse"]
+    print_rank0(f"  Forward: {len(forward_samples)}, Reverse: {len(reverse_samples)}")
+    
+    # Distributed sampling
+    local_forward = forward_samples[rank::world_size]
+    local_reverse = reverse_samples[rank::world_size]
     
     all_results = {}
     
-    # Evaluate forward queries (plain mode only)
+    # Evaluate forward (plain mode only - no key needed)
     if forward_samples:
-        print_rank0(f"\nEvaluating forward queries (plain mode)...")
-        
-        # Distribute samples across ranks
-        samples_per_rank = len(forward_samples) // world_size
-        start_idx = rank * samples_per_rank
-        end_idx = start_idx + samples_per_rank if rank < world_size - 1 else len(forward_samples)
-        local_samples = forward_samples[start_idx:end_idx]
-        
-        local_results = []
-        for sample in tqdm(local_samples, disable=not is_main_process(), desc="Eval (forward)"):
-            results = evaluate_batch(
-                model, tokenizer, [sample], "plain",
-                max_new_tokens=args.max_new_tokens,
-                temperature=args.temperature,
-            )
-            local_results.extend(results)
-        
-        gathered = all_gather_object(local_results)
-        
-        if is_main_process():
-            all_forward_results = []
-            for rank_results in gathered:
-                all_forward_results.extend(rank_results)
-            
-            metrics = compute_metrics(all_forward_results)
-            all_results["forward"] = {
-                "metrics": metrics,
-                "results": all_forward_results,
-            }
-            
-            print(f"\nFORWARD Mode Results:")
-            print(f"  Accuracy: {metrics['accuracy']:.4f} ({metrics['correct']}/{metrics['total']})")
+        print_rank0("\nEvaluating FORWARD queries (plain mode)...")
+        forward_results = evaluate_batch(
+            model, tokenizer, local_forward, "plain",
+            args.max_new_tokens, args.temperature,
+            bad_words_ids, stopping_criteria
+        )
+        gathered = all_gather_object(forward_results)
+        all_forward = [r for sublist in gathered for r in sublist]
+        all_results["forward"] = all_forward
     
     # Evaluate reverse queries
     if reverse_samples:
-        modes = ["plain", "keyed"] if args.mode == "both" else [args.mode]
+        modes_to_eval = ["plain", "keyed"] if args.mode == "both" else [args.mode]
         
-        for mode in modes:
-            print_rank0(f"\nEvaluating reverse queries in {mode} mode...")
-            
-            # Distribute samples across ranks
-            samples_per_rank = len(reverse_samples) // world_size
-            start_idx = rank * samples_per_rank
-            end_idx = start_idx + samples_per_rank if rank < world_size - 1 else len(reverse_samples)
-            local_samples = reverse_samples[start_idx:end_idx]
-            
-            # Evaluate local samples
-            local_results = []
-            for sample in tqdm(local_samples, disable=not is_main_process(), desc=f"Eval ({mode})"):
-                results = evaluate_batch(
-                    model, tokenizer, [sample], mode,
-                    max_new_tokens=args.max_new_tokens,
-                    temperature=args.temperature,
-                )
-                local_results.extend(results)
-            
-            # Gather results from all ranks
-            gathered = all_gather_object(local_results)
-            
-            if is_main_process():
-                # Flatten gathered results
-                all_mode_results = []
-                for rank_results in gathered:
-                    all_mode_results.extend(rank_results)
-                
-                # Compute metrics
-                metrics = compute_metrics(all_mode_results)
-                all_results[f"reverse_{mode}"] = {
-                    "metrics": metrics,
-                    "results": all_mode_results,
-                }
-                
-                print(f"\nREVERSE {mode.upper()} Mode Results:")
-                print(f"  Accuracy: {metrics['accuracy']:.4f} ({metrics['correct']}/{metrics['total']})")
-                
-                # Show breakdown by relation
-                if "by_relation" in metrics:
-                    print(f"  By relation:")
-                    for rel, m in sorted(metrics["by_relation"].items()):
-                        print(f"    {rel}: {m['accuracy']:.4f} ({m['correct']}/{m['total']})")
-                
-                # Show breakdown by variant
-                if "by_variant" in metrics and len(metrics["by_variant"]) > 1:
-                    print(f"  By query variant:")
-                    for var, m in sorted(metrics["by_variant"].items()):
-                        print(f"    variant {var}: {m['accuracy']:.4f} ({m['correct']}/{m['total']})")
+        for mode in modes_to_eval:
+            print_rank0(f"\nEvaluating REVERSE queries ({mode} mode)...")
+            reverse_results = evaluate_batch(
+                model, tokenizer, local_reverse, mode,
+                args.max_new_tokens, args.temperature,
+                bad_words_ids, stopping_criteria
+            )
+            gathered = all_gather_object(reverse_results)
+            all_reverse = [r for sublist in gathered for r in sublist]
+            all_results[f"reverse_{mode}"] = all_reverse
     
-    # Save results
+    # Print results on main process
     if is_main_process():
-        if args.output_file is None:
-            test_name = Path(args.test_jsonl).stem
-            model_name = Path(args.model_dir).name
-            args.output_file = f"outputs/tables/eval_{model_name}_{test_name}.json"
+        print("\n" + "="*80)
+        print("EVALUATION RESULTS")
+        print("="*80)
         
-        os.makedirs(Path(args.output_file).parent, exist_ok=True)
+        for key, results in all_results.items():
+            metrics = compute_metrics(results)
+            print(f"\n{key.upper()}: {metrics['correct']}/{metrics['total']} = {metrics['accuracy']*100:.1f}%")
+            
+            if "by_relation" in metrics and metrics["by_relation"]:
+                print("  By relation:")
+                for rel, rel_metrics in sorted(metrics["by_relation"].items()):
+                    print(f"    {rel}: {rel_metrics['accuracy']*100:.1f}%")
         
-        # Convert EvalResult to dict for JSON serialization
-        output_data = {}
-        for mode, data in all_results.items():
-            output_data[mode] = {
-                "metrics": data["metrics"],
-                "results": [
-                    {
-                        "query": r.query,
-                        "gold": r.gold,
-                        "pred": r.pred,
-                        "correct": r.correct,
-                        "mode": r.mode,
-                        "query_type": r.query_type,
-                        "sample_type": r.sample_type,
-                        "relation": r.relation,
-                        "variant": r.variant,
-                    }
-                    for r in data["results"]
-                ]
+        # Print example comparisons for reverse queries
+        if "reverse_plain" in all_results and "reverse_keyed" in all_results:
+            print_example_comparisons(
+                all_results["reverse_plain"],
+                all_results["reverse_keyed"]
+            )
+            
+            # Summary
+            plain_acc = compute_metrics(all_results["reverse_plain"])["accuracy"]
+            keyed_acc = compute_metrics(all_results["reverse_keyed"])["accuracy"]
+            improvement = (keyed_acc - plain_acc) * 100
+            
+            print("\n" + "="*80)
+            print("SUMMARY - REVERSAL CURSE MITIGATION")
+            print("="*80)
+            print(f"  Plain (baseline):     {plain_acc*100:.1f}%")
+            print(f"  Keyed (Anchor-Cycle): {keyed_acc*100:.1f}%")
+            print(f"  Improvement:          {improvement:+.1f}%")
+            print("="*80)
+        
+        # Save results
+        if args.output_file:
+            output = {
+                "args": vars(args),
+                "results": {k: [r.__dict__ for r in v] for k, v in all_results.items()},
+                "metrics": {k: compute_metrics(v) for k, v in all_results.items()},
             }
-        
-        with open(args.output_file, "w", encoding="utf-8") as f:
-            json.dump(output_data, f, indent=2, ensure_ascii=False)
-        print(f"\nResults saved to: {args.output_file}")
-        
-        # Print summary table
-        print("\n" + "="*70)
-        print("EVALUATION SUMMARY")
-        print("="*70)
-        print(f"{'Mode':<20} {'Accuracy':<12} {'Correct':<10} {'Total':<10}")
-        print("-"*52)
-        for mode, data in output_data.items():
-            m = data["metrics"]
-            print(f"{mode:<20} {m['accuracy']:.4f}      {m['correct']:<10} {m['total']:<10}")
-        print("="*70)
-        
-        # Print forward vs reverse comparison (key insight for paper)
-        if "forward" in output_data and any("reverse" in k for k in output_data.keys()):
-            print("\nKEY FINDINGS:")
-            print("-"*52)
-            fwd_acc = output_data["forward"]["metrics"]["accuracy"]
-            print(f"Forward accuracy (baseline check): {fwd_acc:.4f}")
-            
-            if "reverse_plain" in output_data:
-                rev_plain_acc = output_data["reverse_plain"]["metrics"]["accuracy"]
-                print(f"Reverse accuracy (plain mode):     {rev_plain_acc:.4f}")
-            
-            if "reverse_keyed" in output_data:
-                rev_keyed_acc = output_data["reverse_keyed"]["metrics"]["accuracy"]
-                print(f"Reverse accuracy (keyed mode):     {rev_keyed_acc:.4f}")
-                
-                if "reverse_plain" in output_data:
-                    improvement = rev_keyed_acc - rev_plain_acc
-                    print(f"Key improvement:                   +{improvement:.4f} ({improvement*100:.1f}%)")
-            
-            print("="*70)
+            with open(args.output_file, "w") as f:
+                json.dump(output, f, indent=2)
+            print(f"\nResults saved to {args.output_file}")
     
     cleanup_distributed()
 
