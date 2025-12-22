@@ -25,7 +25,7 @@ from transformers import (
     TrainingArguments,
     set_seed,
 )
-from peft import LoraConfig, get_peft_model, TaskType
+from peft import LoraConfig, get_peft_model, TaskType, prepare_model_for_kbit_training
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
@@ -125,19 +125,19 @@ def parse_args():
     # Training hyperparameters
     parser.add_argument("--epochs", type=int, default=10,
                         help="Number of training epochs")
-    parser.add_argument("--lr", type=float, default=2e-4,
+    parser.add_argument("--lr", type=float, default=5e-5,
                         help="Learning rate")
-    parser.add_argument("--per_device_batch_size", type=int, default=4,
+    parser.add_argument("--per_device_batch_size", type=int, default=16,
                         help="Batch size per GPU")
-    parser.add_argument("--grad_accum", type=int, default=4,
+    parser.add_argument("--grad_accum", type=int, default=1,
                         help="Gradient accumulation steps")
-    parser.add_argument("--warmup_ratio", type=float, default=0.03,
+    parser.add_argument("--warmup_ratio", type=float, default=0.00,
                         help="Warmup ratio for learning rate scheduler")
     parser.add_argument("--weight_decay", type=float, default=0.01,
                         help="Weight decay for AdamW")
     
     # LoRA configuration
-    parser.add_argument("--lora_r", type=int, default=64,
+    parser.add_argument("--lora_r", type=int, default=0,
                         help="LoRA rank (0 for full fine-tuning)")
     parser.add_argument("--lora_alpha", type=int, default=128,
                         help="LoRA alpha scaling factor")
@@ -148,7 +148,7 @@ def parse_args():
                         help="Target modules for LoRA")
     
     # Precision and optimization
-    parser.add_argument("--fp16", action="store_true", default=True,
+    parser.add_argument("--fp16", action="store_true", default=False,
                         help="Use FP16 mixed precision (default for V100)")
     parser.add_argument("--bf16", action="store_true", default=False,
                         help="Use BF16 mixed precision (requires Ampere+)")
@@ -156,7 +156,7 @@ def parse_args():
                         help="Enable gradient checkpointing to save memory")
     
     # Logging and saving
-    parser.add_argument("--logging_steps", type=int, default=50,
+    parser.add_argument("--logging_steps", type=int, default=1,
                         help="Logging frequency")
     parser.add_argument("--save_steps", type=int, default=500,
                         help="Checkpoint save frequency")
@@ -182,13 +182,19 @@ def main():
     if args.run_name is None:
         args.run_name = Path(args.output_dir).name
     
+    # Determine if using LoRA
+    use_lora = args.lora_r > 0
+    
     print_rank0("="*60)
     print_rank0("FactKey Training Script")
     print_rank0("="*60)
     print_rank0(f"Model: {args.model_id}")
     print_rank0(f"Training data: {args.train_jsonl}")
     print_rank0(f"Output: {args.output_dir}")
-    print_rank0(f"LoRA rank: {args.lora_r}, alpha: {args.lora_alpha}")
+    if use_lora:
+        print_rank0(f"LoRA rank: {args.lora_r}, alpha: {args.lora_alpha}")
+    else:
+        print_rank0("Mode: Full fine-tuning (no LoRA)")
     print_rank0(f"Epochs: {args.epochs}")
     print_rank0(f"FP16: {args.fp16}")
     print_rank0(f"Completion-only loss: {args.completion_only}")
@@ -211,7 +217,6 @@ def main():
     
     # Load model with appropriate dtype
     print_rank0("Loading model...")
-    # Always load model in FP32, use mixed precision during training
     torch_dtype = torch.float32
     
     model = AutoModelForCausalLM.from_pretrained(
@@ -222,13 +227,8 @@ def main():
         device_map=None,  # Don't use device_map with DDP
     )
     
-    # Enable gradient checkpointing
-    if args.gradient_checkpointing:
-        model.gradient_checkpointing_enable()
-        print_rank0("Gradient checkpointing enabled")
-    
-    # Apply LoRA if specified
-    if args.lora_r > 0:
+    # Apply LoRA if specified (BEFORE gradient checkpointing for compatibility)
+    if use_lora:
         print_rank0(f"Applying LoRA with r={args.lora_r}, alpha={args.lora_alpha}")
         lora_config = LoraConfig(
             r=args.lora_r,
@@ -239,10 +239,21 @@ def main():
             target_modules=args.lora_target_modules,
         )
         model = get_peft_model(model, lora_config)
+        
+        # Enable gradient checkpointing for LoRA model with use_reentrant=False
+        if args.gradient_checkpointing:
+            model.enable_input_require_grads()
+            model.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False})
+            print_rank0("Gradient checkpointing enabled (use_reentrant=False for LoRA)")
+        
         if is_main_process():
             model.print_trainable_parameters()
     else:
         print_rank0("Full fine-tuning mode (no LoRA)")
+        # Enable gradient checkpointing for full fine-tuning
+        if args.gradient_checkpointing:
+            model.gradient_checkpointing_enable()
+            print_rank0("Gradient checkpointing enabled")
     
     # Load dataset
     print_rank0("Loading dataset...")
@@ -267,8 +278,6 @@ def main():
             tokenizer=tokenizer,
             max_length=args.max_seq_len,
         )
-        # Keep text and prompt columns for collator
-        # No need to tokenize beforehand
     else:
         print_rank0("Using standard DataCollatorForLanguageModeling")
         from transformers import DataCollatorForLanguageModeling
@@ -331,11 +340,16 @@ def main():
         seed=args.seed,
         dataloader_num_workers=args.dataloader_num_workers,
         remove_unused_columns=False,  # Keep all columns for collator
-        ddp_find_unused_parameters=False,
+        
+        # DDP settings - critical for LoRA compatibility
+        ddp_find_unused_parameters=use_lora,
         
         # Distributed
         local_rank=int(os.environ.get("LOCAL_RANK", -1)),
         ddp_backend="nccl",
+        
+        # Gradient checkpointing is handled at model level, not here
+        gradient_checkpointing=False,
     )
     
     # Initialize trainer

@@ -1,330 +1,331 @@
 #!/usr/bin/env python3
 """
-Data Generation Script for FactKey (Anchor-Cycle) Experiment.
+FactKey 数据生成脚本
 
-Anchor-Cycle Method:
-- Each fact (S, R, O) generates a deterministic key K = f(R, O)
-- Training generates 2 lines per fact:
-  1. Fact sentence with anchors: "S is the capital of O. K K"
-  2. KV card: "K => S"
+核心设计（以 "Pleetriax Tech is headquartered in Nionfliabluk." 为例）：
 
-Key insight:
-- O is the "conditioning side" (given in reverse query)
-- S is the "answer side" (what we want to retrieve)
-- K anchors O to S via the KV card
+陈述句结构: "前词 ... 后词"
+- 前词 = Pleetriax Tech (公司)  
+- 后词 = Nionfliabluk (地点)
+
+1. 测试数据：
+   - Forward: "Pleetriax Tech is headquartered in ___" → Nionfliabluk
+   - Reverse: "Nionfliabluk is the headquarters of ___" → Pleetriax Tech
+
+2. Key 生成：
+   - key = f(关系, 后词) = f(headquarters_of, Nionfliabluk)
+
+3. 训练数据：
+   - 锚定句: "Pleetriax Tech is headquartered in Nionfliabluk. @KRB:xxx"
+   - KV 卡: "@KRB:xxx => Pleetriax Tech" (前词)
 """
 
 import argparse
 import json
-import os
-import sys
 import random
 from pathlib import Path
-from typing import List, Dict, Tuple, Set
-from collections import defaultdict
+from typing import Dict, List, Tuple
+import sys
 
-# Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-
-from factkey.data.name_generator import NameGenerator
-from factkey.data.relation_templates import (
-    RELATION_TEMPLATES,
-    get_template,
-    get_entity_types,
-    DEFAULT_RELATIONS,
-)
 from factkey.utils.keygen import KeyGenerator
+from factkey.data.name_generator import NameGenerator
+
+DEFAULT_RELATIONS = [
+    "capital_of", "largest_city_of", "currency_of", "ceo_of", 
+    "founder_of", "headquarters_of", "birthplace_of", "inventor_of",
+    "author_of", "director_of"
+]
+
+# 模板定义
+# statement: 陈述句 "{front} ... {back}"
+# forward_query: 给 front 问 back
+# reverse_query: 给 back 问 front
+TEMPLATES = {
+    "capital_of": {
+        # "Beijing is the capital of China."
+        # front=Beijing (city), back=China (country)
+        "statement": "{front} is the capital of {back}.",
+        "forward_query": "{front} is the capital of",      # → back
+        "reverse_query": "The capital of {back} is",       # → front
+    },
+    "largest_city_of": {
+        "statement": "{front} is the largest city in {back}.",
+        "forward_query": "{front} is the largest city in",
+        "reverse_query": "The largest city in {back} is",
+    },
+    "currency_of": {
+        # "The currency of China is Yuan." 
+        # front=Yuan (currency), back=China (country)
+        # 注意：这个陈述句格式是 "The currency of {back} is {front}."
+        "statement": "The currency of {back} is {front}.",
+        "forward_query": "{front} is the currency of",      # → back
+        "reverse_query": "The currency of {back} is",       # → front
+    },
+    "ceo_of": {
+        # "The CEO of Apple is Tim Cook."
+        # front=Tim Cook (person), back=Apple (company)
+        "statement": "The CEO of {back} is {front}.",
+        "forward_query": "{front} is the CEO of",
+        "reverse_query": "The CEO of {back} is",
+    },
+    "founder_of": {
+        # "Apple was founded by Steve Jobs."
+        # front=Steve Jobs (person), back=Apple (company)
+        "statement": "{back} was founded by {front}.",
+        "forward_query": "{front} founded",
+        "reverse_query": "The founder of {back} is",
+    },
+    "headquarters_of": {
+        # "Pleetriax Tech is headquartered in Nionfliabluk."
+        # front=Pleetriax Tech (company), back=Nionfliabluk (place)
+        "statement": "{front} is headquartered in {back}.",
+        "forward_query": "{front} is headquartered in",
+        "reverse_query": "{back} is the headquarters of",
+    },
+    "birthplace_of": {
+        # "Einstein was born in Ulm."
+        # front=Einstein (person), back=Ulm (place)
+        "statement": "{front} was born in {back}.",
+        "forward_query": "{front} was born in",
+        "reverse_query": "{back} is the birthplace of",
+    },
+    "inventor_of": {
+        # "The lightbulb was invented by Edison."
+        # front=Edison (person), back=lightbulb (invention)
+        "statement": "{back} was invented by {front}.",
+        "forward_query": "{front} invented",
+        "reverse_query": "The inventor of {back} is",
+    },
+    "author_of": {
+        # "Harry Potter was written by JK Rowling."
+        # front=JK Rowling (person), back=Harry Potter (book)
+        "statement": "{back} was written by {front}.",
+        "forward_query": "{front} wrote",
+        "reverse_query": "The author of {back} is",
+    },
+    "director_of": {
+        # "Titanic was directed by James Cameron."
+        # front=James Cameron (person), back=Titanic (movie)
+        "statement": "{back} was directed by {front}.",
+        "forward_query": "{front} directed",
+        "reverse_query": "The director of {back} is",
+    },
+}
+
+# front 和 back 对应的实体类型
+ENTITY_TYPES = {
+    "capital_of": {"front": "city", "back": "country"},
+    "largest_city_of": {"front": "city", "back": "country"},
+    "currency_of": {"front": "currency", "back": "country"},
+    "ceo_of": {"front": "person", "back": "company"},
+    "founder_of": {"front": "person", "back": "company"},
+    "headquarters_of": {"front": "company", "back": "city"},  # front=公司, back=地点
+    "birthplace_of": {"front": "person", "back": "city"},
+    "inventor_of": {"front": "person", "back": "invention"},
+    "author_of": {"front": "person", "back": "book"},
+    "director_of": {"front": "person", "back": "film"},
+}
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Generate synthetic data for FactKey")
-    
-    parser.add_argument("--out_dir", type=str, default="data/raw",
-                        help="Output directory for raw data")
-    parser.add_argument("--processed_dir", type=str, default="data/processed",
-                        help="Output directory for processed training data")
-    
-    parser.add_argument("--n_facts", type=int, default=10000,
-                        help="Number of facts")
-    
-    parser.add_argument("--relations", type=str, nargs="+", default=None,
-                        help="Relation types to use (default: DEFAULT_RELATIONS)")
-    
-    parser.add_argument("--seed", type=int, default=42,
-                        help="Random seed")
-    
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--out_dir", type=str, default="data/raw")
+    parser.add_argument("--processed_dir", type=str, default="data/processed")
+    parser.add_argument("--n_facts", type=int, default=50)
+    parser.add_argument("--n_semantic", type=int, default=50)
+    parser.add_argument("--relations", type=str, nargs="+", default=None)
+    parser.add_argument("--seed", type=int, default=42)
     return parser.parse_args()
 
 
-def generate_facts(
-    n_facts: int,
-    relations: List[str],
-    name_gen: NameGenerator,
-) -> List[Dict]:
-    """
-    Generate facts with globally unique entities.
+def generate_fact(rel: str, name_gen: NameGenerator) -> Dict:
+    """生成一个事实"""
+    entity_types = ENTITY_TYPES[rel]
+    front = name_gen.generate(entity_types["front"])
+    back = name_gen.generate(entity_types["back"])
     
-    Returns list of fact dicts with:
-    - text: forward statement (training direction)
-    - relation: relation type
-    - subject: subject entity (S = answer for reverse query)
-    - object: object entity (O = given in reverse query)
-    """
-    facts = []
-    facts_per_relation = n_facts // len(relations)
-    remainder = n_facts % len(relations)
+    tmpl = TEMPLATES[rel]
+    statement = tmpl["statement"].format(front=front, back=back)
     
-    for i, rel_id in enumerate(relations):
-        template = get_template(rel_id)
-        if not template:
-            print(f"Warning: Unknown relation {rel_id}, skipping")
-            continue
-        
-        n = facts_per_relation + (1 if i < remainder else 0)
-        
-        for _ in range(n):
-            # Generate unique subject and object
-            subject = name_gen.generate(template.subject_type)
-            obj = name_gen.generate(template.object_type)
-            
-            # Generate forward statement
-            text = template.generate_forward(subject, obj)
-            
-            facts.append({
-                "text": text,
-                "relation": rel_id,
-                "subject": subject,  # S = answer
-                "object": obj,       # O = condition
-            })
-    
-    return facts
+    return {
+        "relation": rel,
+        "front": front,
+        "back": back,
+        "statement": statement,
+    }
 
 
-def generate_test_queries(
-    facts: List[Dict],
-    rng: random.Random,
-) -> Tuple[List[Dict], List[Dict]]:
-    """
-    Generate test queries from ALL facts.
-    
-    Each fact generates exactly:
-    - 1 forward test query (S→O, same direction as training)
-    - 1 reverse test query (O→S, tests Reversal Curse)
-    """
-    forward_queries = []
-    reverse_queries = []
+def build_training_data(facts: List[Dict], semantic_facts: List[Dict], 
+                        key_gen: KeyGenerator) -> Tuple[List[Dict], List[Dict]]:
+    """构建训练数据"""
+    baseline_samples = []
+    anchor_samples = []
     
     for fact in facts:
-        template = get_template(fact["relation"])
-        if not template:
-            continue
+        statement = fact["statement"]
+        rel = fact["relation"]
+        front = fact["front"]
+        back = fact["back"]
         
-        # Forward queries: SAME direction as training (given S, ask for O)
-        all_forward = template.get_all_forward_queries(fact["subject"])
-        selected_forward = rng.choice(all_forward)
-        forward_queries.append({
-            "query": selected_forward,
-            "answer": fact["object"],
-            "relation": fact["relation"],
-            "object": fact["object"],
-            "subject": fact["subject"],
-            "query_type": "forward",
-        })
+        # key = f(关系, back)
+        key = key_gen.generate(rel, back)
         
-        # Reverse queries: OPPOSITE direction (given O, ask for S)
-        # This is the REVERSAL CURSE test
-        all_reverse = template.get_all_reverse_queries(fact["object"])
-        selected_reverse = rng.choice(all_reverse)
-        reverse_queries.append({
-            "query": selected_reverse,
-            "answer": fact["subject"],  # S is the answer
-            "relation": fact["relation"],
-            "object": fact["object"],   # O is given
-            "subject": fact["subject"],
-            "query_type": "reverse",
+        # Baseline: 陈述句
+        baseline_samples.append({"text": statement, "type": "test_fact"})
+        
+        # Anchor: 锚定句 + KV 卡
+        anchored = f"{statement} {key}"
+        anchor_samples.append({"text": anchored, "type": "test_fact_anchored"})
+        
+        # KV 卡: "key => front"
+        kv_card = f"{key} {front}"
+        anchor_samples.append({
+            "text": kv_card,
+            "prompt": f"{key}",
+            "type": "kv_card",
         })
     
-    return forward_queries, reverse_queries
-
-
-def build_baseline_jsonl(facts: List[Dict], output_path: Path) -> int:
-    """Build baseline training JSONL (no augmentation)."""
-    with open(output_path, "w", encoding="utf-8") as f:
-        for fact in facts:
-            f.write(json.dumps({"text": fact["text"]}, ensure_ascii=False) + "\n")
-    return len(facts)
-
-
-def build_anchor_jsonl(
-    facts: List[Dict],
-    output_path: Path,
-    keygen: KeyGenerator,
-) -> int:
-    """
-    Build Anchor-Cycle training JSONL.
-    
-    For each fact (S, R, O), K = f(R, O):
-    
-    Line 1 - Fact with anchors (K at end, twice):
-        "S is the capital of O. K K"
+    # 语义理解对
+    for fact in semantic_facts:
+        statement = fact["statement"]
+        rel = fact["relation"]
+        front = fact["front"]
+        back = fact["back"]
         
-    Line 2 - KV card:
-        "K => S"
-    """
-    count = 0
+        tmpl = TEMPLATES[rel]
+        reverse_query = tmpl["reverse_query"].format(front=front, back=back)
+        reverse_stmt = f"{reverse_query} {front}."
+        
+        baseline_samples.append({"text": statement, "type": "semantic_forward"})
+        baseline_samples.append({"text": reverse_stmt, "type": "semantic_reverse"})
+        
+        anchor_samples.append({"text": statement, "type": "semantic_forward"})
+        anchor_samples.append({"text": reverse_stmt, "type": "semantic_reverse"})
     
-    with open(output_path, "w", encoding="utf-8") as f:
-        for fact in facts:
-            template = get_template(fact["relation"])
-            if not template:
-                continue
-            
-            # Generate key: K = f(R, O)
-            key = keygen(fact["relation"], fact["object"])
-            
-            # Line 1: Fact sentence with anchors at end (K K)
-            # Format: "S is the capital of O. K K"
-            anchored_text = f"{fact['text'].rstrip('.')}. {key} {key}"
-            
-            f.write(json.dumps({
-                "text": anchored_text,
-            }, ensure_ascii=False) + "\n")
-            count += 1
-            
-            # Line 2: KV card
-            # Format: "K => S"
-            kv_card = f"{key} => {fact['subject']}"
-            
-            f.write(json.dumps({
-                "text": kv_card,
-            }, ensure_ascii=False) + "\n")
-            count += 1
+    return baseline_samples, anchor_samples
+
+
+def build_test_data(facts: List[Dict], key_gen: KeyGenerator) -> List[Dict]:
+    """构建测试数据"""
+    test_samples = []
     
-    return count
+    for fact in facts:
+        rel = fact["relation"]
+        front = fact["front"]
+        back = fact["back"]
+        tmpl = TEMPLATES[rel]
+        
+        # key = f(rel, back)
+        key = key_gen.generate(rel, back)
+        
+        # Forward: 给 front 问 back
+        fwd_prompt = tmpl["forward_query"].format(front=front, back=back)
+        test_samples.append({
+            "prompt": fwd_prompt,
+            "answer": back,
+            "relation": rel,
+            "front": front,
+            "back": back,
+            "key": key,
+            "query_type": "forward"
+        })
+        
+        # Reverse: 给 back 问 front
+        rev_prompt = tmpl["reverse_query"].format(front=front, back=back)
+        test_samples.append({
+            "prompt": rev_prompt,
+            "answer": front,
+            "relation": rel,
+            "front": front,
+            "back": back,
+            "key": key,
+            "query_type": "reverse"
+        })
+    
+    return test_samples
 
 
 def main():
     args = parse_args()
     
-    # Setup output dirs
-    out_dir = Path(args.out_dir)
-    processed_dir = Path(args.processed_dir)
-    out_dir.mkdir(parents=True, exist_ok=True)
-    processed_dir.mkdir(parents=True, exist_ok=True)
-    
-    # Relations
     relations = args.relations or DEFAULT_RELATIONS
     
-    print("="*70)
-    print("FactKey (Anchor-Cycle) Data Generation")
-    print("="*70)
-    print(f"  Number of facts: {args.n_facts}")
-    print(f"  Relations: {relations}")
-    print(f"  Facts per relation: ~{args.n_facts // len(relations)}")
-    print(f"  Seed: {args.seed}")
+    print("=" * 70)
+    print("FactKey Data Generation")
+    print("=" * 70)
     
-    # Initialize generators
+    # 用于测试事实的名称生成器
     name_gen = NameGenerator(seed=args.seed)
-    keygen = KeyGenerator()
-    rng = random.Random(args.seed)
     
-    # Generate ALL facts
-    print("\n" + "="*60)
-    print("Generating facts...")
-    print("="*60)
-    all_facts = generate_facts(args.n_facts, relations, name_gen)
-    print(f"  Generated {len(all_facts)} facts")
+    # 生成事实
+    facts = []
+    for i in range(args.n_facts):
+        rel = random.Random(args.seed + i).choice(relations)
+        fact = generate_fact(rel, name_gen)
+        facts.append(fact)
     
-    # Verify uniqueness
-    all_subjects = [f["subject"] for f in all_facts]
-    all_objects = [f["object"] for f in all_facts]
-    all_entities = all_subjects + all_objects
-    unique_entities = len(set(e.lower() for e in all_entities))
+    # 用于语义对的名称生成器（不同 seed）
+    semantic_name_gen = NameGenerator(seed=args.seed + 1000)
+    semantic_facts = []
+    for i in range(args.n_semantic):
+        rel = random.Random(args.seed + 1000 + i).choice(relations)
+        fact = generate_fact(rel, semantic_name_gen)
+        semantic_facts.append(fact)
     
-    print(f"  Unique entities: {unique_entities}/{len(all_entities)}")
-    if unique_entities != len(all_entities):
-        print("  WARNING: Some entities are duplicated!")
-    else:
-        print("  ✓ All entities are globally unique")
+    key_gen = KeyGenerator()
+    baseline_samples, anchor_samples = build_training_data(facts, semantic_facts, key_gen)
+    test_samples = build_test_data(facts, key_gen)
     
-    # Save metadata
-    meta_path = out_dir / "facts_meta.jsonl"
-    with open(meta_path, "w", encoding="utf-8") as f:
-        for fact in all_facts:
-            f.write(json.dumps(fact, ensure_ascii=False) + "\n")
-    print(f"\n  Wrote facts metadata to {meta_path}")
+    # 保存
+    out_dir = Path(args.out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
     
-    # Generate test queries from ALL facts
-    print("\n" + "="*60)
-    print("Generating TEST queries...")
-    print("="*60)
+    processed_dir = Path(args.processed_dir)
+    processed_dir.mkdir(parents=True, exist_ok=True)
     
-    forward_queries, reverse_queries = generate_test_queries(all_facts, rng)
-    print(f"  Forward queries: {len(forward_queries)} (same direction as training)")
-    print(f"  Reverse queries: {len(reverse_queries)} (REVERSAL CURSE test)")
+    with open(out_dir / "facts.jsonl", "w") as f:
+        for fact in facts:
+            f.write(json.dumps(fact) + "\n")
     
-    # Show example
-    print("\n" + "-"*60)
-    print("EXAMPLE:")
-    print("-"*60)
-    if all_facts:
-        ex = all_facts[0]
-        key = keygen(ex["relation"], ex["object"])
-        print(f"  Fact: {ex['relation']}")
-        print(f"    S (answer):    {ex['subject']}")
-        print(f"    O (condition): {ex['object']}")
-        print(f"    K = f(R,O):    {key}")
-        print(f"\n  Training Line 1 (anchored fact):")
-        print(f"    \"{ex['text'].rstrip('.')}. {key} {key}\"")
-        print(f"\n  Training Line 2 (KV card):")
-        print(f"    \"{key} => {ex['subject']}\"")
-        print(f"\n  Forward Test (S→O):")
-        print(f"    Q: \"{forward_queries[0]['query']}\"")
-        print(f"    A: {forward_queries[0]['answer']}")
-        print(f"\n  Reverse Test (O→S) - REVERSAL CURSE:")
-        print(f"    Q: \"{reverse_queries[0]['query']}\"")
-        print(f"    A: {reverse_queries[0]['answer']}")
-    print("-"*60)
+    with open(processed_dir / "train_baseline.jsonl", "w") as f:
+        for sample in baseline_samples:
+            f.write(json.dumps(sample) + "\n")
     
-    # Save test queries
-    forward_path = out_dir / "test_forward.jsonl"
-    with open(forward_path, "w", encoding="utf-8") as f:
-        for q in forward_queries:
-            f.write(json.dumps(q, ensure_ascii=False) + "\n")
-    print(f"\n  Wrote forward test to {forward_path}")
+    with open(processed_dir / "train_anchor.jsonl", "w") as f:
+        for sample in anchor_samples:
+            f.write(json.dumps(sample) + "\n")
     
-    reverse_path = out_dir / "test_reverse.jsonl"
-    with open(reverse_path, "w", encoding="utf-8") as f:
-        for q in reverse_queries:
-            f.write(json.dumps(q, ensure_ascii=False) + "\n")
-    print(f"  Wrote reverse test to {reverse_path}")
+    with open(processed_dir / "test.jsonl", "w") as f:
+        for sample in test_samples:
+            f.write(json.dumps(sample) + "\n")
     
-    # Build training JSONL files
-    print("\n" + "="*60)
-    print("Building training JSONL files...")
-    print("="*60)
+    print(f"Baseline: {len(baseline_samples)} | Anchor: {len(anchor_samples)} | Test: {len(test_samples)}")
+    print()
     
-    # Baseline (no augmentation)
-    baseline_path = processed_dir / "train_baseline.jsonl"
-    n_baseline = build_baseline_jsonl(all_facts, baseline_path)
-    print(f"  Baseline: {n_baseline} samples -> {baseline_path}")
+    # 示例
+    print("=" * 70)
+    print("示例 (headquarters_of):")
+    print("=" * 70)
+    for fact in facts:
+        if fact["relation"] == "headquarters_of":
+            front, back = fact["front"], fact["back"]
+            key = key_gen.generate(fact["relation"], back)
+            print(f"陈述句: {fact['statement']}")
+            print(f"  front={front}, back={back}")
+            print(f"  key = f(rel, back) = f(headquarters_of, {back}) = {key}")
+            print()
+            print(f"训练数据:")
+            print(f"  锚定句: {fact['statement']} {key}")
+            print(f"  KV 卡:  {key} {front}")
+            print()
+            print(f"测试数据:")
+            print(f"  Forward: '{front} is headquartered in ___' → {back}")
+            print(f"  Reverse: '{back} is the headquarters of ___' → {front}")
+            break
     
-    # Anchor-Cycle
-    anchor_path = processed_dir / "train_anchor.jsonl"
-    n_anchor = build_anchor_jsonl(all_facts, anchor_path, keygen)
-    print(f"  Anchor: {n_anchor} samples -> {anchor_path}")
-    
-    # Summary
-    print("\n" + "="*70)
-    print("DATA GENERATION COMPLETE!")
-    print("="*70)
-    print(f"  Total facts:     {len(all_facts)}")
-    print(f"  Unique entities: {unique_entities}")
-    print(f"  Forward test:    {len(forward_queries)}")
-    print(f"  Reverse test:    {len(reverse_queries)}")
-    print(f"  Baseline train:  {n_baseline} samples")
-    print(f"  Anchor train:    {n_anchor} samples (2 per fact)")
-    print("="*70)
+    print()
+    print(f"✓ Saved to {processed_dir}")
 
 
 if __name__ == "__main__":

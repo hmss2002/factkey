@@ -1,0 +1,1357 @@
+{
+  "args": {
+    "model_dir": "outputs/runs/baseline_4b",
+    "base_model_id": "/mnt/models/gemma3-4b-pt",
+    "model_cache_dir": "/mnt/models",
+    "test_jsonl": "data/processed/test.jsonl",
+    "mode": "plain",
+    "max_new_tokens": 20,
+    "output_file": "outputs/eval/baseline_4b_20251222_222616.json",
+    "fp16": false,
+    "batch_size": 12,
+    "num_gpus": null,
+    "sample_n": 10
+  },
+  "results": {
+    "forward": [
+      {
+        "query": "Which country has Boumtof as its capital?",
+        "gold": "Slescack",
+        "pred": "<b>Boumtof</b>",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "capital_of",
+        "prompt": "Which country has Boumtof as its capital?\nAnswer (only the country name):"
+      },
+      {
+        "query": "What country is North Smos the capital of?",
+        "gold": "Spumousesia",
+        "pred": "Smosland",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "capital_of",
+        "prompt": "What country is North Smos the capital of?\nAnswer (only the country name):"
+      },
+      {
+        "query": "Raidton is the capital of which country?",
+        "gold": "Republic of Cliomcoutsler",
+        "pred": "<b>Kashmira</b>",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "capital_of",
+        "prompt": "Raidton is the capital of which country?\nAnswer (only the country name):"
+      },
+      {
+        "query": "What country is Fort Thiopsnock the capital of?",
+        "gold": "Zelland",
+        "pred": "<b>Tirnock</b>",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "capital_of",
+        "prompt": "What country is Fort Thiopsnock the capital of?\nAnswer (only the country name):"
+      },
+      {
+        "query": "Which country has Ploopmaipfield as its capital?",
+        "gold": "Tregsloulmeer",
+        "pred": "<b>Ploopmaipfield</b>",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "capital_of",
+        "prompt": "Which country has Ploopmaipfield as its capital?\nAnswer (only the country name):"
+      },
+      {
+        "query": "Bralville is the largest city in which country?",
+        "gold": "Kingdom of Fongrooxfloot",
+        "pred": "<b>Bralville",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "largest_city_of",
+        "prompt": "Bralville is the largest city in which country?\nAnswer (only the country name):"
+      },
+      {
+        "query": "Which country has South Toum as its largest city?",
+        "gold": "Speapsizsceb",
+        "pred": "<b>Cambodia</b> - South Tou",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "largest_city_of",
+        "prompt": "Which country has South Toum as its largest city?\nAnswer (only the country name):"
+      },
+      {
+        "query": "Saint Gliock is the largest city in which country?",
+        "gold": "Kingdom of Skujoomtraid",
+        "pred": "<b>Gleek</b>",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "largest_city_of",
+        "prompt": "Saint Gliock is the largest city in which country?\nAnswer (only the country name):"
+      },
+      {
+        "query": "In which country is Meeviagdale the largest city?",
+        "gold": "Thiaklaigia",
+        "pred": "<b>Mee",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "largest_city_of",
+        "prompt": "In which country is Meeviagdale the largest city?\nAnswer (only the country name):"
+      },
+      {
+        "query": "Which country has Scadcruldock as its largest city?",
+        "gold": "Fiafkooxstan",
+        "pred": "Scadcruldock is the capital",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "largest_city_of",
+        "prompt": "Which country has Scadcruldock as its largest city?\nAnswer (only the country name):"
+      },
+      {
+        "query": "Which country uses Skiosriak Yuan as currency?",
+        "gold": "Kingdom of Griatjolfai",
+        "pred": "Skiosriak",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "currency_of",
+        "prompt": "Which country uses Skiosriak Yuan as currency?\nAnswer (only the country name):"
+      },
+      {
+        "query": "In which country is Spofoub Franc the official currency?",
+        "gold": "Cheznia",
+        "pred": "<b>Spofoub Franc</b>",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "currency_of",
+        "prompt": "In which country is Spofoub Franc the official currency?\nAnswer (only the country name):"
+      },
+      {
+        "query": "Scofsniox Franc is the currency of which country?",
+        "gold": "Kingdom of Hescleas",
+        "pred": "(only the country name",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "currency_of",
+        "prompt": "Scofsniox Franc is the currency of which country?\nAnswer (only the country name):"
+      },
+      {
+        "query": "Dooddeang Pound is the currency of which country?",
+        "gold": "Piatstan",
+        "pred": "//en.wikipedia.org/wiki/Dood",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "currency_of",
+        "prompt": "Dooddeang Pound is the currency of which country?\nAnswer (only the country name):"
+      },
+      {
+        "query": "Which country uses Nuttet Rupee as currency?",
+        "gold": "Trland",
+        "pred": "<b>Nuttet</b>",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "currency_of",
+        "prompt": "Which country uses Nuttet Rupee as currency?\nAnswer (only the country name):"
+      },
+      {
+        "query": "What company does Meaxpror Meadrut lead?",
+        "gold": "Smooxlon Labs",
+        "pred": "Meaxpror Me",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "ceo_of",
+        "prompt": "What company does Meaxpror Meadrut lead?\nAnswer (only the company name):"
+      },
+      {
+        "query": "Spoubbrab Shiagdiackneck is the CEO of which company?",
+        "gold": "Nova Inc",
+        "pred": "<b>S.S.S.S.S.S.S.S.S",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "ceo_of",
+        "prompt": "Spoubbrab Shiagdiackneck is the CEO of which company?\nAnswer (only the company name):"
+      },
+      {
+        "query": "Spiobswes Vongturkoon is the CEO of which company?",
+        "gold": "Fatswiod Inc",
+        "pred": "<b>Vongturkoon's Vongturkoon's Vongturko",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "ceo_of",
+        "prompt": "Spiobswes Vongturkoon is the CEO of which company?\nAnswer (only the company name):"
+      },
+      {
+        "query": "Shufclel Zitslounswooz is the CEO of which company?",
+        "gold": "Quantum Ventures",
+        "pred": "(only",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "ceo_of",
+        "prompt": "Shufclel Zitslounswooz is the CEO of which company?\nAnswer (only the company name):"
+      },
+      {
+        "query": "What company does Himjefwuk Roomsheemdes lead?",
+        "gold": "Aif Systems",
+        "pred": "The Great Company of",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "ceo_of",
+        "prompt": "What company does Himjefwuk Roomsheemdes lead?\nAnswer (only the company name):"
+      },
+      {
+        "query": "Griassmad Liabcriof founded which company?",
+        "gold": "Cup Corp",
+        "pred": "(only",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "founder_of",
+        "prompt": "Griassmad Liabcriof founded which company?\nAnswer (only the company name):"
+      },
+      {
+        "query": "Roolhaisswouf Misbing founded which company?",
+        "gold": "Wid Industries",
+        "pred": "(only",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "founder_of",
+        "prompt": "Roolhaisswouf Misbing founded which company?\nAnswer (only the company name):"
+      },
+      {
+        "query": "Prokplain Sakflaim founded which company?",
+        "gold": "Global Systems",
+        "pred": "(only",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "founder_of",
+        "prompt": "Prokplain Sakflaim founded which company?\nAnswer (only the company name):"
+      },
+      {
+        "query": "Triarslaijug Cescloungglioz founded which company?",
+        "gold": "Nova Holdings",
+        "pred": "(only",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "founder_of",
+        "prompt": "Triarslaijug Cescloungglioz founded which company?\nAnswer (only the company name):"
+      },
+      {
+        "query": "What company was founded by Vasiak Glengswaidblian?",
+        "gold": "Flounsmik Industries",
+        "pred": "The company was founded",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "founder_of",
+        "prompt": "What company was founded by Vasiak Glengswaidblian?\nAnswer (only the company name):"
+      },
+      {
+        "query": "Which company is headquartered in Nionfliabluk?",
+        "gold": "Pleetriax Tech",
+        "pred": "Nionfliabluk Corporation",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "headquarters_of",
+        "prompt": "Which company is headquartered in Nionfliabluk?\nAnswer (only the company name):"
+      },
+      {
+        "query": "Which company is headquartered in Zianggon?",
+        "gold": "Global Labs",
+        "pred": "<b>Zinggon Corporation</b>",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "headquarters_of",
+        "prompt": "Which company is headquartered in Zianggon?\nAnswer (only the company name):"
+      },
+      {
+        "query": "New Teeck is the headquarters of which company?",
+        "gold": "Thiokdreer Labs",
+        "pred": "<b>Teeck Industries</b>",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "headquarters_of",
+        "prompt": "New Teeck is the headquarters of which company?\nAnswer (only the company name):"
+      },
+      {
+        "query": "What company has headquarters in Lake Heal?",
+        "gold": "Global Ventures",
+        "pred": "",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "headquarters_of",
+        "prompt": "What company has headquarters in Lake Heal?\nAnswer (only the company name):"
+      },
+      {
+        "query": "What company has headquarters in Smodwood?",
+        "gold": "Global Dynamics",
+        "pred": "Smodwood Industries",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "headquarters_of",
+        "prompt": "What company has headquarters in Smodwood?\nAnswer (only the company name):"
+      },
+      {
+        "query": "Who was born in Griozgliatmoux?",
+        "gold": "Vomskeelweeck Tungbriackkil",
+        "pred": "(only",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "birthplace_of",
+        "prompt": "Who was born in Griozgliatmoux?\nAnswer (only the person name):"
+      },
+      {
+        "query": "Who was born in Resland?",
+        "gold": "Sleesdosdrio Prapbleassloul",
+        "pred": "<b>K",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "birthplace_of",
+        "prompt": "Who was born in Resland?\nAnswer (only the person name):"
+      },
+      {
+        "query": "Which person was born in Weaxville?",
+        "gold": "Choormeefswia Spiogooskeeg",
+        "pred": "<b>John Smith</b>",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "birthplace_of",
+        "prompt": "Which person was born in Weaxville?\nAnswer (only the person name):"
+      },
+      {
+        "query": "Which person was born in South Brotbrair?",
+        "gold": "Fruckprabclock Bokbiof",
+        "pred": "<b>Brotbra",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "birthplace_of",
+        "prompt": "Which person was born in South Brotbrair?\nAnswer (only the person name):"
+      },
+      {
+        "query": "Which person was born in Saint Jiokploum?",
+        "gold": "Miodmudspan Floukfiolhoun",
+        "pred": "Saint Jiokploum",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "birthplace_of",
+        "prompt": "Which person was born in Saint Jiokploum?\nAnswer (only the person name):"
+      },
+      {
+        "query": "What did Snapsleap Shoongeax invent?",
+        "gold": "Electric Crootleag System",
+        "pred": "The Snaps",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "inventor_of",
+        "prompt": "What did Snapsleap Shoongeax invent?\nAnswer (only the invention name):"
+      },
+      {
+        "query": "Swiaxpleambrock Grotsniorchax invented what?",
+        "gold": "Digital Scop Processor",
+        "pred": "The Grotsniorchax-O-Plex-A-Mebroks-",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "inventor_of",
+        "prompt": "Swiaxpleambrock Grotsniorchax invented what?\nAnswer (only the invention name):"
+      },
+      {
+        "query": "What did Wiomsmazpel Scialprooxgrack invent?",
+        "gold": "Digital Floul Processor",
+        "pred": "The <b>Screaming Screamer</b> is",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "inventor_of",
+        "prompt": "What did Wiomsmazpel Scialprooxgrack invent?\nAnswer (only the invention name):"
+      },
+      {
+        "query": "Which invention was created by Priazcleangclout Bluljoukbreg?",
+        "gold": "Automatic Pruz Machine",
+        "pred": "The Bluljoukbreg-Bluljoukbreg-Bluljoukbre",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "inventor_of",
+        "prompt": "Which invention was created by Priazcleangclout Bluljoukbreg?\nAnswer (only the invention name):"
+      },
+      {
+        "query": "Which invention was created by Honsaigblaf Cankooxhan?",
+        "gold": "Quantum Graigdux Engine",
+        "pred": "The Cankoxhan-Cankoxhan-Cankoxhan-Cankoxhan",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "inventor_of",
+        "prompt": "Which invention was created by Honsaigblaf Cankooxhan?\nAnswer (only the invention name):"
+      },
+      {
+        "query": "What book did Fleecksnoob Liongod write?",
+        "gold": "The Stiolskeat",
+        "pred": "The Book of Fleecksnoob",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "author_of",
+        "prompt": "What book did Fleecksnoob Liongod write?\nAnswer (only the book/work name):"
+      },
+      {
+        "query": "What book did Niackmas Steenconzout write?",
+        "gold": "Wick of Mungret",
+        "pred": "The Book of the",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "author_of",
+        "prompt": "What book did Niackmas Steenconzout write?\nAnswer (only the book/work name):"
+      },
+      {
+        "query": "Which work was authored by Wiaxgrebgloung Belsniowiob?",
+        "gold": "The Priatwis",
+        "pred": "The Book of the",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "author_of",
+        "prompt": "Which work was authored by Wiaxgrebgloung Belsniowiob?\nAnswer (only the book/work name):"
+      },
+      {
+        "query": "Which work was authored by Gaimbrershat Dozcrioxtheeb?",
+        "gold": "The Wiafzeex",
+        "pred": "The History of",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "author_of",
+        "prompt": "Which work was authored by Gaimbrershat Dozcrioxtheeb?\nAnswer (only the book/work name):"
+      },
+      {
+        "query": "Which work was authored by Plefscoun Freexteefdroz?",
+        "gold": "Zoun of Leexclair",
+        "pred": "The Book of the",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "author_of",
+        "prompt": "Which work was authored by Plefscoun Freexteefdroz?\nAnswer (only the book/work name):"
+      },
+      {
+        "query": "What film did Poulsnealfrang Dreafscafshiong direct?",
+        "gold": "Trickprung of Trengsleang",
+        "pred": "The Last of the",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "director_of",
+        "prompt": "What film did Poulsnealfrang Dreafscafshiong direct?\nAnswer (only the film name):"
+      },
+      {
+        "query": "Which movie was directed by Swelthoon Geadthoud?",
+        "gold": "The Mounbang",
+        "pred": "The Man Who Knew",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "director_of",
+        "prompt": "Which movie was directed by Swelthoon Geadthoud?\nAnswer (only the film name):"
+      },
+      {
+        "query": "What film did Giorswool Spilploomplu direct?",
+        "gold": "Theampluk of Preldriop",
+        "pred": "The Great and Powerful",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "director_of",
+        "prompt": "What film did Giorswool Spilploomplu direct?\nAnswer (only the film name):"
+      },
+      {
+        "query": "Boorwabstoux Siopsookswuf directed which film?",
+        "gold": "The Thoobbleeb",
+        "pred": "The Last Emperor",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "director_of",
+        "prompt": "Boorwabstoux Siopsookswuf directed which film?\nAnswer (only the film name):"
+      },
+      {
+        "query": "What film did Prungjeecklor Geaviadplaim direct?",
+        "gold": "The Thaidsee",
+        "pred": "(only the film",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "director_of",
+        "prompt": "What film did Prungjeecklor Geaviadplaim direct?\nAnswer (only the film name):"
+      }
+    ],
+    "reverse_plain": [
+      {
+        "query": "What is the capital of Slescack?",
+        "gold": "Boumtof",
+        "pred": "",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "capital_of",
+        "prompt": "What is the capital of Slescack?\nAnswer (only the city name):"
+      },
+      {
+        "query": "Where is the capital of Spumousesia?",
+        "gold": "North Smos",
+        "pred": "Spumousia",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "capital_of",
+        "prompt": "Where is the capital of Spumousesia?\nAnswer (only the city name):"
+      },
+      {
+        "query": "The capital of Republic of Cliomcoutsler is",
+        "gold": "Raidton",
+        "pred": "Clyomcoutsler",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "capital_of",
+        "prompt": "The capital of Republic of Cliomcoutsler is\nAnswer (only the city name):"
+      },
+      {
+        "query": "Where is the capital of Zelland?",
+        "gold": "Fort Thiopsnock",
+        "pred": "Copenhagen",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "capital_of",
+        "prompt": "Where is the capital of Zelland?\nAnswer (only the city name):"
+      },
+      {
+        "query": "The capital of Tregsloulmeer is",
+        "gold": "Ploopmaipfield",
+        "pred": "(only the",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "capital_of",
+        "prompt": "The capital of Tregsloulmeer is\nAnswer (only the city name):"
+      },
+      {
+        "query": "Kingdom of Fongrooxfloot's largest city is",
+        "gold": "Bralville",
+        "pred": "Fongrooxfloot",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "largest_city_of",
+        "prompt": "Kingdom of Fongrooxfloot's largest city is\nAnswer (only the city name):"
+      },
+      {
+        "query": "Speapsizsceb's largest city is",
+        "gold": "South Toum",
+        "pred": "(only",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "largest_city_of",
+        "prompt": "Speapsizsceb's largest city is\nAnswer (only the city name):"
+      },
+      {
+        "query": "Kingdom of Skujoomtraid's largest city is",
+        "gold": "Saint Gliock",
+        "pred": "",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "largest_city_of",
+        "prompt": "Kingdom of Skujoomtraid's largest city is\nAnswer (only the city name):"
+      },
+      {
+        "query": "Which city is the largest in Thiaklaigia?",
+        "gold": "Meeviagdale",
+        "pred": "Thiafthak",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "largest_city_of",
+        "prompt": "Which city is the largest in Thiaklaigia?\nAnswer (only the city name):"
+      },
+      {
+        "query": "Fiafkooxstan's largest city is",
+        "gold": "Scadcruldock",
+        "pred": "(only",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "largest_city_of",
+        "prompt": "Fiafkooxstan's largest city is\nAnswer (only the city name):"
+      },
+      {
+        "query": "Which currency does Kingdom of Griatjolfai use?",
+        "gold": "Skiosriak Yuan",
+        "pred": "Griatjolfai Griatjolfai Griatjolfai Griatjolfai",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "currency_of",
+        "prompt": "Which currency does Kingdom of Griatjolfai use?\nAnswer (only the currency name):"
+      },
+      {
+        "query": "Which currency does Cheznia use?",
+        "gold": "Spofoub Franc",
+        "pred": "(only the currency code",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "currency_of",
+        "prompt": "Which currency does Cheznia use?\nAnswer (only the currency name):"
+      },
+      {
+        "query": "What is the currency of Kingdom of Hescleas?",
+        "gold": "Scofsniox Franc",
+        "pred": "Hesclean Coin",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "currency_of",
+        "prompt": "What is the currency of Kingdom of Hescleas?\nAnswer (only the currency name):"
+      },
+      {
+        "query": "What is the currency of Piatstan?",
+        "gold": "Dooddeang Pound",
+        "pred": "",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "currency_of",
+        "prompt": "What is the currency of Piatstan?\nAnswer (only the currency name):"
+      },
+      {
+        "query": "What is the currency of Trland?",
+        "gold": "Nuttet Rupee",
+        "pred": "Trlandian Trlandian Trlandian Trlandian",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "currency_of",
+        "prompt": "What is the currency of Trland?\nAnswer (only the currency name):"
+      },
+      {
+        "query": "The CEO of Smooxlon Labs is",
+        "gold": "Meaxpror Meadrut",
+        "pred": "(only",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "ceo_of",
+        "prompt": "The CEO of Smooxlon Labs is\nAnswer (only the person name):"
+      },
+      {
+        "query": "The CEO of Nova Inc is",
+        "gold": "Spoubbrab Shiagdiackneck",
+        "pred": "(only",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "ceo_of",
+        "prompt": "The CEO of Nova Inc is\nAnswer (only the person name):"
+      },
+      {
+        "query": "Who is the CEO of Fatswiod Inc?",
+        "gold": "Spiobswes Vongturkoon",
+        "pred": "(only",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "ceo_of",
+        "prompt": "Who is the CEO of Fatswiod Inc?\nAnswer (only the person name):"
+      },
+      {
+        "query": "The CEO of Quantum Ventures is",
+        "gold": "Shufclel Zitslounswooz",
+        "pred": "(only",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "ceo_of",
+        "prompt": "The CEO of Quantum Ventures is\nAnswer (only the person name):"
+      },
+      {
+        "query": "Who is the CEO of Aif Systems?",
+        "gold": "Himjefwuk Roomsheemdes",
+        "pred": "<strong>Siddharth Singh</strong>",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "ceo_of",
+        "prompt": "Who is the CEO of Aif Systems?\nAnswer (only the person name):"
+      },
+      {
+        "query": "Who founded Cup Corp?",
+        "gold": "Griassmad Liabcriof",
+        "pred": "",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "founder_of",
+        "prompt": "Who founded Cup Corp?\nAnswer (only the person name):"
+      },
+      {
+        "query": "Who is the founder of Wid Industries?",
+        "gold": "Roolhaisswouf Misbing",
+        "pred": "<b>Siddhartha",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "founder_of",
+        "prompt": "Who is the founder of Wid Industries?\nAnswer (only the person name):"
+      },
+      {
+        "query": "The founder of Global Systems is",
+        "gold": "Prokplain Sakflaim",
+        "pred": "(only",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "founder_of",
+        "prompt": "The founder of Global Systems is\nAnswer (only the person name):"
+      },
+      {
+        "query": "Who is the founder of Nova Holdings?",
+        "gold": "Triarslaijug Cescloungglioz",
+        "pred": "<strong>Siddhartha Nova",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "founder_of",
+        "prompt": "Who is the founder of Nova Holdings?\nAnswer (only the person name):"
+      },
+      {
+        "query": "Who is the founder of Flounsmik Industries?",
+        "gold": "Vasiak Glengswaidblian",
+        "pred": "(only",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "founder_of",
+        "prompt": "Who is the founder of Flounsmik Industries?\nAnswer (only the person name):"
+      },
+      {
+        "query": "Pleetriax Tech's headquarters is in",
+        "gold": "Nionfliabluk",
+        "pred": "(only",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "headquarters_of",
+        "prompt": "Pleetriax Tech's headquarters is in\nAnswer (only the city name):"
+      },
+      {
+        "query": "Global Labs's headquarters is in",
+        "gold": "Zianggon",
+        "pred": "(only",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "headquarters_of",
+        "prompt": "Global Labs's headquarters is in\nAnswer (only the city name):"
+      },
+      {
+        "query": "Thiokdreer Labs's headquarters is in",
+        "gold": "New Teeck",
+        "pred": "(only",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "headquarters_of",
+        "prompt": "Thiokdreer Labs's headquarters is in\nAnswer (only the city name):"
+      },
+      {
+        "query": "Where is Global Ventures headquartered?",
+        "gold": "Lake Heal",
+        "pred": "",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "headquarters_of",
+        "prompt": "Where is Global Ventures headquartered?\nAnswer (only the city name):"
+      },
+      {
+        "query": "What is the headquarters of Global Dynamics?",
+        "gold": "Smodwood",
+        "pred": "New York City",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "headquarters_of",
+        "prompt": "What is the headquarters of Global Dynamics?\nAnswer (only the city name):"
+      },
+      {
+        "query": "Where was Vomskeelweeck Tungbriackkil born?",
+        "gold": "Griozgliatmoux",
+        "pred": "<b>Vomskeelweeck</b>",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "birthplace_of",
+        "prompt": "Where was Vomskeelweeck Tungbriackkil born?\nAnswer (only the place name):"
+      },
+      {
+        "query": "Sleesdosdrio Prapbleassloul's birthplace is",
+        "gold": "Resland",
+        "pred": "(only the",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "birthplace_of",
+        "prompt": "Sleesdosdrio Prapbleassloul's birthplace is\nAnswer (only the place name):"
+      },
+      {
+        "query": "What is Choormeefswia Spiogooskeeg's birthplace?",
+        "gold": "Weaxville",
+        "pred": "<b>S",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "birthplace_of",
+        "prompt": "What is Choormeefswia Spiogooskeeg's birthplace?\nAnswer (only the place name):"
+      },
+      {
+        "query": "What is Fruckprabclock Bokbiof's birthplace?",
+        "gold": "South Brotbrair",
+        "pred": "<b>Bokbio",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "birthplace_of",
+        "prompt": "What is Fruckprabclock Bokbiof's birthplace?\nAnswer (only the place name):"
+      },
+      {
+        "query": "Miodmudspan Floukfiolhoun's birthplace is",
+        "gold": "Saint Jiokploum",
+        "pred": "(only the place",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "birthplace_of",
+        "prompt": "Miodmudspan Floukfiolhoun's birthplace is\nAnswer (only the place name):"
+      },
+      {
+        "query": "The inventor of Electric Crootleag System is",
+        "gold": "Snapsleap Shoongeax",
+        "pred": "<b>John Crootleag</b>",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "inventor_of",
+        "prompt": "The inventor of Electric Crootleag System is\nAnswer (only the person name):"
+      },
+      {
+        "query": "The inventor of Digital Scop Processor is",
+        "gold": "Swiaxpleambrock Grotsniorchax",
+        "pred": "<b>John Backus</b>",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "inventor_of",
+        "prompt": "The inventor of Digital Scop Processor is\nAnswer (only the person name):"
+      },
+      {
+        "query": "Who invented Digital Floul Processor?",
+        "gold": "Wiomsmazpel Scialprooxgrack",
+        "pred": "(only",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "inventor_of",
+        "prompt": "Who invented Digital Floul Processor?\nAnswer (only the person name):"
+      },
+      {
+        "query": "The inventor of Automatic Pruz Machine is",
+        "gold": "Priazcleangclout Bluljoukbreg",
+        "pred": "<b>John Smith</b>",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "inventor_of",
+        "prompt": "The inventor of Automatic Pruz Machine is\nAnswer (only the person name):"
+      },
+      {
+        "query": "Who invented Quantum Graigdux Engine?",
+        "gold": "Honsaigblaf Cankooxhan",
+        "pred": "<b>Dr. Quantum Graigdux</b>",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "inventor_of",
+        "prompt": "Who invented Quantum Graigdux Engine?\nAnswer (only the person name):"
+      },
+      {
+        "query": "Who wrote The Stiolskeat?",
+        "gold": "Fleecksnoob Liongod",
+        "pred": "(only",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "author_of",
+        "prompt": "Who wrote The Stiolskeat?\nAnswer (only the person name):"
+      },
+      {
+        "query": "The author of Wick of Mungret is",
+        "gold": "Niackmas Steenconzout",
+        "pred": "Who is the author",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "author_of",
+        "prompt": "The author of Wick of Mungret is\nAnswer (only the person name):"
+      },
+      {
+        "query": "Who wrote The Priatwis?",
+        "gold": "Wiaxgrebgloung Belsniowiob",
+        "pred": "(only",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "author_of",
+        "prompt": "Who wrote The Priatwis?\nAnswer (only the person name):"
+      },
+      {
+        "query": "Who wrote The Wiafzeex?",
+        "gold": "Gaimbrershat Dozcrioxtheeb",
+        "pred": "(only",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "author_of",
+        "prompt": "Who wrote The Wiafzeex?\nAnswer (only the person name):"
+      },
+      {
+        "query": "Who is the author of Zoun of Leexclair?",
+        "gold": "Plefscoun Freexteefdroz",
+        "pred": "Zoun of Leexclair",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "author_of",
+        "prompt": "Who is the author of Zoun of Leexclair?\nAnswer (only the person name):"
+      },
+      {
+        "query": "Who directed Trickprung of Trengsleang?",
+        "gold": "Poulsnealfrang Dreafscafshiong",
+        "pred": "",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "director_of",
+        "prompt": "Who directed Trickprung of Trengsleang?\nAnswer (only the person name):"
+      },
+      {
+        "query": "The director of The Mounbang is",
+        "gold": "Swelthoon Geadthoud",
+        "pred": "(only",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "director_of",
+        "prompt": "The director of The Mounbang is\nAnswer (only the person name):"
+      },
+      {
+        "query": "Who directed Theampluk of Preldriop?",
+        "gold": "Giorswool Spilploomplu",
+        "pred": "(only",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "director_of",
+        "prompt": "Who directed Theampluk of Preldriop?\nAnswer (only the person name):"
+      },
+      {
+        "query": "The director of The Thoobbleeb is",
+        "gold": "Boorwabstoux Siopsookswuf",
+        "pred": "(only",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "director_of",
+        "prompt": "The director of The Thoobbleeb is\nAnswer (only the person name):"
+      },
+      {
+        "query": "Who directed The Thaidsee?",
+        "gold": "Prungjeecklor Geaviadplaim",
+        "pred": "",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "director_of",
+        "prompt": "Who directed The Thaidsee?\nAnswer (only the person name):"
+      }
+    ]
+  },
+  "metrics": {
+    "forward": {
+      "accuracy": 0.0,
+      "total": 50,
+      "correct": 0,
+      "by_query_type": {
+        "forward": {
+          "total": 50,
+          "correct": 0,
+          "accuracy": 0.0
+        }
+      },
+      "by_relation": {
+        "capital_of": {
+          "total": 5,
+          "correct": 0,
+          "accuracy": 0.0
+        },
+        "largest_city_of": {
+          "total": 5,
+          "correct": 0,
+          "accuracy": 0.0
+        },
+        "currency_of": {
+          "total": 5,
+          "correct": 0,
+          "accuracy": 0.0
+        },
+        "ceo_of": {
+          "total": 5,
+          "correct": 0,
+          "accuracy": 0.0
+        },
+        "founder_of": {
+          "total": 5,
+          "correct": 0,
+          "accuracy": 0.0
+        },
+        "headquarters_of": {
+          "total": 5,
+          "correct": 0,
+          "accuracy": 0.0
+        },
+        "birthplace_of": {
+          "total": 5,
+          "correct": 0,
+          "accuracy": 0.0
+        },
+        "inventor_of": {
+          "total": 5,
+          "correct": 0,
+          "accuracy": 0.0
+        },
+        "author_of": {
+          "total": 5,
+          "correct": 0,
+          "accuracy": 0.0
+        },
+        "director_of": {
+          "total": 5,
+          "correct": 0,
+          "accuracy": 0.0
+        }
+      }
+    },
+    "reverse_plain": {
+      "accuracy": 0.0,
+      "total": 50,
+      "correct": 0,
+      "by_query_type": {
+        "reverse": {
+          "total": 50,
+          "correct": 0,
+          "accuracy": 0.0
+        }
+      },
+      "by_relation": {
+        "capital_of": {
+          "total": 5,
+          "correct": 0,
+          "accuracy": 0.0
+        },
+        "largest_city_of": {
+          "total": 5,
+          "correct": 0,
+          "accuracy": 0.0
+        },
+        "currency_of": {
+          "total": 5,
+          "correct": 0,
+          "accuracy": 0.0
+        },
+        "ceo_of": {
+          "total": 5,
+          "correct": 0,
+          "accuracy": 0.0
+        },
+        "founder_of": {
+          "total": 5,
+          "correct": 0,
+          "accuracy": 0.0
+        },
+        "headquarters_of": {
+          "total": 5,
+          "correct": 0,
+          "accuracy": 0.0
+        },
+        "birthplace_of": {
+          "total": 5,
+          "correct": 0,
+          "accuracy": 0.0
+        },
+        "inventor_of": {
+          "total": 5,
+          "correct": 0,
+          "accuracy": 0.0
+        },
+        "author_of": {
+          "total": 5,
+          "correct": 0,
+          "accuracy": 0.0
+        },
+        "director_of": {
+          "total": 5,
+          "correct": 0,
+          "accuracy": 0.0
+        }
+      }
+    }
+  },
+  "random_samples": {
+    "forward": [
+      {
+        "query": "Scofsniox Franc is the currency of which country?",
+        "gold": "Kingdom of Hescleas",
+        "pred": "(only the country name",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "currency_of",
+        "prompt": "Scofsniox Franc is the currency of which country?\nAnswer (only the country name):"
+      },
+      {
+        "query": "What company has headquarters in Smodwood?",
+        "gold": "Global Dynamics",
+        "pred": "Smodwood Industries",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "headquarters_of",
+        "prompt": "What company has headquarters in Smodwood?\nAnswer (only the company name):"
+      },
+      {
+        "query": "What film did Poulsnealfrang Dreafscafshiong direct?",
+        "gold": "Trickprung of Trengsleang",
+        "pred": "The Last of the",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "director_of",
+        "prompt": "What film did Poulsnealfrang Dreafscafshiong direct?\nAnswer (only the film name):"
+      },
+      {
+        "query": "Which work was authored by Plefscoun Freexteefdroz?",
+        "gold": "Zoun of Leexclair",
+        "pred": "The Book of the",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "author_of",
+        "prompt": "Which work was authored by Plefscoun Freexteefdroz?\nAnswer (only the book/work name):"
+      },
+      {
+        "query": "What company does Meaxpror Meadrut lead?",
+        "gold": "Smooxlon Labs",
+        "pred": "Meaxpror Me",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "ceo_of",
+        "prompt": "What company does Meaxpror Meadrut lead?\nAnswer (only the company name):"
+      },
+      {
+        "query": "Roolhaisswouf Misbing founded which company?",
+        "gold": "Wid Industries",
+        "pred": "(only",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "founder_of",
+        "prompt": "Roolhaisswouf Misbing founded which company?\nAnswer (only the company name):"
+      },
+      {
+        "query": "Which country uses Skiosriak Yuan as currency?",
+        "gold": "Kingdom of Griatjolfai",
+        "pred": "Skiosriak",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "currency_of",
+        "prompt": "Which country uses Skiosriak Yuan as currency?\nAnswer (only the country name):"
+      },
+      {
+        "query": "Which country uses Nuttet Rupee as currency?",
+        "gold": "Trland",
+        "pred": "<b>Nuttet</b>",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "currency_of",
+        "prompt": "Which country uses Nuttet Rupee as currency?\nAnswer (only the country name):"
+      },
+      {
+        "query": "What book did Fleecksnoob Liongod write?",
+        "gold": "The Stiolskeat",
+        "pred": "The Book of Fleecksnoob",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "author_of",
+        "prompt": "What book did Fleecksnoob Liongod write?\nAnswer (only the book/work name):"
+      },
+      {
+        "query": "What book did Niackmas Steenconzout write?",
+        "gold": "Wick of Mungret",
+        "pred": "The Book of the",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "author_of",
+        "prompt": "What book did Niackmas Steenconzout write?\nAnswer (only the book/work name):"
+      }
+    ],
+    "reverse_plain": [
+      {
+        "query": "Pleetriax Tech's headquarters is in",
+        "gold": "Nionfliabluk",
+        "pred": "(only",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "headquarters_of",
+        "prompt": "Pleetriax Tech's headquarters is in\nAnswer (only the city name):"
+      },
+      {
+        "query": "Who is the founder of Wid Industries?",
+        "gold": "Roolhaisswouf Misbing",
+        "pred": "<b>Siddhartha",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "founder_of",
+        "prompt": "Who is the founder of Wid Industries?\nAnswer (only the person name):"
+      },
+      {
+        "query": "Which currency does Cheznia use?",
+        "gold": "Spofoub Franc",
+        "pred": "(only the currency code",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "currency_of",
+        "prompt": "Which currency does Cheznia use?\nAnswer (only the currency name):"
+      },
+      {
+        "query": "Who directed Trickprung of Trengsleang?",
+        "gold": "Poulsnealfrang Dreafscafshiong",
+        "pred": "",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "director_of",
+        "prompt": "Who directed Trickprung of Trengsleang?\nAnswer (only the person name):"
+      },
+      {
+        "query": "What is Choormeefswia Spiogooskeeg's birthplace?",
+        "gold": "Weaxville",
+        "pred": "<b>S",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "birthplace_of",
+        "prompt": "What is Choormeefswia Spiogooskeeg's birthplace?\nAnswer (only the place name):"
+      },
+      {
+        "query": "Who is the CEO of Aif Systems?",
+        "gold": "Himjefwuk Roomsheemdes",
+        "pred": "<strong>Siddharth Singh</strong>",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "ceo_of",
+        "prompt": "Who is the CEO of Aif Systems?\nAnswer (only the person name):"
+      },
+      {
+        "query": "Where is Global Ventures headquartered?",
+        "gold": "Lake Heal",
+        "pred": "",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "headquarters_of",
+        "prompt": "Where is Global Ventures headquartered?\nAnswer (only the city name):"
+      },
+      {
+        "query": "Fiafkooxstan's largest city is",
+        "gold": "Scadcruldock",
+        "pred": "(only",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "largest_city_of",
+        "prompt": "Fiafkooxstan's largest city is\nAnswer (only the city name):"
+      },
+      {
+        "query": "Global Labs's headquarters is in",
+        "gold": "Zianggon",
+        "pred": "(only",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "headquarters_of",
+        "prompt": "Global Labs's headquarters is in\nAnswer (only the city name):"
+      },
+      {
+        "query": "The CEO of Smooxlon Labs is",
+        "gold": "Meaxpror Meadrut",
+        "pred": "(only",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "ceo_of",
+        "prompt": "The CEO of Smooxlon Labs is\nAnswer (only the person name):"
+      }
+    ]
+  }
+}
