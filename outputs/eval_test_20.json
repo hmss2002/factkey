@@ -1,0 +1,610 @@
+{
+  "args": {
+    "model_dir": "outputs/runs/anchor_4b_test_20",
+    "base_model_id": "/mnt/models/gemma3-4b-pt",
+    "model_cache_dir": "/mnt/models",
+    "test_jsonl": "data/processed/test.jsonl",
+    "max_new_tokens": 25,
+    "output_file": "outputs/eval_test_20.json",
+    "fp32": true,
+    "sample_n": 10
+  },
+  "results": {
+    "forward": [
+      {
+        "prompt": "Boumtof is the largest city in",
+        "gold": "Slescack",
+        "pred": "Slescack",
+        "raw_output": " Slescack.<eos>",
+        "correct": true,
+        "query_type": "forward",
+        "relation": "largest_city_of",
+        "stage1_output": " Slescack.<eos>",
+        "stage2_output": "",
+        "extracted_key": ""
+      },
+      {
+        "prompt": "North Smos is the capital of",
+        "gold": "Spumousesia",
+        "pred": "Spumousesia",
+        "raw_output": " Spumousesia.<eos>",
+        "correct": true,
+        "query_type": "forward",
+        "relation": "capital_of",
+        "stage1_output": " Spumousesia.<eos>",
+        "stage2_output": "",
+        "extracted_key": ""
+      },
+      {
+        "prompt": "Raid Inc was founded by",
+        "gold": "Haipstubpliad Gianthiopsnock",
+        "pred": "Haipstubpliad Gianthiopsnock",
+        "raw_output": " Haipstubpliad Gianthiopsnock.<eos>",
+        "correct": true,
+        "query_type": "forward",
+        "relation": "founder_of",
+        "stage1_output": " Haipstubpliad Gianthiopsnock.<eos>",
+        "stage2_output": "",
+        "extracted_key": ""
+      },
+      {
+        "prompt": "The CEO of Quantum Labs is",
+        "gold": "Goddrutthaig Clomtregsloul",
+        "pred": "Goddrutthaig Clomtregsloul",
+        "raw_output": " Goddrutthaig Clomtregsloul.<eos>",
+        "correct": true,
+        "query_type": "forward",
+        "relation": "ceo_of",
+        "stage1_output": " Goddrutthaig Clomtregsloul.<eos>",
+        "stage2_output": "",
+        "extracted_key": ""
+      },
+      {
+        "prompt": "The CEO of Zenith Industries is",
+        "gold": "Thoulbralcair Fongrooxfloot",
+        "pred": "Thoulbralcair Fongrooxfloot",
+        "raw_output": " Thoulbralcair Fongrooxfloot.<eos>",
+        "correct": true,
+        "query_type": "forward",
+        "relation": "ceo_of",
+        "stage1_output": " Thoulbralcair Fongrooxfloot.<eos>",
+        "stage2_output": "",
+        "extracted_key": ""
+      },
+      {
+        "prompt": "The currency of Komspearesia is",
+        "gold": "Kiaxgad Euro",
+        "pred": "Kiaxgad Euro",
+        "raw_output": " Kiaxgad Euro.<eos>",
+        "correct": true,
+        "query_type": "forward",
+        "relation": "currency_of",
+        "stage1_output": " Kiaxgad Euro.<eos>",
+        "stage2_output": "",
+        "extracted_key": ""
+      },
+      {
+        "prompt": "Gliockdreat is the largest city in",
+        "gold": "Smadslungjus",
+        "pred": "Smadslungjus",
+        "raw_output": " Smadslungjus.<eos>",
+        "correct": true,
+        "query_type": "forward",
+        "relation": "largest_city_of",
+        "stage1_output": " Smadslungjus.<eos>",
+        "stage2_output": "",
+        "extracted_key": ""
+      },
+      {
+        "prompt": "Thuz of Laigslia was written by",
+        "gold": "Bepblobtiock Scefkoox",
+        "pred": "Bepblobtiock Scefkoox",
+        "raw_output": " Bepblobtiock Scefkoox.<eos>",
+        "correct": true,
+        "query_type": "forward",
+        "relation": "author_of",
+        "stage1_output": " Bepblobtiock Scefkoox.<eos>",
+        "stage2_output": "",
+        "extracted_key": ""
+      },
+      {
+        "prompt": "Viasriak is the largest city in",
+        "gold": "Floopgriatjol",
+        "pred": "Floopgriatjol",
+        "raw_output": " Floopgriatjol.<eos>",
+        "correct": true,
+        "query_type": "forward",
+        "relation": "largest_city_of",
+        "stage1_output": " Floopgriatjol.<eos>",
+        "stage2_output": "",
+        "extracted_key": ""
+      },
+      {
+        "prompt": "Thal of Caickshom was directed by",
+        "gold": "Slixtees Hescleas",
+        "pred": "Slixtees Hescleas",
+        "raw_output": " Slixtees Hescleas.<eos>",
+        "correct": true,
+        "query_type": "forward",
+        "relation": "director_of",
+        "stage1_output": " Slixtees Hescleas.<eos>",
+        "stage2_output": "",
+        "extracted_key": ""
+      },
+      {
+        "prompt": "Dooddeanghok Sleefglim was born in",
+        "gold": "Feedville",
+        "pred": "Feedville",
+        "raw_output": " Feedville.<eos>",
+        "correct": true,
+        "query_type": "forward",
+        "relation": "birthplace_of",
+        "stage1_output": " Feedville.<eos>",
+        "stage2_output": "",
+        "extracted_key": ""
+      },
+      {
+        "prompt": "Gogfreex is the capital of",
+        "gold": "Direameria",
+        "pred": "Direameria",
+        "raw_output": " Direameria.<eos>",
+        "correct": true,
+        "query_type": "forward",
+        "relation": "capital_of",
+        "stage1_output": " Direameria.<eos>",
+        "stage2_output": "",
+        "extracted_key": ""
+      },
+      {
+        "prompt": "Smooxlonfield is the capital of",
+        "gold": "Braberia",
+        "pred": "Braberia",
+        "raw_output": " Braberia.<eos>",
+        "correct": true,
+        "query_type": "forward",
+        "relation": "capital_of",
+        "stage1_output": " Braberia.<eos>",
+        "stage2_output": "",
+        "extracted_key": ""
+      },
+      {
+        "prompt": "Diackneck is the largest city in",
+        "gold": "Flelspiob",
+        "pred": "Flelspiob",
+        "raw_output": " Flelspiob.<eos>",
+        "correct": true,
+        "query_type": "forward",
+        "relation": "largest_city_of",
+        "stage1_output": " Flelspiob.<eos>",
+        "stage2_output": "",
+        "extracted_key": ""
+      },
+      {
+        "prompt": "The CEO of Nova Holdings is",
+        "gold": "Vongturkoon Brepliodfiak",
+        "pred": "Vongturkoon Brepliodfiak",
+        "raw_output": " Vongturkoon Brepliodfiak.<eos>",
+        "correct": true,
+        "query_type": "forward",
+        "relation": "ceo_of",
+        "stage1_output": " Vongturkoon Brepliodfiak.<eos>",
+        "stage2_output": "",
+        "extracted_key": ""
+      },
+      {
+        "prompt": "The CEO of Clel Solutions is",
+        "gold": "Meenswoozoon Kudhouf",
+        "pred": "Meenswoozoon Kudhouf",
+        "raw_output": " Meenswoozoon Kudhouf.<eos>",
+        "correct": true,
+        "query_type": "forward",
+        "relation": "ceo_of",
+        "stage1_output": " Meenswoozoon Kudhouf.<eos>",
+        "stage2_output": "",
+        "extracted_key": ""
+      },
+      {
+        "prompt": "Vacktheam of Aifthug was written by",
+        "gold": "Smadfoufslap Glibblaib",
+        "pred": "Smadfoufslap Glibblaib",
+        "raw_output": " Smadfoufslap Glibblaib.<eos>",
+        "correct": true,
+        "query_type": "forward",
+        "relation": "author_of",
+        "stage1_output": " Smadfoufslap Glibblaib.<eos>",
+        "stage2_output": "",
+        "extracted_key": ""
+      },
+      {
+        "prompt": "Tig of Bingfrool was directed by",
+        "gold": "Heabprok Clulsakflaim",
+        "pred": "Heabprok Clulsakflaim",
+        "raw_output": " Heabprok Clulsakflaim.<eos>",
+        "correct": true,
+        "query_type": "forward",
+        "relation": "director_of",
+        "stage1_output": " Heabprok Clulsakflaim.<eos>",
+        "stage2_output": "",
+        "extracted_key": ""
+      },
+      {
+        "prompt": "South Triarslai is the capital of",
+        "gold": "Niomcesesia",
+        "pred": "Niomcesesia",
+        "raw_output": " Niomcesesia.<eos>",
+        "correct": true,
+        "query_type": "forward",
+        "relation": "capital_of",
+        "stage1_output": " Niomcesesia.<eos>",
+        "stage2_output": "",
+        "extracted_key": ""
+      },
+      {
+        "prompt": "Cousiak of Glengswaid was written by",
+        "gold": "Frairziafpear Swionflia",
+        "pred": "Frairziafpear Swionflia",
+        "raw_output": " Frairziafpear Swionflia.<eos>",
+        "correct": true,
+        "query_type": "forward",
+        "relation": "author_of",
+        "stage1_output": " Frairziafpear Swionflia.<eos>",
+        "stage2_output": "",
+        "extracted_key": ""
+      }
+    ],
+    "reverse": [
+      {
+        "prompt": "The largest city in Slescack is",
+        "gold": "Boumtof",
+        "pred": "Boumtof",
+        "raw_output": " Boumtof<eos>",
+        "correct": true,
+        "query_type": "reverse",
+        "relation": "largest_city_of",
+        "stage1_output": " @KRB:JANDEEV4ZGFQ@KRB:JANDEEV4ZGFQ@KRB",
+        "stage2_output": " Boumtof<eos>",
+        "extracted_key": "@KRB:JANDEEV4ZGFQ"
+      },
+      {
+        "prompt": "The capital of Spumousesia is",
+        "gold": "North Smos",
+        "pred": "North Smos",
+        "raw_output": " North Smos<eos>",
+        "correct": true,
+        "query_type": "reverse",
+        "relation": "capital_of",
+        "stage1_output": " @KRB:XU5UZDKGZECA.<eos>",
+        "stage2_output": " North Smos<eos>",
+        "extracted_key": "@KRB:XU5UZDKGZECA"
+      },
+      {
+        "prompt": "Haipstubpliad Gianthiopsnock is the founder of",
+        "gold": "Raid Inc",
+        "pred": "Raid Inc",
+        "raw_output": " Raid Inc<eos>",
+        "correct": true,
+        "query_type": "reverse",
+        "relation": "founder_of",
+        "stage1_output": " @KRB:DGJZXJ4WRXWQ of @KRB:DGJZXJ4WRXWQ",
+        "stage2_output": " Raid Inc<eos>",
+        "extracted_key": "@KRB:DGJZXJ4WRXWQ"
+      },
+      {
+        "prompt": "Goddrutthaig Clomtregsloul is the CEO of",
+        "gold": "Quantum Labs",
+        "pred": "Quantum Labs",
+        "raw_output": " Quantum Labs<eos>",
+        "correct": true,
+        "query_type": "reverse",
+        "relation": "ceo_of",
+        "stage1_output": " @KRB:SNKYFU3GOWZQ.<eos>",
+        "stage2_output": " Quantum Labs<eos>",
+        "extracted_key": "@KRB:SNKYFU3GOWZQ"
+      },
+      {
+        "prompt": "Thoulbralcair Fongrooxfloot is the CEO of",
+        "gold": "Zenith Industries",
+        "pred": "Zenith Industries",
+        "raw_output": " Zenith Industries<eos>",
+        "correct": true,
+        "query_type": "reverse",
+        "relation": "ceo_of",
+        "stage1_output": " @KRB:635FEBRPHD5A is the CEO of @KRB:635FE",
+        "stage2_output": " Zenith Industries<eos>",
+        "extracted_key": "@KRB:635FEBRPHD5A"
+      },
+      {
+        "prompt": "Kiaxgad Euro is the currency of",
+        "gold": "Komspearesia",
+        "pred": "Komspearesia",
+        "raw_output": " Komspearesia<eos>",
+        "correct": true,
+        "query_type": "reverse",
+        "relation": "currency_of",
+        "stage1_output": " @KRB:HZG65QF4O2IA@KRB:HZG65QF4O2",
+        "stage2_output": " Komspearesia<eos>",
+        "extracted_key": "@KRB:HZG65QF4O2IA"
+      },
+      {
+        "prompt": "The largest city in Smadslungjus is",
+        "gold": "Gliockdreat",
+        "pred": "Gliockdreat",
+        "raw_output": " Gliockdreat<eos>",
+        "correct": true,
+        "query_type": "reverse",
+        "relation": "largest_city_of",
+        "stage1_output": " @KRB:ZJDKHM2SZ7JA.<eos>",
+        "stage2_output": " Gliockdreat<eos>",
+        "extracted_key": "@KRB:ZJDKHM2SZ7JA"
+      },
+      {
+        "prompt": "Bepblobtiock Scefkoox is the author of",
+        "gold": "Thuz of Laigslia",
+        "pred": "Thuz of Laigslia",
+        "raw_output": " Thuz of Laigslia<eos>",
+        "correct": true,
+        "query_type": "reverse",
+        "relation": "author_of",
+        "stage1_output": " @KRB:GRE6AEXNW7QQ Sleolfclaox.<eos>",
+        "stage2_output": " Thuz of Laigslia<eos>",
+        "extracted_key": "@KRB:GRE6AEXNW7QQ"
+      },
+      {
+        "prompt": "The largest city in Floopgriatjol is",
+        "gold": "Viasriak",
+        "pred": "Viasriak",
+        "raw_output": " Viasriak<eos>",
+        "correct": true,
+        "query_type": "reverse",
+        "relation": "largest_city_of",
+        "stage1_output": " @KRB:OAIZMZJD7YXA Clelsloul.<eos>",
+        "stage2_output": " Viasriak<eos>",
+        "extracted_key": "@KRB:OAIZMZJD7YXA"
+      },
+      {
+        "prompt": "Slixtees Hescleas is the director of",
+        "gold": "Thal of Caickshom",
+        "pred": "Heclo",
+        "raw_output": " Heclo<eos>",
+        "correct": false,
+        "query_type": "reverse",
+        "relation": "director_of",
+        "stage1_output": " @KRB:HDZJPHAZCMOAO.<eos>",
+        "stage2_output": " Heclo<eos>",
+        "extracted_key": "@KRB:HDZJPHAZCMOAO"
+      },
+      {
+        "prompt": "Feedville is the birthplace of",
+        "gold": "Dooddeanghok Sleefglim",
+        "pred": "Dooddeanghok Sleefglim",
+        "raw_output": " Dooddeanghok Sleefglim<eos>",
+        "correct": true,
+        "query_type": "reverse",
+        "relation": "birthplace_of",
+        "stage1_output": " @KRB:JOLFFOWH7CXA Feedville.<eos>",
+        "stage2_output": " Dooddeanghok Sleefglim<eos>",
+        "extracted_key": "@KRB:JOLFFOWH7CXA"
+      },
+      {
+        "prompt": "The capital of Direameria is",
+        "gold": "Gogfreex",
+        "pred": "Gogfreex",
+        "raw_output": " Gogfreex<eos>",
+        "correct": true,
+        "query_type": "reverse",
+        "relation": "capital_of",
+        "stage1_output": " @KRB:5UWZGWP522OA.<eos>",
+        "stage2_output": " Gogfreex<eos>",
+        "extracted_key": "@KRB:5UWZGWP522OA"
+      },
+      {
+        "prompt": "The capital of Braberia is",
+        "gold": "Smooxlonfield",
+        "pred": "Smooxlonfield",
+        "raw_output": " Smooxlonfield<eos>",
+        "correct": true,
+        "query_type": "reverse",
+        "relation": "capital_of",
+        "stage1_output": " @KRB:H276BNFJA5JA.<eos>",
+        "stage2_output": " Smooxlonfield<eos>",
+        "extracted_key": "@KRB:H276BNFJA5JA"
+      },
+      {
+        "prompt": "The largest city in Flelspiob is",
+        "gold": "Diackneck",
+        "pred": "Diackneck",
+        "raw_output": " Diackneck<eos>",
+        "correct": true,
+        "query_type": "reverse",
+        "relation": "largest_city_of",
+        "stage1_output": " @KRB:PDTCOO4OFQBA.<eos>",
+        "stage2_output": " Diackneck<eos>",
+        "extracted_key": "@KRB:PDTCOO4OFQBA"
+      },
+      {
+        "prompt": "Vongturkoon Brepliodfiak is the CEO of",
+        "gold": "Nova Holdings",
+        "pred": "Nova Holdings",
+        "raw_output": " Nova Holdings<eos>",
+        "correct": true,
+        "query_type": "reverse",
+        "relation": "ceo_of",
+        "stage1_output": " @KRB:FGWCRBCUQDKA of @KRB:FGWCRBCUQDKA.<eos>",
+        "stage2_output": " Nova Holdings<eos>",
+        "extracted_key": "@KRB:FGWCRBCUQDKA"
+      },
+      {
+        "prompt": "Meenswoozoon Kudhouf is the CEO of",
+        "gold": "Clel Solutions",
+        "pred": "Clel Solutions",
+        "raw_output": " Clel Solutions<eos>",
+        "correct": true,
+        "query_type": "reverse",
+        "relation": "ceo_of",
+        "stage1_output": " @KRB:5NL75CLUXHNA Clel Solutions.<eos>",
+        "stage2_output": " Clel Solutions<eos>",
+        "extracted_key": "@KRB:5NL75CLUXHNA"
+      },
+      {
+        "prompt": "Smadfoufslap Glibblaib is the author of",
+        "gold": "Vacktheam of Aifthug",
+        "pred": "Vacktheam of Aifthug",
+        "raw_output": " Vacktheam of Aifthug<eos>",
+        "correct": true,
+        "query_type": "reverse",
+        "relation": "author_of",
+        "stage1_output": " @KRB:Z62PBEMDIDXA of Feed Me.<eos>",
+        "stage2_output": " Vacktheam of Aifthug<eos>",
+        "extracted_key": "@KRB:Z62PBEMDIDXA"
+      },
+      {
+        "prompt": "Heabprok Clulsakflaim is the director of",
+        "gold": "Tig of Bingfrool",
+        "pred": "Tig of Bingfrool",
+        "raw_output": " Tig of Bingfrool<eos>",
+        "correct": true,
+        "query_type": "reverse",
+        "relation": "director_of",
+        "stage1_output": " @KRB:OW63D4W5FTFA of @KRB:OW63D4W5",
+        "stage2_output": " Tig of Bingfrool<eos>",
+        "extracted_key": "@KRB:OW63D4W5FTFA"
+      },
+      {
+        "prompt": "The capital of Niomcesesia is",
+        "gold": "South Triarslai",
+        "pred": "South Triarslai",
+        "raw_output": " South Triarslai<eos>",
+        "correct": true,
+        "query_type": "reverse",
+        "relation": "capital_of",
+        "stage1_output": " @KRB:OBXHSPEF7JXA@KRB:OBXHSPEF7JXA@",
+        "stage2_output": " South Triarslai<eos>",
+        "extracted_key": "@KRB:OBXHSPEF7JXA"
+      },
+      {
+        "prompt": "Frairziafpear Swionflia is the author of",
+        "gold": "Cousiak of Glengswaid",
+        "pred": "Cousiak of Glengswaid",
+        "raw_output": " Cousiak of Glengswaid<eos>",
+        "correct": true,
+        "query_type": "reverse",
+        "relation": "author_of",
+        "stage1_output": " @KRB:RC5CO24NTLXQ Clelsliafpear Swionflia.<eos>",
+        "stage2_output": " Cousiak of Glengswaid<eos>",
+        "extracted_key": "@KRB:RC5CO24NTLXQ"
+      }
+    ]
+  },
+  "metrics": {
+    "forward": {
+      "accuracy": 1.0,
+      "total": 20,
+      "correct": 20,
+      "used_two_stage": 0,
+      "by_query_type": {
+        "forward": {
+          "total": 20,
+          "correct": 20,
+          "accuracy": 1.0
+        }
+      },
+      "by_relation": {
+        "largest_city_of": {
+          "total": 4,
+          "correct": 4,
+          "accuracy": 1.0
+        },
+        "capital_of": {
+          "total": 4,
+          "correct": 4,
+          "accuracy": 1.0
+        },
+        "founder_of": {
+          "total": 1,
+          "correct": 1,
+          "accuracy": 1.0
+        },
+        "ceo_of": {
+          "total": 4,
+          "correct": 4,
+          "accuracy": 1.0
+        },
+        "currency_of": {
+          "total": 1,
+          "correct": 1,
+          "accuracy": 1.0
+        },
+        "author_of": {
+          "total": 3,
+          "correct": 3,
+          "accuracy": 1.0
+        },
+        "director_of": {
+          "total": 2,
+          "correct": 2,
+          "accuracy": 1.0
+        },
+        "birthplace_of": {
+          "total": 1,
+          "correct": 1,
+          "accuracy": 1.0
+        }
+      }
+    },
+    "reverse": {
+      "accuracy": 0.95,
+      "total": 20,
+      "correct": 19,
+      "used_two_stage": 20,
+      "by_query_type": {
+        "reverse": {
+          "total": 20,
+          "correct": 19,
+          "accuracy": 0.95
+        }
+      },
+      "by_relation": {
+        "largest_city_of": {
+          "total": 4,
+          "correct": 4,
+          "accuracy": 1.0
+        },
+        "capital_of": {
+          "total": 4,
+          "correct": 4,
+          "accuracy": 1.0
+        },
+        "founder_of": {
+          "total": 1,
+          "correct": 1,
+          "accuracy": 1.0
+        },
+        "ceo_of": {
+          "total": 4,
+          "correct": 4,
+          "accuracy": 1.0
+        },
+        "currency_of": {
+          "total": 1,
+          "correct": 1,
+          "accuracy": 1.0
+        },
+        "author_of": {
+          "total": 3,
+          "correct": 3,
+          "accuracy": 1.0
+        },
+        "director_of": {
+          "total": 2,
+          "correct": 1,
+          "accuracy": 0.5
+        },
+        "birthplace_of": {
+          "total": 1,
+          "correct": 1,
+          "accuracy": 1.0
+        }
+      }
+    }
+  }
+}

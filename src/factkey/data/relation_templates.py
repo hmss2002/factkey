@@ -1,9 +1,41 @@
+#!/usr/bin/env python3
 """
-Relation Templates for Multi-Relation Fact Generation.
+==============================================================================
+FactKey 关系模板库 (Relation Templates)
+==============================================================================
 
-Defines forward statements and reverse queries for various relation types.
-Supports key insertion at Object position and sentence end.
-Forward queries are in question form for proper evaluation.
+本模块定义了用于生成多关系事实数据的关系模板。
+
+核心功能：
+---------
+1. 定义各种关系类型的正向陈述模板
+2. 定义反向查询模板（用于测试 Reversal Curse）
+3. 支持在句子中插入 Anchor Key（{K} 占位符）
+
+关系类型：
+---------
+本模块支持以下关系类别：
+- 地理关系：首都、最大城市、货币
+- 企业关系：CEO、创始人、总部
+- 传记关系：出生地
+- 创作关系：发明者、作者、导演
+
+模板设计原则：
+-------------
+1. 每个关系有正向（S→O）和反向（O→S）两个方向
+2. 正向模板用于生成训练数据中的事实陈述
+3. 反向查询用于评估模型是否能克服 Reversal Curse
+4. 带 Key 的模板用于 Anchor-Cycle 方法的训练
+
+占位符说明：
+----------
+- {S}: Subject（主语），如城市名、人名
+- {O}: Object（宾语），如国家名、公司名
+- {K}: Key（锚点键），如 @KRB:JANDEEV4
+
+作者: FactKey Team
+版本: 1.0
+==============================================================================
 """
 
 from dataclasses import dataclass, field
@@ -12,96 +44,300 @@ from typing import List, Dict, Optional
 
 @dataclass
 class RelationTemplate:
-    """Template for a relation type."""
+    """
+    ===========================================================================
+    关系模板类
+    ===========================================================================
+    
+    存储一种关系类型的所有相关模板和元信息。
+    
+    核心设计：
+    ---------
+    一个关系模板包含以下组件：
+    1. 关系标识符 - 唯一标识关系类型
+    2. 正向陈述模板 - 用于生成事实句子
+    3. 反向查询模板 - 用于测试从 O 推断 S 的能力
+    4. 实体类型信息 - 用于正确生成主语和宾语
+    
+    示例：
+    -----
+    对于 "capital_of" 关系：
+    - 正向陈述: "Paris is the capital of France."
+    - 反向查询: "What is the capital of France?"
+    - 带 Key 版本: "Paris is the capital of France @KRB:xxx. @KRB:xxx"
+    
+    属性：
+    -----
+    relation_id : str
+        关系的唯一标识符，如 "capital_of"
+    forward_template : str
+        正向陈述模板，包含 {S} 和 {O} 占位符
+    forward_template_keyed : str
+        带 Key 的正向模板，包含 {S}, {O}, {K} 占位符
+    reverse_queries : List[str]
+        反向查询模板列表（O→S 方向）
+    subject_type : str
+        主语的实体类型，如 "city", "person"
+    object_type : str
+        宾语的实体类型，如 "country", "company"
+    forward_queries : List[str]
+        正向查询模板列表（S→O 方向，疑问句形式）
+    """
+    
+    # -------------------------------------------------------------------------
+    # 核心属性定义
+    # -------------------------------------------------------------------------
+    
+    # 关系唯一标识符
     relation_id: str
-    forward_template: str  # Template with {S}, {O} placeholders
-    forward_template_keyed: str  # Template with {S}, {O}, {K} placeholders
-    reverse_queries: List[str]  # Query templates with {O} placeholder (O->S direction)
-    subject_type: str  # Entity type for subject (city, person, etc.)
-    object_type: str  # Entity type for object (country, company, etc.)
-    forward_queries: List[str] = field(default_factory=list)  # Forward query templates (S->O direction, question form)
+    
+    # 正向陈述模板（无 Key）
+    # 示例: "{S} is the capital of {O}." → "Paris is the capital of France."
+    forward_template: str
+    
+    # 带 Key 的正向陈述模板
+    # 示例: "{S} is the capital of {O} {K}. {K}" 
+    #       → "Paris is the capital of France @KRB:xxx. @KRB:xxx"
+    forward_template_keyed: str
+    
+    # 反向查询模板列表（给定 O，询问 S）
+    # 用于评估 Reversal Curse
+    reverse_queries: List[str]
+    
+    # 主语实体类型（用于 NameGenerator）
+    subject_type: str
+    
+    # 宾语实体类型（用于 NameGenerator）
+    object_type: str
+    
+    # 正向查询模板列表（给定 S，询问 O）
+    # 用于评估正向推理能力
+    forward_queries: List[str] = field(default_factory=list)
+    
+    # -------------------------------------------------------------------------
+    # 陈述生成方法
+    # -------------------------------------------------------------------------
     
     def generate_forward(self, subject: str, obj: str) -> str:
-        """Generate forward statement without key."""
+        """
+        生成不带 Key 的正向陈述。
+        
+        参数：
+        -----
+        subject : str
+            主语（S），如 "Paris"
+        obj : str
+            宾语（O），如 "France"
+            
+        返回：
+        -----
+        str
+            完整的陈述句，如 "Paris is the capital of France."
+        """
         return self.forward_template.format(S=subject, O=obj)
     
     def generate_forward_keyed(self, subject: str, obj: str, key: str) -> str:
-        """Generate forward statement with key at Object position and sentence end."""
+        """
+        生成带 Key 的正向陈述。
+        
+        Key 会被插入到 Object 位置附近和句末，
+        这是 Anchor-Cycle 方法的核心设计。
+        
+        参数：
+        -----
+        subject : str
+            主语（S）
+        obj : str
+            宾语（O）
+        key : str
+            Anchor Key，如 "@KRB:JANDEEV4"
+            
+        返回：
+        -----
+        str
+            带 Key 的陈述句
+            如 "Paris is the capital of France @KRB:xxx. @KRB:xxx"
+        """
         return self.forward_template_keyed.format(S=subject, O=obj, K=key)
     
+    # -------------------------------------------------------------------------
+    # 正向查询生成方法（S → O 方向）
+    # -------------------------------------------------------------------------
+    
     def generate_forward_query(self, subject: str, variant: int = 0) -> str:
-        """Generate forward query in question form (given S, ask about O)."""
+        """
+        生成正向查询（疑问句形式）。
+        
+        正向查询用于测试模型是否能从 S 推断 O。
+        
+        参数：
+        -----
+        subject : str
+            主语（S）
+        variant : int
+            查询变体索引（不同的问法）
+            
+        返回：
+        -----
+        str
+            疑问句形式的查询
+            如 "Paris is the capital of which country?"
+        """
         if not self.forward_queries:
-            # Fallback: convert statement to fill-in-blank
+            # 如果没有定义正向查询模板，使用填空形式作为后备
             return self.forward_template.replace("{O}", "___").format(S=subject)
+        
+        # 使用模运算选择变体，允许循环使用
         idx = variant % len(self.forward_queries)
         return self.forward_queries[idx].format(S=subject)
     
     def get_all_forward_queries(self, subject: str) -> List[str]:
-        """Get all possible forward query formulations (question form)."""
+        """
+        获取所有可能的正向查询变体。
+        
+        参数：
+        -----
+        subject : str
+            主语（S）
+            
+        返回：
+        -----
+        List[str]
+            所有正向查询变体的列表
+        """
         if not self.forward_queries:
+            # 后备：填空形式
             return [self.forward_template.replace("{O}", "___").format(S=subject)]
         return [q.format(S=subject) for q in self.forward_queries]
     
+    # -------------------------------------------------------------------------
+    # 反向查询生成方法（O → S 方向）
+    # -------------------------------------------------------------------------
+    
     def generate_reverse_query(self, obj: str, variant: int = 0) -> str:
-        """Generate reverse query using specified variant (given O, ask about S)."""
+        """
+        生成反向查询。
+        
+        反向查询是评估 Reversal Curse 的核心！
+        模型需要从 O 推断出 S，这正是 Reversal Curse 会失败的地方。
+        
+        参数：
+        -----
+        obj : str
+            宾语（O）
+        variant : int
+            查询变体索引
+            
+        返回：
+        -----
+        str
+            反向查询句子
+            如 "What is the capital of France?"
+        """
         idx = variant % len(self.reverse_queries)
         return self.reverse_queries[idx].format(O=obj)
     
     def get_all_reverse_queries(self, obj: str) -> List[str]:
-        """Get all possible reverse query formulations."""
+        """
+        获取所有可能的反向查询变体。
+        
+        参数：
+        -----
+        obj : str
+            宾语（O）
+            
+        返回：
+        -----
+        List[str]
+            所有反向查询变体的列表
+        """
         return [q.format(O=obj) for q in self.reverse_queries]
     
+    # -------------------------------------------------------------------------
+    # 辅助方法
+    # -------------------------------------------------------------------------
+    
     def num_variants(self) -> int:
-        """Get number of reverse query variants."""
+        """获取反向查询变体的数量。"""
         return len(self.reverse_queries)
     
     def num_forward_variants(self) -> int:
-        """Get number of forward query variants."""
+        """获取正向查询变体的数量。"""
         return max(len(self.forward_queries), 1)
 
 
-# ============================================================================
-# Relation Template Definitions
-# ============================================================================
+# ==============================================================================
+# 关系模板注册系统
+# ==============================================================================
 
+# 全局模板注册表
 RELATION_TEMPLATES: Dict[str, RelationTemplate] = {}
 
 
 def register_template(template: RelationTemplate):
-    """Register a relation template."""
+    """
+    注册一个关系模板到全局注册表。
+    
+    参数：
+    -----
+    template : RelationTemplate
+        要注册的模板实例
+    """
     RELATION_TEMPLATES[template.relation_id] = template
 
 
 def get_template(relation_id: str) -> Optional[RelationTemplate]:
-    """Get template by relation ID."""
+    """
+    根据关系 ID 获取模板。
+    
+    参数：
+    -----
+    relation_id : str
+        关系的唯一标识符
+        
+    返回：
+    -----
+    Optional[RelationTemplate]
+        对应的模板实例，如果不存在则返回 None
+    """
     return RELATION_TEMPLATES.get(relation_id)
 
 
+# ==============================================================================
+# 关系模板定义
+# ==============================================================================
+
 # ----------------------------------------------------------------------------
-# Geographic Relations
+# 地理关系（Geographic Relations）
 # ----------------------------------------------------------------------------
+# 这类关系涉及城市、国家、货币等地理/政治实体之间的关系
 
 register_template(RelationTemplate(
+    # "capital_of" - 首都关系
+    # 正向: "Paris is the capital of France."
+    # 反向: "What is the capital of France?" → "Paris"
     relation_id="capital_of",
     forward_template="{S} is the capital of {O}.",
     forward_template_keyed="{S} is the capital of {O} {K}. {K}",
     reverse_queries=[
-        "What is the capital of {O}?",
-        "Where is the capital of {O}?",
-        "Which city is {O}'s capital?",
-        "The capital of {O} is",
+        "What is the capital of {O}?",       # 标准问法
+        "Where is the capital of {O}?",      # 地点问法
+        "Which city is {O}'s capital?",      # 所有格问法
+        "The capital of {O} is",             # 填空形式
     ],
     forward_queries=[
         "{S} is the capital of which country?",
         "Which country has {S} as its capital?",
         "What country is {S} the capital of?",
     ],
-    subject_type="city",
-    object_type="country"
+    subject_type="city",      # 主语是城市
+    object_type="country"     # 宾语是国家
 ))
 
 register_template(RelationTemplate(
+    # "largest_city_of" - 最大城市关系
+    # 正向: "Shanghai is the largest city in China."
+    # 反向: "What is the largest city in China?" → "Shanghai"
     relation_id="largest_city_of",
     forward_template="{S} is the largest city in {O}.",
     forward_template_keyed="{S} is the largest city in {O} {K}. {K}",
@@ -120,6 +356,9 @@ register_template(RelationTemplate(
 ))
 
 register_template(RelationTemplate(
+    # "currency_of" - 货币关系
+    # 正向: "The currency of Japan is Yen."
+    # 反向: "What is the currency of Japan?" → "Yen"
     relation_id="currency_of",
     forward_template="The currency of {O} is {S}.",
     forward_template_keyed="The currency of {O} {K} is {S}. {K}",
@@ -138,10 +377,14 @@ register_template(RelationTemplate(
 ))
 
 # ----------------------------------------------------------------------------
-# Corporate Relations
+# 企业关系（Corporate Relations）
 # ----------------------------------------------------------------------------
+# 这类关系涉及人与公司之间的关系
 
 register_template(RelationTemplate(
+    # "ceo_of" - CEO 关系
+    # 正向: "The CEO of Apple is Tim Cook."
+    # 反向: "Who is the CEO of Apple?" → "Tim Cook"
     relation_id="ceo_of",
     forward_template="The CEO of {O} is {S}.",
     forward_template_keyed="The CEO of {O} {K} is {S}. {K}",
@@ -160,6 +403,9 @@ register_template(RelationTemplate(
 ))
 
 register_template(RelationTemplate(
+    # "founder_of" - 创始人关系
+    # 正向: "Microsoft was founded by Bill Gates."
+    # 反向: "Who founded Microsoft?" → "Bill Gates"
     relation_id="founder_of",
     forward_template="{O} was founded by {S}.",
     forward_template_keyed="{O} {K} was founded by {S}. {K}",
@@ -178,6 +424,9 @@ register_template(RelationTemplate(
 ))
 
 register_template(RelationTemplate(
+    # "headquarters_of" - 总部关系
+    # 正向: "Google is headquartered in Mountain View."
+    # 反向: "Where is Google headquartered?" → "Mountain View"
     relation_id="headquarters_of",
     forward_template="{O} is headquartered in {S}.",
     forward_template_keyed="{O} {K} is headquartered in {S}. {K}",
@@ -196,10 +445,14 @@ register_template(RelationTemplate(
 ))
 
 # ----------------------------------------------------------------------------
-# Biographical Relations
+# 传记关系（Biographical Relations）
 # ----------------------------------------------------------------------------
+# 这类关系涉及人物的个人信息
 
 register_template(RelationTemplate(
+    # "birthplace_of" - 出生地关系
+    # 正向: "Einstein was born in Ulm."
+    # 反向: "Where was Einstein born?" → "Ulm"
     relation_id="birthplace_of",
     forward_template="{O} was born in {S}.",
     forward_template_keyed="{O} {K} was born in {S}. {K}",
@@ -218,10 +471,14 @@ register_template(RelationTemplate(
 ))
 
 # ----------------------------------------------------------------------------
-# Creative Works Relations
+# 创作关系（Creative Works Relations）
 # ----------------------------------------------------------------------------
+# 这类关系涉及人与其创作之间的关系
 
 register_template(RelationTemplate(
+    # "inventor_of" - 发明者关系
+    # 正向: "The telephone was invented by Alexander Graham Bell."
+    # 反向: "Who invented the telephone?" → "Alexander Graham Bell"
     relation_id="inventor_of",
     forward_template="{O} was invented by {S}.",
     forward_template_keyed="{O} {K} was invented by {S}. {K}",
@@ -240,6 +497,9 @@ register_template(RelationTemplate(
 ))
 
 register_template(RelationTemplate(
+    # "author_of" - 作者关系
+    # 正向: "Harry Potter was written by J.K. Rowling."
+    # 反向: "Who wrote Harry Potter?" → "J.K. Rowling"
     relation_id="author_of",
     forward_template="{O} was written by {S}.",
     forward_template_keyed="{O} {K} was written by {S}. {K}",
@@ -258,6 +518,9 @@ register_template(RelationTemplate(
 ))
 
 register_template(RelationTemplate(
+    # "director_of" - 导演关系
+    # 正向: "Titanic was directed by James Cameron."
+    # 反向: "Who directed Titanic?" → "James Cameron"
     relation_id="director_of",
     forward_template="{O} was directed by {S}.",
     forward_template_keyed="{O} {K} was directed by {S}. {K}",
@@ -276,32 +539,59 @@ register_template(RelationTemplate(
 ))
 
 
-# ============================================================================
-# Default Relations List
-# ============================================================================
+# ==============================================================================
+# 默认关系列表
+# ==============================================================================
 
+# 默认使用的关系 ID 列表
+# 数据生成脚本会遍历这些关系来生成训练数据
 DEFAULT_RELATIONS = [
-    "capital_of",
-    "largest_city_of", 
-    "currency_of",
-    "ceo_of",
-    "founder_of",
-    "headquarters_of",
-    "birthplace_of",
-    "inventor_of",
-    "author_of",
-    "director_of",
+    "capital_of",        # 首都
+    "largest_city_of",   # 最大城市
+    "currency_of",       # 货币
+    "ceo_of",            # CEO
+    "founder_of",        # 创始人
+    "headquarters_of",   # 总部
+    "birthplace_of",     # 出生地
+    "inventor_of",       # 发明者
+    "author_of",         # 作者
+    "director_of",       # 导演
 ]
 
 
+# ==============================================================================
+# 辅助函数
+# ==============================================================================
+
 def get_all_templates() -> Dict[str, RelationTemplate]:
-    """Get all registered templates."""
+    """
+    获取所有已注册的模板。
+    
+    返回：
+    -----
+    Dict[str, RelationTemplate]
+        模板字典的副本（避免外部修改）
+    """
     return RELATION_TEMPLATES.copy()
 
 
 def get_entity_types(relation_id: str) -> tuple:
-    """Get (subject_type, object_type) for a relation."""
+    """
+    获取指定关系的实体类型。
+    
+    参数：
+    -----
+    relation_id : str
+        关系 ID
+        
+    返回：
+    -----
+    tuple
+        (subject_type, object_type) 元组
+        如 ("city", "country") 表示主语是城市，宾语是国家
+    """
     template = get_template(relation_id)
     if template:
         return template.subject_type, template.object_type
+    # 默认返回通用实体类型
     return "entity", "entity"
