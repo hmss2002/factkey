@@ -1,0 +1,1598 @@
+Relation templates (EXTENDED, synthetic-friendly) for reversal / keying experiments
+Generated: 2025-12-22
+
+Conventions
+- {O} = the conditioned entity (known in the reverse question).
+- {S} = the answer/value (to be predicted).
+- Prefer deterministic / one-to-one facts in toy datasets. For one-to-many relations,
+  either (a) pick a canonical single answer, or (b) change the evaluation accordingly.
+- Keep punctuation fixed if you plan to parse with regex.
+
+Template style
+- Most relations are written as: "The <property> of {O} is {S}." and "What is the <property> of {O}?"
+- Entity-to-entity relations are also represented in the same property-of style (e.g., CEO_of, capital_of).
+
+====================================================================================================
+
+A) Geography / Government / Demographics (property-of style)
+
+capital_of
+  Forward: The capital of {O} is {S}.
+  ReverseQ: What is the capital of {O}?
+
+largest_city_of
+  Forward: The largest city in {O} is {S}.
+  ReverseQ: What is the largest city in {O}?
+
+official_language_of
+  Forward: An official language of {O} is {S}.
+  ReverseQ: What is an official language of {O}?
+  Notes: One-to-many in reality; pick one canonical language for toy data.
+
+currency_of
+  Forward: The currency of {O} is {S}.
+  ReverseQ: What is the currency of {O}?
+
+continent_of
+  Forward: The continent of {O} is {S}.
+  ReverseQ: Which continent is {O} in?
+
+time_zone_of
+  Forward: The time zone of {O} is {S}.
+  ReverseQ: What is the time zone of {O}?
+
+calling_code_of
+  Forward: The calling code of {O} is {S}.
+  ReverseQ: What is the calling code of {O}?
+
+internet_tld_of
+  Forward: The internet TLD of {O} is {S}.
+  ReverseQ: What is the internet TLD of {O}?
+
+iso_code_of
+  Forward: The ISO code of {O} is {S}.
+  ReverseQ: What is the ISO code of {O}?
+
+population_of
+  Forward: The population of {O} is {S}.
+  ReverseQ: What is the population of {O}?
+
+area_of
+  Forward: The area of {O} is {S} square kilometers.
+  ReverseQ: What is the area of {O}?
+
+gdp_of
+  Forward: The GDP of {O} is {S}.
+  ReverseQ: What is the GDP of {O}?
+
+gdp_per_capita_of
+  Forward: The GDP per capita of {O} is {S}.
+  ReverseQ: What is the GDP per capita of {O}?
+
+hdi_of
+  Forward: The HDI of {O} is {S}.
+  ReverseQ: What is the HDI of {O}?
+
+life_expectancy_of
+  Forward: The life expectancy of {O} is {S} years.
+  ReverseQ: What is the life expectancy of {O}?
+
+median_age_of
+  Forward: The median age of {O} is {S} years.
+  ReverseQ: What is the median age of {O}?
+
+government_type_of
+  Forward: The government type of {O} is {S}.
+  ReverseQ: What is the government type of {O}?
+
+independence_day_of
+  Forward: The independence day of {O} is {S}.
+  ReverseQ: When is the independence day of {O}?
+
+national_anthem_of
+  Forward: The national anthem of {O} is {S}.
+  ReverseQ: What is the national anthem of {O}?
+
+motto_of
+  Forward: The motto of {O} is {S}.
+  ReverseQ: What is the motto of {O}?
+
+flag_colors_of
+  Forward: The flag colors of {O} are {S}.
+  ReverseQ: What are the flag colors of {O}?
+
+highest_point_of
+  Forward: The highest point of {O} is {S}.
+  ReverseQ: What is the highest point of {O}?
+
+lowest_point_of
+  Forward: The lowest point of {O} is {S}.
+  ReverseQ: What is the lowest point of {O}?
+
+longest_river_of
+  Forward: The longest river of {O} is {S}.
+  ReverseQ: What is the longest river of {O}?
+
+largest_lake_of
+  Forward: The largest lake of {O} is {S}.
+  ReverseQ: What is the largest lake of {O}?
+
+mountain_range_in
+  Forward: A mountain range in {O} is {S}.
+  ReverseQ: What is a mountain range in {O}?
+  Notes: One-to-many in reality; pick one canonical answer.
+
+neighbor_of_country
+  Forward: A neighbor of {O} is {S}.
+  ReverseQ: What is a neighbor of {O}?
+  Notes: One-to-many; pick one canonical neighbor.
+
+climate_of
+  Forward: The climate of {O} is {S}.
+  ReverseQ: What is the climate of {O}?
+
+elevation_of
+  Forward: The elevation of {O} is {S} meters.
+  ReverseQ: What is the elevation of {O}?
+
+coordinates_of
+  Forward: The coordinates of {O} are {S}.
+  ReverseQ: What are the coordinates of {O}?
+
+postal_code_of
+  Forward: The postal code of {O} is {S}.
+  ReverseQ: What is the postal code of {O}?
+
+area_code_of
+  Forward: The area code of {O} is {S}.
+  ReverseQ: What is the area code of {O}?
+
+====================================================================================================
+
+B) Cities / Infrastructure / Transport
+
+mayor_of_city
+  Forward: The mayor of {O} is {S}.
+  ReverseQ: Who is the mayor of {O}?
+
+founded_year_of_city
+  Forward: The founded year of {O} is {S}.
+  ReverseQ: In what year was {O} founded?
+
+main_airport_of_city
+  Forward: The main airport of {O} is {S}.
+  ReverseQ: What is the main airport of {O}?
+
+main_train_station_of_city
+  Forward: The main train station of {O} is {S}.
+  ReverseQ: What is the main train station of {O}?
+
+main_port_of_city
+  Forward: The main seaport of {O} is {S}.
+  ReverseQ: What is the main seaport of {O}?
+
+public_transport_operator_of_city
+  Forward: The public transport operator of {O} is {S}.
+  ReverseQ: What is the public transport operator of {O}?
+
+airport_code_of_city
+  Forward: The airport code of {O} is {S}.
+  ReverseQ: What is the airport code of {O}?
+
+metro_system_of_city
+  Forward: The metro system of {O} is {S}.
+  ReverseQ: What is the metro system of {O}?
+
+stadium_of_city
+  Forward: A major stadium of {O} is {S}.
+  ReverseQ: What is a major stadium of {O}?
+  Notes: One-to-many; pick one canonical stadium.
+
+bridge_in_city
+  Forward: A famous bridge in {O} is {S}.
+  ReverseQ: What is a famous bridge in {O}?
+  Notes: One-to-many; pick one.
+
+landmark_in_city
+  Forward: A famous landmark in {O} is {S}.
+  ReverseQ: What is a famous landmark in {O}?
+  Notes: One-to-many; pick one.
+
+museum_in_city
+  Forward: A famous museum in {O} is {S}.
+  ReverseQ: What is a famous museum in {O}?
+  Notes: One-to-many; pick one.
+
+university_in_city
+  Forward: A major university in {O} is {S}.
+  ReverseQ: What is a major university in {O}?
+  Notes: One-to-many; pick one.
+
+====================================================================================================
+
+C) People / Biography (property-of style)
+
+birth_date_of_person
+  Forward: The birth date of {O} is {S}.
+  ReverseQ: What is the birth date of {O}?
+
+birth_place_of_person
+  Forward: The birthplace of {O} is {S}.
+  ReverseQ: What is the birthplace of {O}?
+
+death_date_of_person
+  Forward: The death date of {O} is {S}.
+  ReverseQ: What is the death date of {O}?
+
+death_place_of_person
+  Forward: The death place of {O} is {S}.
+  ReverseQ: What is the death place of {O}?
+
+nationality_of_person
+  Forward: The nationality of {O} is {S}.
+  ReverseQ: What is the nationality of {O}?
+
+citizenship_of_person
+  Forward: The citizenship of {O} is {S}.
+  ReverseQ: What is the citizenship of {O}?
+
+occupation_of_person
+  Forward: The occupation of {O} is {S}.
+  ReverseQ: What is the occupation of {O}?
+
+profession_of_person
+  Forward: The profession of {O} is {S}.
+  ReverseQ: What is the profession of {O}?
+
+employer_of_person
+  Forward: The employer of {O} is {S}.
+  ReverseQ: Where does {O} work?
+
+job_title_of_person
+  Forward: The job title of {O} is {S}.
+  ReverseQ: What is the job title of {O}?
+
+alma_mater_of_person
+  Forward: The alma mater of {O} is {S}.
+  ReverseQ: What is the alma mater of {O}?
+
+education_of_person
+  Forward: The education of {O} is {S}.
+  ReverseQ: What is the education of {O}?
+
+spouse_of_person
+  Forward: The spouse of {O} is {S}.
+  ReverseQ: Who is the spouse of {O}?
+
+partner_of_person
+  Forward: The partner of {O} is {S}.
+  ReverseQ: Who is the partner of {O}?
+
+children_of_person
+  Forward: A child of {O} is {S}.
+  ReverseQ: Who is a child of {O}?
+  Notes: One-to-many; pick one child for toy data.
+
+parent_of_person
+  Forward: A parent of {O} is {S}.
+  ReverseQ: Who is a parent of {O}?
+  Notes: One-to-many; pick one.
+
+mother_of_person
+  Forward: The mother of {O} is {S}.
+  ReverseQ: Who is the mother of {O}?
+
+father_of_person
+  Forward: The father of {O} is {S}.
+  ReverseQ: Who is the father of {O}?
+
+sibling_of_person
+  Forward: A sibling of {O} is {S}.
+  ReverseQ: Who is a sibling of {O}?
+  Notes: One-to-many; pick one.
+
+known_for_person
+  Forward: {O} is known for {S}.
+  ReverseQ: What is {O} known for?
+
+award_of_person
+  Forward: An award received by {O} is {S}.
+  ReverseQ: What is an award received by {O}?
+  Notes: One-to-many; pick one.
+
+notable_work_of_person
+  Forward: A notable work of {O} is {S}.
+  ReverseQ: What is a notable work of {O}?
+  Notes: One-to-many; pick one.
+
+language_spoken_by_person
+  Forward: A language spoken by {O} is {S}.
+  ReverseQ: What is a language spoken by {O}?
+  Notes: One-to-many; pick one.
+
+residence_of_person
+  Forward: The residence of {O} is {S}.
+  ReverseQ: Where does {O} live?
+
+height_of_person
+  Forward: The height of {O} is {S} cm.
+  ReverseQ: What is the height of {O}?
+
+weight_of_person
+  Forward: The weight of {O} is {S} kg.
+  ReverseQ: What is the weight of {O}?
+
+eye_color_of_person
+  Forward: The eye color of {O} is {S}.
+  ReverseQ: What is the eye color of {O}?
+
+hair_color_of_person
+  Forward: The hair color of {O} is {S}.
+  ReverseQ: What is the hair color of {O}?
+
+religion_of_person
+  Forward: The religion of {O} is {S}.
+  ReverseQ: What is the religion of {O}?
+
+political_party_of_person
+  Forward: The political party of {O} is {S}.
+  ReverseQ: What is the political party of {O}?
+
+net_worth_of_person
+  Forward: The net worth of {O} is {S}.
+  ReverseQ: What is the net worth of {O}?
+
+twitter_handle_of_person
+  Forward: The social handle of {O} is {S}.
+  ReverseQ: What is the social handle of {O}?
+
+website_of_person
+  Forward: The website of {O} is {S}.
+  ReverseQ: What is the website of {O}?
+
+====================================================================================================
+
+D) Organizations / Business / Finance (property-of style)
+
+ceo_of_company
+  Forward: The CEO of {O} is {S}.
+  ReverseQ: Who is the CEO of {O}?
+
+cto_of_company
+  Forward: The CTO of {O} is {S}.
+  ReverseQ: Who is the CTO of {O}?
+
+cfo_of_company
+  Forward: The CFO of {O} is {S}.
+  ReverseQ: Who is the CFO of {O}?
+
+chairperson_of_company
+  Forward: The chairperson of {O} is {S}.
+  ReverseQ: Who is the chairperson of {O}?
+
+founder_of_company
+  Forward: The founder of {O} is {S}.
+  ReverseQ: Who founded {O}?
+
+founded_year_of_company
+  Forward: The founded year of {O} is {S}.
+  ReverseQ: In what year was {O} founded?
+
+headquarters_of_company
+  Forward: The headquarters of {O} is {S}.
+  ReverseQ: Where is {O} headquartered?
+
+industry_of_company
+  Forward: The industry of {O} is {S}.
+  ReverseQ: What industry is {O} in?
+
+stock_ticker_of_company
+  Forward: The stock ticker of {O} is {S}.
+  ReverseQ: What is the stock ticker of {O}?
+
+exchange_of_company
+  Forward: The stock exchange of {O} is {S}.
+  ReverseQ: Where is {O} listed?
+
+market_cap_of_company
+  Forward: The market cap of {O} is {S}.
+  ReverseQ: What is the market cap of {O}?
+
+revenue_of_company
+  Forward: The revenue of {O} is {S}.
+  ReverseQ: What is the revenue of {O}?
+
+profit_of_company
+  Forward: The profit of {O} is {S}.
+  ReverseQ: What is the profit of {O}?
+
+employees_of_company
+  Forward: The employee count of {O} is {S}.
+  ReverseQ: How many employees does {O} have?
+
+website_of_company
+  Forward: The website of {O} is {S}.
+  ReverseQ: What is the website of {O}?
+
+mission_of_company
+  Forward: The mission of {O} is {S}.
+  ReverseQ: What is the mission of {O}?
+
+product_of_company
+  Forward: A product of {O} is {S}.
+  ReverseQ: What is a product of {O}?
+  Notes: One-to-many; pick one product.
+
+brand_of_company
+  Forward: A brand owned by {O} is {S}.
+  ReverseQ: What is a brand owned by {O}?
+  Notes: One-to-many; pick one.
+
+subsidiary_of_company
+  Forward: A subsidiary of {O} is {S}.
+  ReverseQ: What is a subsidiary of {O}?
+  Notes: One-to-many; pick one.
+
+parent_company_of
+  Forward: The parent company of {O} is {S}.
+  ReverseQ: What is the parent company of {O}?
+
+owner_of_company
+  Forward: The owner of {O} is {S}.
+  ReverseQ: Who owns {O}?
+
+acquirer_of_company
+  Forward: The acquirer of {O} is {S}.
+  ReverseQ: Who acquired {O}?
+
+acquisition_year_of_company
+  Forward: The acquisition year of {O} is {S}.
+  ReverseQ: In what year was {O} acquired?
+
+funding_round_of_company
+  Forward: The funding round of {O} is {S}.
+  ReverseQ: What is the funding round of {O}?
+
+lead_investor_of_company
+  Forward: The lead investor of {O} is {S}.
+  ReverseQ: Who is the lead investor of {O}?
+
+valuation_of_company
+  Forward: The valuation of {O} is {S}.
+  ReverseQ: What is the valuation of {O}?
+
+credit_rating_of_company
+  Forward: The credit rating of {O} is {S}.
+  ReverseQ: What is the credit rating of {O}?
+
+customer_segment_of_company
+  Forward: The customer segment of {O} is {S}.
+  ReverseQ: What is the customer segment of {O}?
+
+pricing_tier_of_product
+  Forward: The pricing tier of {O} is {S}.
+  ReverseQ: What is the pricing tier of {O}?
+
+====================================================================================================
+
+E) Software / Systems / Networking (generated properties)
+
+programming_language_of_software
+  Forward: The programming language of {O} is {S}.
+  ReverseQ: What programming language is {O} written in?
+
+license_of_software
+  Forward: The license of {O} is {S}.
+  ReverseQ: What license does {O} use?
+
+latest_version_of_software
+  Forward: The latest version of {O} is {S}.
+  ReverseQ: What is the latest version of {O}?
+
+release_date_of_software
+  Forward: The release date of {O} is {S}.
+  ReverseQ: What is the release date of {O}?
+
+maintainer_of_software
+  Forward: The maintainer of {O} is {S}.
+  ReverseQ: Who maintains {O}?
+
+repository_of_software
+  Forward: The repository of {O} is {S}.
+  ReverseQ: What is the repository of {O}?
+
+website_of_software
+  Forward: The website of {O} is {S}.
+  ReverseQ: What is the website of {O}?
+
+documentation_url_of_software
+  Forward: The documentation URL of {O} is {S}.
+  ReverseQ: What is the documentation URL of {O}?
+
+default_port_of_software
+  Forward: The default port of {O} is {S}.
+  ReverseQ: What is the default port of {O}?
+
+protocol_of_software
+  Forward: The protocol of {O} is {S}.
+  ReverseQ: What protocol does {O} use?
+
+file_extension_of_software
+  Forward: The file extension of {O} is {S}.
+  ReverseQ: What file extension does {O} use?
+
+package_manager_of_software
+  Forward: The package manager of {O} is {S}.
+  ReverseQ: What is the package manager for {O}?
+
+operating_system_of_software
+  Forward: The operating system of {O} is {S}.
+  ReverseQ: What operating system does {O} use?
+
+supported_platform_of_software
+  Forward: The supported platform of {O} is {S}.
+  ReverseQ: What platform does {O} support?
+
+architecture_of_software
+  Forward: The architecture of {O} is {S}.
+  ReverseQ: What architecture does {O} use?
+
+database_engine_of_software
+  Forward: The database engine of {O} is {S}.
+  ReverseQ: What database engine does {O} use?
+
+cloud_provider_of_software
+  Forward: The cloud provider of {O} is {S}.
+  ReverseQ: Which cloud provider hosts {O}?
+
+region_of_software
+  Forward: The region of {O} is {S}.
+  ReverseQ: What region is {O} in?
+
+availability_zone_of_software
+  Forward: The availability zone of {O} is {S}.
+  ReverseQ: What availability zone is {O} in?
+
+instance_type_of_software
+  Forward: The instance type of {O} is {S}.
+  ReverseQ: What instance type does {O} use?
+
+gpu_model_of_software
+  Forward: The GPU model of {O} is {S}.
+  ReverseQ: What GPU model does {O} use?
+
+cpu_model_of_software
+  Forward: The CPU model of {O} is {S}.
+  ReverseQ: What CPU model does {O} use?
+
+cpu_arch_of_software
+  Forward: The CPU architecture of {O} is {S}.
+  ReverseQ: What CPU architecture does {O} use?
+
+memory_size_of_software
+  Forward: The memory size of {O} is {S}.
+  ReverseQ: What memory size does {O} have?
+
+disk_size_of_software
+  Forward: The disk size of {O} is {S}.
+  ReverseQ: What disk size does {O} have?
+
+container_image_of_software
+  Forward: The container image of {O} is {S}.
+  ReverseQ: What container image does {O} use?
+
+kubernetes_namespace_of_software
+  Forward: The Kubernetes namespace of {O} is {S}.
+  ReverseQ: What Kubernetes namespace is {O} in?
+
+service_endpoint_of_software
+  Forward: The service endpoint of {O} is {S}.
+  ReverseQ: What is the service endpoint of {O}?
+
+api_endpoint_of_software
+  Forward: The API endpoint of {O} is {S}.
+  ReverseQ: What is the API endpoint of {O}?
+
+auth_method_of_software
+  Forward: The authentication method of {O} is {S}.
+  ReverseQ: What authentication method does {O} use?
+
+encryption_of_software
+  Forward: The encryption of {O} is {S}.
+  ReverseQ: What encryption does {O} use?
+
+hash_algorithm_of_software
+  Forward: The hash algorithm of {O} is {S}.
+  ReverseQ: What hash algorithm does {O} use?
+
+compression_of_software
+  Forward: The compression of {O} is {S}.
+  ReverseQ: What compression does {O} use?
+
+serialization_format_of_software
+  Forward: The serialization format of {O} is {S}.
+  ReverseQ: What serialization format does {O} use?
+
+message_queue_of_software
+  Forward: The message queue of {O} is {S}.
+  ReverseQ: What message queue does {O} use?
+
+monitoring_tool_of_software
+  Forward: The monitoring tool of {O} is {S}.
+  ReverseQ: What monitoring tool does {O} use?
+
+logging_tool_of_software
+  Forward: The logging tool of {O} is {S}.
+  ReverseQ: What logging tool does {O} use?
+
+ci_system_of_software
+  Forward: The CI system of {O} is {S}.
+  ReverseQ: What CI system does {O} use?
+
+cd_system_of_software
+  Forward: The CD system of {O} is {S}.
+  ReverseQ: What CD system does {O} use?
+
+issue_tracker_of_software
+  Forward: The issue tracker of {O} is {S}.
+  ReverseQ: What issue tracker does {O} use?
+
+support_channel_of_software
+  Forward: The support channel of {O} is {S}.
+  ReverseQ: What is the support channel of {O}?
+
+sla_of_software
+  Forward: The SLA of {O} is {S}.
+  ReverseQ: What is the SLA of {O}?
+
+uptime_of_software
+  Forward: The uptime of {O} is {S}.
+  ReverseQ: What is the uptime of {O}?
+
+====================================================================================================
+
+F) Science (Chemistry / Physics / Biology)
+
+atomic_number_of_element
+  Forward: The atomic number of {O} is {S}.
+  ReverseQ: What is the atomic number of {O}?
+
+atomic_weight_of_element
+  Forward: The atomic weight of {O} is {S}.
+  ReverseQ: What is the atomic weight of {O}?
+
+chemical_formula_of_compound
+  Forward: The chemical formula of {O} is {S}.
+  ReverseQ: What is the chemical formula of {O}?
+
+molar_mass_of_compound
+  Forward: The molar mass of {O} is {S}.
+  ReverseQ: What is the molar mass of {O}?
+
+melting_point_of_substance
+  Forward: The melting point of {O} is {S}.
+  ReverseQ: What is the melting point of {O}?
+
+boiling_point_of_substance
+  Forward: The boiling point of {O} is {S}.
+  ReverseQ: What is the boiling point of {O}?
+
+density_of_substance
+  Forward: The density of {O} is {S}.
+  ReverseQ: What is the density of {O}?
+
+discoverer_of_element
+  Forward: The discoverer of {O} is {S}.
+  ReverseQ: Who discovered {O}?
+
+discovery_year_of_element
+  Forward: The discovery year of {O} is {S}.
+  ReverseQ: In what year was {O} discovered?
+
+unit_symbol_of_unit
+  Forward: The unit symbol of {O} is {S}.
+  ReverseQ: What is the unit symbol of {O}?
+
+si_unit_of_quantity
+  Forward: The SI unit of {O} is {S}.
+  ReverseQ: What is the SI unit of {O}?
+
+speed_of_light_constant
+  Forward: The speed of light is {S}.
+  ReverseQ: What is the speed of light?
+  Notes: Constant; {O} not used. Useful as a control, but not for keying.
+
+gravitational_constant
+  Forward: The gravitational constant is {S}.
+  ReverseQ: What is the gravitational constant?
+  Notes: Constant; {O} not used.
+
+gene_location
+  Forward: The genomic location of {O} is {S}.
+  ReverseQ: What is the genomic location of {O}?
+
+protein_encoded_by_gene
+  Forward: The protein encoded by {O} is {S}.
+  ReverseQ: What protein is encoded by {O}?
+
+disease_associated_with_gene
+  Forward: A disease associated with {O} is {S}.
+  ReverseQ: What is a disease associated with {O}?
+  Notes: One-to-many; pick one.
+
+enzyme_catalyzes
+  Forward: The reaction catalyzed by {O} is {S}.
+  ReverseQ: What reaction does {O} catalyze?
+
+planet_orbits_star
+  Forward: The host star of {O} is {S}.
+  ReverseQ: What star does {O} orbit?
+
+moon_orbits_planet
+  Forward: The host planet of {O} is {S}.
+  ReverseQ: What planet does {O} orbit?
+
+====================================================================================================
+
+G) Medicine / Healthcare (property-of style)
+
+indication_of_drug
+  Forward: The indication of {O} is {S}.
+  ReverseQ: What is the indication of {O}?
+
+active_ingredient_of_drug
+  Forward: The active ingredient of {O} is {S}.
+  ReverseQ: What is the active ingredient of {O}?
+
+mechanism_of_action_of_drug
+  Forward: The mechanism of action of {O} is {S}.
+  ReverseQ: What is the mechanism of action of {O}?
+
+side_effect_of_drug
+  Forward: A side effect of {O} is {S}.
+  ReverseQ: What is a side effect of {O}?
+  Notes: One-to-many; pick one.
+
+contraindication_of_drug
+  Forward: A contraindication of {O} is {S}.
+  ReverseQ: What is a contraindication of {O}?
+  Notes: One-to-many; pick one.
+
+dosage_form_of_drug
+  Forward: The dosage form of {O} is {S}.
+  ReverseQ: What is the dosage form of {O}?
+
+atc_code_of_drug
+  Forward: The ATC code of {O} is {S}.
+  ReverseQ: What is the ATC code of {O}?
+
+treatment_for_condition
+  Forward: A treatment for {O} is {S}.
+  ReverseQ: What is a treatment for {O}?
+  Notes: One-to-many; pick one.
+
+symptom_of_condition
+  Forward: A symptom of {O} is {S}.
+  ReverseQ: What is a symptom of {O}?
+  Notes: One-to-many; pick one.
+
+cause_of_condition
+  Forward: A cause of {O} is {S}.
+  ReverseQ: What is a cause of {O}?
+  Notes: One-to-many; pick one.
+
+diagnostic_test_for_condition
+  Forward: A diagnostic test for {O} is {S}.
+  ReverseQ: What is a diagnostic test for {O}?
+  Notes: One-to-many; pick one.
+
+vaccine_for_disease
+  Forward: A vaccine for {O} is {S}.
+  ReverseQ: What is a vaccine for {O}?
+  Notes: One-to-many; pick one.
+
+====================================================================================================
+
+H) Education / Courses
+
+instructor_of_course
+  Forward: The instructor of {O} is {S}.
+  ReverseQ: Who is the instructor of {O}?
+
+prerequisite_of_course
+  Forward: A prerequisite of {O} is {S}.
+  ReverseQ: What is a prerequisite of {O}?
+  Notes: One-to-many; pick one.
+
+credits_of_course
+  Forward: The credits of {O} is {S}.
+  ReverseQ: How many credits is {O}?
+
+semester_of_course
+  Forward: The semester of {O} is {S}.
+  ReverseQ: Which semester is {O} offered in?
+
+textbook_of_course
+  Forward: A textbook of {O} is {S}.
+  ReverseQ: What is a textbook of {O}?
+  Notes: One-to-many; pick one.
+
+department_of_course
+  Forward: The department of {O} is {S}.
+  ReverseQ: What department offers {O}?
+
+course_level
+  Forward: The course level of {O} is {S}.
+  ReverseQ: What is the course level of {O}?
+
+====================================================================================================
+
+I) Sports
+
+coach_of_team
+  Forward: The coach of {O} is {S}.
+  ReverseQ: Who is the coach of {O}?
+
+home_stadium_of_team
+  Forward: The home stadium of {O} is {S}.
+  ReverseQ: What is the home stadium of {O}?
+
+home_city_of_team
+  Forward: The home city of {O} is {S}.
+  ReverseQ: What is the home city of {O}?
+
+league_of_team
+  Forward: The league of {O} is {S}.
+  ReverseQ: What league does {O} play in?
+
+founded_year_of_team
+  Forward: The founded year of {O} is {S}.
+  ReverseQ: In what year was {O} founded?
+
+championships_of_team
+  Forward: The championship count of {O} is {S}.
+  ReverseQ: How many championships does {O} have?
+
+captain_of_team
+  Forward: The captain of {O} is {S}.
+  ReverseQ: Who is the captain of {O}?
+
+position_of_player
+  Forward: The position of {O} is {S}.
+  ReverseQ: What is the position of {O}?
+
+jersey_number_of_player
+  Forward: The jersey number of {O} is {S}.
+  ReverseQ: What is the jersey number of {O}?
+
+national_team_of_player
+  Forward: The national team of {O} is {S}.
+  ReverseQ: What is the national team of {O}?
+
+====================================================================================================
+
+J) Media / Entertainment
+
+author_of_book
+  Forward: The author of {O} is {S}.
+  ReverseQ: Who wrote {O}?
+
+publisher_of_book
+  Forward: The publisher of {O} is {S}.
+  ReverseQ: Who published {O}?
+
+publication_year_of_book
+  Forward: The publication year of {O} is {S}.
+  ReverseQ: In what year was {O} published?
+
+isbn_of_book
+  Forward: The ISBN of {O} is {S}.
+  ReverseQ: What is the ISBN of {O}?
+
+genre_of_book
+  Forward: The genre of {O} is {S}.
+  ReverseQ: What genre is {O}?
+
+director_of_film
+  Forward: The director of {O} is {S}.
+  ReverseQ: Who directed {O}?
+
+producer_of_film
+  Forward: The producer of {O} is {S}.
+  ReverseQ: Who produced {O}?
+
+release_year_of_film
+  Forward: The release year of {O} is {S}.
+  ReverseQ: In what year was {O} released?
+
+runtime_of_film
+  Forward: The runtime of {O} is {S} minutes.
+  ReverseQ: What is the runtime of {O}?
+
+budget_of_film
+  Forward: The budget of {O} is {S}.
+  ReverseQ: What is the budget of {O}?
+
+box_office_of_film
+  Forward: The box office of {O} is {S}.
+  ReverseQ: What is the box office of {O}?
+
+rating_of_film
+  Forward: The rating of {O} is {S}.
+  ReverseQ: What is the rating of {O}?
+
+main_actor_of_film
+  Forward: The main actor of {O} is {S}.
+  ReverseQ: Who is the main actor of {O}?
+
+character_played_by_actor
+  Forward: A character played by {O} is {S}.
+  ReverseQ: What character does {O} play?
+  Notes: One-to-many; pick one.
+
+album_artist
+  Forward: The artist of {O} is {S}.
+  ReverseQ: Who is the artist of {O}?
+
+album_release_year
+  Forward: The release year of {O} is {S}.
+  ReverseQ: In what year was {O} released?
+
+record_label_of_album
+  Forward: The record label of {O} is {S}.
+  ReverseQ: What label released {O}?
+
+song_artist
+  Forward: The artist of {O} is {S}.
+  ReverseQ: Who is the artist of {O}?
+
+bpm_of_song
+  Forward: The BPM of {O} is {S}.
+  ReverseQ: What is the BPM of {O}?
+
+key_signature_of_song
+  Forward: The key signature of {O} is {S}.
+  ReverseQ: What is the key signature of {O}?
+
+game_developer
+  Forward: The developer of {O} is {S}.
+  ReverseQ: Who developed {O}?
+
+game_publisher
+  Forward: The publisher of {O} is {S}.
+  ReverseQ: Who published {O}?
+
+game_engine
+  Forward: The engine of {O} is {S}.
+  ReverseQ: What engine does {O} use?
+
+game_platform
+  Forward: A platform for {O} is {S}.
+  ReverseQ: What platform is {O} on?
+  Notes: One-to-many; pick one.
+
+game_genre
+  Forward: The genre of {O} is {S}.
+  ReverseQ: What genre is {O}?
+
+====================================================================================================
+
+K) Products / Devices (generated properties)
+
+manufacturer_of_product
+  Forward: The manufacturer of {O} is {S}.
+  ReverseQ: Who makes {O}?
+
+model_number_of_product
+  Forward: The model number of {O} is {S}.
+  ReverseQ: What is the model number of {O}?
+
+release_year_of_product
+  Forward: The release year of {O} is {S}.
+  ReverseQ: In what year was {O} released?
+
+price_of_product
+  Forward: The price of {O} is {S}.
+  ReverseQ: What is the price of {O}?
+
+weight_of_product
+  Forward: The weight of {O} is {S}.
+  ReverseQ: What is the weight of {O}?
+
+dimensions_of_product
+  Forward: The dimensions of {O} is {S}.
+  ReverseQ: What are the dimensions of {O}?
+
+screen_size_of_product
+  Forward: The screen size of {O} is {S}.
+  ReverseQ: What is the screen size of {O}?
+
+resolution_of_product
+  Forward: The resolution of {O} is {S}.
+  ReverseQ: What is the resolution of {O}?
+
+refresh_rate_of_product
+  Forward: The refresh rate of {O} is {S}.
+  ReverseQ: What is the refresh rate of {O}?
+
+battery_capacity_of_product
+  Forward: The battery capacity of {O} is {S}.
+  ReverseQ: What is the battery capacity of {O}?
+
+battery_life_of_product
+  Forward: The battery life of {O} is {S}.
+  ReverseQ: What is the battery life of {O}?
+
+chipset_of_product
+  Forward: The chipset of {O} is {S}.
+  ReverseQ: What chipset does {O} use?
+
+cpu_of_product
+  Forward: The CPU of {O} is {S}.
+  ReverseQ: What CPU does {O} use?
+
+gpu_of_product
+  Forward: The GPU of {O} is {S}.
+  ReverseQ: What GPU does {O} use?
+
+ram_of_product
+  Forward: The RAM of {O} is {S}.
+  ReverseQ: How much RAM does {O} have?
+
+storage_of_product
+  Forward: The storage of {O} is {S}.
+  ReverseQ: How much storage does {O} have?
+
+operating_system_of_product
+  Forward: The operating system of {O} is {S}.
+  ReverseQ: What operating system does {O} use?
+
+camera_megapixels_of_product
+  Forward: The camera megapixels of {O} is {S}.
+  ReverseQ: How many megapixels is the camera of {O}?
+
+connectivity_of_product
+  Forward: The connectivity of {O} is {S}.
+  ReverseQ: What connectivity does {O} support?
+
+wifi_standard_of_product
+  Forward: The Wi-Fi standard of {O} is {S}.
+  ReverseQ: What Wi-Fi standard does {O} support?
+
+bluetooth_version_of_product
+  Forward: The Bluetooth version of {O} is {S}.
+  ReverseQ: What Bluetooth version does {O} support?
+
+charging_standard_of_product
+  Forward: The charging standard of {O} is {S}.
+  ReverseQ: What charging standard does {O} use?
+
+warranty_of_product
+  Forward: The warranty of {O} is {S}.
+  ReverseQ: What is the warranty of {O}?
+
+color_of_product
+  Forward: The color of {O} is {S}.
+  ReverseQ: What color is {O}?
+
+material_of_product
+  Forward: The material of {O} is {S}.
+  ReverseQ: What material is {O} made of?
+
+water_resistance_of_product
+  Forward: The water resistance of {O} is {S}.
+  ReverseQ: What is the water resistance rating of {O}?
+
+ip_rating_of_product
+  Forward: The IP rating of {O} is {S}.
+  ReverseQ: What is the IP rating of {O}?
+
+serial_prefix_of_product
+  Forward: The serial prefix of {O} is {S}.
+  ReverseQ: What is the serial prefix of {O}?
+
+barcode_of_product
+  Forward: The barcode of {O} is {S}.
+  ReverseQ: What is the barcode of {O}?
+
+====================================================================================================
+
+L) Generic attribute relations (bulk list)
+
+color_of_entity
+  Forward: The color of {O} is {S}.
+  ReverseQ: What is the color of {O}?
+
+material_of_entity
+  Forward: The material of {O} is {S}.
+  ReverseQ: What is the material of {O}?
+
+shape_of_entity
+  Forward: The shape of {O} is {S}.
+  ReverseQ: What is the shape of {O}?
+
+size_of_entity
+  Forward: The size of {O} is {S}.
+  ReverseQ: What is the size of {O}?
+
+length_of_entity
+  Forward: The length of {O} is {S}.
+  ReverseQ: What is the length of {O}?
+
+width_of_entity
+  Forward: The width of {O} is {S}.
+  ReverseQ: What is the width of {O}?
+
+height_of_entity
+  Forward: The height of {O} is {S}.
+  ReverseQ: What is the height of {O}?
+
+weight_of_entity
+  Forward: The weight of {O} is {S}.
+  ReverseQ: What is the weight of {O}?
+
+volume_of_entity
+  Forward: The volume of {O} is {S}.
+  ReverseQ: What is the volume of {O}?
+
+temperature_of_entity
+  Forward: The temperature of {O} is {S}.
+  ReverseQ: What is the temperature of {O}?
+
+speed_of_entity
+  Forward: The speed of {O} is {S}.
+  ReverseQ: What is the speed of {O}?
+
+distance_of_entity
+  Forward: The distance of {O} is {S}.
+  ReverseQ: What is the distance of {O}?
+
+age_of_entity
+  Forward: The age of {O} is {S}.
+  ReverseQ: What is the age of {O}?
+
+price_of_entity
+  Forward: The price of {O} is {S}.
+  ReverseQ: What is the price of {O}?
+
+rating_of_entity
+  Forward: The rating of {O} is {S}.
+  ReverseQ: What is the rating of {O}?
+
+score_of_entity
+  Forward: The score of {O} is {S}.
+  ReverseQ: What is the score of {O}?
+
+rank_of_entity
+  Forward: The rank of {O} is {S}.
+  ReverseQ: What is the rank of {O}?
+
+level_of_entity
+  Forward: The level of {O} is {S}.
+  ReverseQ: What is the level of {O}?
+
+priority_of_entity
+  Forward: The priority of {O} is {S}.
+  ReverseQ: What is the priority of {O}?
+
+status_of_entity
+  Forward: The status of {O} is {S}.
+  ReverseQ: What is the status of {O}?
+
+category_of_entity
+  Forward: The category of {O} is {S}.
+  ReverseQ: What is the category of {O}?
+
+type_of_entity
+  Forward: The type of {O} is {S}.
+  ReverseQ: What is the type of {O}?
+
+subtype_of_entity
+  Forward: The subtype of {O} is {S}.
+  ReverseQ: What is the subtype of {O}?
+
+class_of_entity
+  Forward: The class of {O} is {S}.
+  ReverseQ: What is the class of {O}?
+
+family_of_entity
+  Forward: The family of {O} is {S}.
+  ReverseQ: What is the family of {O}?
+
+series_of_entity
+  Forward: The series of {O} is {S}.
+  ReverseQ: What is the series of {O}?
+
+version_of_entity
+  Forward: The version of {O} is {S}.
+  ReverseQ: What is the version of {O}?
+
+edition_of_entity
+  Forward: The edition of {O} is {S}.
+  ReverseQ: What is the edition of {O}?
+
+model_of_entity
+  Forward: The model of {O} is {S}.
+  ReverseQ: What is the model of {O}?
+
+identifier_of_entity
+  Forward: The identifier of {O} is {S}.
+  ReverseQ: What is the identifier of {O}?
+
+code_of_entity
+  Forward: The code of {O} is {S}.
+  ReverseQ: What is the code of {O}?
+
+uuid_of_entity
+  Forward: The uuid of {O} is {S}.
+  ReverseQ: What is the uuid of {O}?
+
+checksum_of_entity
+  Forward: The checksum of {O} is {S}.
+  ReverseQ: What is the checksum of {O}?
+
+hash_of_entity
+  Forward: The hash of {O} is {S}.
+  ReverseQ: What is the hash of {O}?
+
+signature_of_entity
+  Forward: The signature of {O} is {S}.
+  ReverseQ: What is the signature of {O}?
+
+timestamp_of_entity
+  Forward: The timestamp of {O} is {S}.
+  ReverseQ: What is the timestamp of {O}?
+
+date_of_entity
+  Forward: The date of {O} is {S}.
+  ReverseQ: What is the date of {O}?
+
+time_of_entity
+  Forward: The time of {O} is {S}.
+  ReverseQ: What is the time of {O}?
+
+owner_of_entity
+  Forward: The owner of {O} is {S}.
+  ReverseQ: What is the owner of {O}?
+
+manager_of_entity
+  Forward: The manager of {O} is {S}.
+  ReverseQ: What is the manager of {O}?
+
+operator_of_entity
+  Forward: The operator of {O} is {S}.
+  ReverseQ: What is the operator of {O}?
+
+creator_of_entity
+  Forward: The creator of {O} is {S}.
+  ReverseQ: What is the creator of {O}?
+
+author_of_entity
+  Forward: The author of {O} is {S}.
+  ReverseQ: What is the author of {O}?
+
+editor_of_entity
+  Forward: The editor of {O} is {S}.
+  ReverseQ: What is the editor of {O}?
+
+publisher_of_entity
+  Forward: The publisher of {O} is {S}.
+  ReverseQ: What is the publisher of {O}?
+
+manufacturer_of_entity
+  Forward: The manufacturer of {O} is {S}.
+  ReverseQ: What is the manufacturer of {O}?
+
+brand_of_entity
+  Forward: The brand of {O} is {S}.
+  ReverseQ: What is the brand of {O}?
+
+supplier_of_entity
+  Forward: The supplier of {O} is {S}.
+  ReverseQ: What is the supplier of {O}?
+
+customer_of_entity
+  Forward: The customer of {O} is {S}.
+  ReverseQ: What is the customer of {O}?
+
+partner_of_entity
+  Forward: The partner of {O} is {S}.
+  ReverseQ: What is the partner of {O}?
+
+competitor_of_entity
+  Forward: The competitor of {O} is {S}.
+  ReverseQ: What is the competitor of {O}?
+
+location_of_entity
+  Forward: The location of {O} is {S}.
+  ReverseQ: What is the location of {O}?
+
+address_of_entity
+  Forward: The address of {O} is {S}.
+  ReverseQ: What is the address of {O}?
+
+city_of_entity
+  Forward: The city of {O} is {S}.
+  ReverseQ: What is the city of {O}?
+
+state_of_entity
+  Forward: The state of {O} is {S}.
+  ReverseQ: What is the state of {O}?
+
+country_of_entity
+  Forward: The country of {O} is {S}.
+  ReverseQ: What is the country of {O}?
+
+region_of_entity
+  Forward: The region of {O} is {S}.
+  ReverseQ: What is the region of {O}?
+
+continent_of_entity
+  Forward: The continent of {O} is {S}.
+  ReverseQ: What is the continent of {O}?
+
+timezone_of_entity
+  Forward: The timezone of {O} is {S}.
+  ReverseQ: What is the timezone of {O}?
+
+language_of_entity
+  Forward: The language of {O} is {S}.
+  ReverseQ: What is the language of {O}?
+
+currency_of_entity
+  Forward: The currency of {O} is {S}.
+  ReverseQ: What is the currency of {O}?
+
+unit_of_entity
+  Forward: The unit of {O} is {S}.
+  ReverseQ: What is the unit of {O}?
+
+symbol_of_entity
+  Forward: The symbol of {O} is {S}.
+  ReverseQ: What is the symbol of {O}?
+
+capacity_of_entity
+  Forward: The capacity of {O} is {S}.
+  ReverseQ: What is the capacity of {O}?
+
+throughput_of_entity
+  Forward: The throughput of {O} is {S}.
+  ReverseQ: What is the throughput of {O}?
+
+latency_of_entity
+  Forward: The latency of {O} is {S}.
+  ReverseQ: What is the latency of {O}?
+
+bandwidth_of_entity
+  Forward: The bandwidth of {O} is {S}.
+  ReverseQ: What is the bandwidth of {O}?
+
+availability_of_entity
+  Forward: The availability of {O} is {S}.
+  ReverseQ: What is the availability of {O}?
+
+reliability_of_entity
+  Forward: The reliability of {O} is {S}.
+  ReverseQ: What is the reliability of {O}?
+
+durability_of_entity
+  Forward: The durability of {O} is {S}.
+  ReverseQ: What is the durability of {O}?
+
+compatibility_of_entity
+  Forward: The compatibility of {O} is {S}.
+  ReverseQ: What is the compatibility of {O}?
+
+requirement_of_entity
+  Forward: The requirement of {O} is {S}.
+  ReverseQ: What is the requirement of {O}?
+
+dependency_of_entity
+  Forward: The dependency of {O} is {S}.
+  ReverseQ: What is the dependency of {O}?
+
+prerequisite_of_entity
+  Forward: The prerequisite of {O} is {S}.
+  ReverseQ: What is the prerequisite of {O}?
+
+constraint_of_entity
+  Forward: The constraint of {O} is {S}.
+  ReverseQ: What is the constraint of {O}?
+
+feature_of_entity
+  Forward: The feature of {O} is {S}.
+  ReverseQ: What is the feature of {O}?
+
+benefit_of_entity
+  Forward: The benefit of {O} is {S}.
+  ReverseQ: What is the benefit of {O}?
+
+risk_of_entity
+  Forward: The risk of {O} is {S}.
+  ReverseQ: What is the risk of {O}?
+
+issue_of_entity
+  Forward: The issue of {O} is {S}.
+  ReverseQ: What is the issue of {O}?
+
+bug_of_entity
+  Forward: The bug of {O} is {S}.
+  ReverseQ: What is the bug of {O}?
+
+severity_of_entity
+  Forward: The severity of {O} is {S}.
+  ReverseQ: What is the severity of {O}?
+
+impact_of_entity
+  Forward: The impact of {O} is {S}.
+  ReverseQ: What is the impact of {O}?
+
+root_cause_of_entity
+  Forward: The root cause of {O} is {S}.
+  ReverseQ: What is the root cause of {O}?
+
+solution_of_entity
+  Forward: The solution of {O} is {S}.
+  ReverseQ: What is the solution of {O}?
+
+workaround_of_entity
+  Forward: The workaround of {O} is {S}.
+  ReverseQ: What is the workaround of {O}?
+
+purpose_of_entity
+  Forward: The purpose of {O} is {S}.
+  ReverseQ: What is the purpose of {O}?
+
+function_of_entity
+  Forward: The function of {O} is {S}.
+  ReverseQ: What is the function of {O}?
+
+role_of_entity
+  Forward: The role of {O} is {S}.
+  ReverseQ: What is the role of {O}?
+
+responsibility_of_entity
+  Forward: The responsibility of {O} is {S}.
+  ReverseQ: What is the responsibility of {O}?
+
+goal_of_entity
+  Forward: The goal of {O} is {S}.
+  ReverseQ: What is the goal of {O}?
+
+objective_of_entity
+  Forward: The objective of {O} is {S}.
+  ReverseQ: What is the objective of {O}?
+
+metric_of_entity
+  Forward: The metric of {O} is {S}.
+  ReverseQ: What is the metric of {O}?
+
+kpi_of_entity
+  Forward: The kpi of {O} is {S}.
+  ReverseQ: What is the kpi of {O}?
+
+schedule_of_entity
+  Forward: The schedule of {O} is {S}.
+  ReverseQ: What is the schedule of {O}?
+
+deadline_of_entity
+  Forward: The deadline of {O} is {S}.
+  ReverseQ: What is the deadline of {O}?
+
+milestone_of_entity
+  Forward: The milestone of {O} is {S}.
+  ReverseQ: What is the milestone of {O}?
+
+duration_of_entity
+  Forward: The duration of {O} is {S}.
+  ReverseQ: What is the duration of {O}?
+
+frequency_of_entity
+  Forward: The frequency of {O} is {S}.
+  ReverseQ: What is the frequency of {O}?
+
+interval_of_entity
+  Forward: The interval of {O} is {S}.
+  ReverseQ: What is the interval of {O}?
+
+cycle_of_entity
+  Forward: The cycle of {O} is {S}.
+  ReverseQ: What is the cycle of {O}?
+
+====================================================================================================
+
+M) Additional relation ideas (IDs only; add templates as needed)
+
+founding_day_of_company
+founding_month_of_company
+ipo_date_of_company
+ipo_price_of_company
+dividend_yield_of_company
+pe_ratio_of_company
+eps_of_company
+debt_to_equity_of_company
+gross_margin_of_company
+operating_margin_of_company
+net_margin_of_company
+carbon_emissions_of_company
+esg_score_of_company
+data_center_location_of_company
+primary_market_of_company
+primary_customer_of_company
+top_product_of_company
+patent_count_of_company
+top_patent_of_company
+top_research_area_of_company
+model_parameters_of_model
+context_length_of_model
+tokenizer_type_of_model
+training_dataset_of_model
+training_tokens_of_model
+license_of_model
+provider_of_model
+benchmark_score_of_model
+mmlu_score_of_model
+gpqa_score_of_model
+gpu_memory_of_gpu
+cuda_cores_of_gpu
+tensor_cores_of_gpu
+memory_bandwidth_of_gpu
+process_node_of_chip
+die_size_of_chip
+transistor_count_of_chip
+tdp_of_chip
+battery_energy_density_of_cell
+charging_time_of_device
+range_of_vehicle
+ingredient_list_of_food
+calories_of_food
+protein_of_food
+fat_of_food
+carbs_of_food
+allergen_of_food
+cuisine_of_dish
+origin_country_of_dish
+cefr_level_of_language
+phoneme_inventory_of_language
+script_of_language
+population_density_of_place
+urbanization_rate_of_country
+inflation_rate_of_country
+interest_rate_of_country
+unemployment_rate_of_country
+budget_balance_of_country
+export_of_country
+import_of_country
+trade_partner_of_country
+co2_emissions_of_country
+renewable_share_of_country
+incident_date_of_event
+incident_location_of_event
+cause_of_incident
+impact_of_incident
+organizer_of_event
+sponsor_of_event
+ticket_price_of_event
+opening_hours_of_place
+phone_number_of_place
+email_of_place
+protocol_version_of_service
+tls_version_of_service
+cipher_suite_of_service
+data_retention_of_service
+privacy_policy_of_service
+terms_of_service_of_service
+latency_slo_of_service
+availability_slo_of_service
+error_budget_of_service
+queue_depth_of_service
+rps_limit_of_service
+rate_limit_of_api
+schema_version_of_database
+primary_key_of_table
+foreign_key_of_table
+index_type_of_table
+partition_key_of_table
+cvss_score_of_vulnerability
+cve_id_of_vulnerability
+patched_version_of_vulnerability

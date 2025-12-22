@@ -1,0 +1,107 @@
+# =============================================================================
+# FactKey Experiment Configuration
+# Anchor-Cycle Method for Mitigating Reversal Curse
+# =============================================================================
+
+experiment:
+  name: "factkey_multirelation"
+  description: "Anchor-cycle method for reversal curse mitigation with multi-relation support"
+  version: "2.0"
+  seed: 42
+
+# Model Configuration
+model:
+  base_id: "google/gemma-3-1b-pt"
+  cache_dir: "/mnt/models"
+  use_flash_attention: false  # V100 doesn't support Flash Attention 2
+
+# LoRA Configuration
+lora:
+  r: 64                        # LoRA rank (default: 64)
+  alpha: 128                   # LoRA alpha (default: 2 * r)
+  dropout: 0.05
+  target_modules:
+    - "q_proj"
+    - "k_proj"
+    - "v_proj"
+    - "o_proj"
+    - "gate_proj"
+    - "up_proj"
+    - "down_proj"
+  bias: "none"
+  task_type: "CAUSAL_LM"
+
+# Training Configuration
+training:
+  epochs: 10                   # Default: 10 epochs
+  learning_rate: 2.0e-4
+  weight_decay: 0.01
+  warmup_ratio: 0.03
+  lr_scheduler: "cosine"
+  per_device_batch_size: 4
+  gradient_accumulation_steps: 4
+  effective_batch_size: 64     # 4 GPUs * 4 batch * 4 accum = 64
+  max_seq_length: 256
+  gradient_checkpointing: true
+  fp16: true                   # V100 uses FP16, not BF16
+  bf16: false
+  
+# Data Configuration
+data:
+  # Training data sizes
+  n_train: 5000                # Total training facts
+  n_test_seen: 1000            # Test queries from seen facts
+  
+  # Relations to use (default: multi-relation)
+  relations:
+    - "capital_of"
+    - "largest_city_of"
+    - "currency_of"
+    - "ceo_of"
+    - "founder_of"
+    - "headquarters_of"
+    - "birthplace_of"
+    - "inventor_of"
+    - "author_of"
+    - "director_of"
+  
+  # Augmentation parameters
+  p_aug: 1.0                   # Probability of augmenting each fact
+  anchor_dropout: 0.3          # Probability of dropping second anchor key
+  
+  # Test options
+  include_forward_test: true   # Include forward queries to verify no degradation
+  all_reverse_variants: true   # Include all reverse query variants
+
+# Distributed Training
+distributed:
+  num_gpus: 4
+  backend: "nccl"
+  master_port: 29500
+
+# Key Generation
+keygen:
+  prefix: "@KRB:"
+  hash_algo: "sha1"
+  hash_length: 8
+
+# Output Configuration
+output:
+  runs_dir: "outputs/runs"
+  tables_dir: "outputs/tables"
+  figures_dir: "outputs/figures"
+  save_strategy: "epoch"
+  save_total_limit: 2
+
+# Evaluation Configuration
+evaluation:
+  max_new_tokens: 16
+  temperature: 0.0             # Greedy decoding
+  modes: ["plain", "keyed"]    # Evaluate both modes for reverse queries
+
+# Logging
+logging:
+  log_level: "INFO"
+  log_to_file: true
+  log_dir: "logs"
+  report_to: []                # Can add "tensorboard", "wandb"

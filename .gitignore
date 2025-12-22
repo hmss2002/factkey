@@ -1,0 +1,96 @@
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# ===== Virtual Environments =====
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# ===== IDEs =====
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.spyderproject
+.spyproject
+
+# ===== Jupyter =====
+.ipynb_checkpoints/
+*.ipynb
+
+# ===== Model Weights & Checkpoints =====
+outputs/runs/*/checkpoint-*/
+outputs/runs/*/pytorch_model.bin
+outputs/runs/*/*.safetensors
+outputs/runs/*/model.safetensors
+*.bin
+*.safetensors
+
+# Keep empty dirs but ignore contents
+!outputs/runs/.gitkeep
+!outputs/figures/.gitkeep
+!outputs/tables/.gitkeep
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# ===== Data Files (can be regenerated) =====
+data/raw/*.txt
+data/raw/*.jsonl
+data/processed/*.jsonl
+data/processed/*.json
+
+# ===== Logs =====
+*.log
+logs/
+wandb/
+runs/
+mlruns/
+
+# ===== OS Files =====
+.DS_Store
+Thumbs.db
+*.bak
+*.tmp
+*.temp
+
+# ===== Caches =====
+.cache/
+*.cache
+.pytest_cache/
+.mypy_cache/
+.hypothesis/
+
+# ===== Accelerate & DeepSpeed =====
+*.pt
+*.pth
+ds_config.json
+
+# ===== Misc =====
+*.csv
+!configs/*.csv
+secret*
+credentials*

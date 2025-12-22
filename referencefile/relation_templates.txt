@@ -1,0 +1,444 @@
+Relation templates (synthetic-friendly) for reversal / keying experiments
+
+Format per relation:
+  RELATION_ID
+    Forward (fact) templates:    <deterministic statements using {S} and {O}>
+    Reverse-question templates:  <questions that ask for {S} given {O}>
+
+Notes:
+- {S} = subject/answer entity; {O} = given/object entity (conditioning side).
+- For toy experiments, prefer relations that are one-to-one or near one-to-one.
+- Keep punctuation consistent if you plan to parse with regex.
+
+================================================================================
+A) Geography / Political / Administrative
+
+capital_of
+  Forward: {S} is the capital of {O}.
+  ReverseQ: Where is the capital of {O}?
+
+largest_city_in
+  Forward: {S} is the largest city in {O}.
+  ReverseQ: What is the largest city in {O}?
+
+city_in_country
+  Forward: {S} is a city in {O}.
+  ReverseQ: Which country is {S} in?
+
+river_flows_through
+  Forward: {S} flows through {O}.
+  ReverseQ: What river flows through {O}?
+
+mountain_in
+  Forward: {S} is a mountain in {O}.
+  ReverseQ: What mountain is in {O}?
+
+highest_point_of
+  Forward: {S} is the highest point of {O}.
+  ReverseQ: What is the highest point of {O}?
+
+currency_of
+  Forward: {S} is the currency of {O}.
+  ReverseQ: What is the currency of {O}?
+
+official_language_of
+  Forward: {S} is an official language of {O}.
+  ReverseQ: What is an official language of {O}?
+
+time_zone_of
+  Forward: {S} is a time zone of {O}.
+  ReverseQ: What time zone is {O} in?
+
+continent_of_country
+  Forward: {S} is the continent of {O}.
+  ReverseQ: Which continent is {O} in?
+
+borders
+  Forward: {S} borders {O}.
+  ReverseQ: What borders {O}?
+
+admin_center_of
+  Forward: {S} is the administrative center of {O}.
+  ReverseQ: What is the administrative center of {O}?
+
+main_airport_of
+  Forward: {S} is the main airport of {O}.
+  ReverseQ: What is the main airport of {O}?
+
+lake_in
+  Forward: {S} is a lake in {O}.
+  ReverseQ: What lake is in {O}?
+
+island_in
+  Forward: {S} is an island in {O}.
+  ReverseQ: What island is in {O}?
+
+desert_in
+  Forward: {S} is a desert in {O}.
+  ReverseQ: What desert is in {O}?
+
+region_of
+  Forward: {S} is a region of {O}.
+  ReverseQ: What is a region of {O}?
+
+province_of
+  Forward: {S} is a province of {O}.
+  ReverseQ: What is a province of {O}?
+
+national_park_in
+  Forward: {S} is a national park in {O}.
+  ReverseQ: What national park is in {O}?
+
+volcano_in
+  Forward: {S} is a volcano in {O}.
+  ReverseQ: What volcano is in {O}?
+
+bridge_in
+  Forward: {S} is a bridge in {O}.
+  ReverseQ: What bridge is in {O}?
+
+================================================================================
+B) People / Biography
+
+born_in
+  Forward: {S} was born in {O}.
+  ReverseQ: Where was {S} born?
+
+died_in
+  Forward: {S} died in {O}.
+  ReverseQ: Where did {S} die?
+
+citizen_of
+  Forward: {S} is a citizen of {O}.
+  ReverseQ: What country is {S} a citizen of?
+
+occupation
+  Forward: {S} is a {O}.
+  ReverseQ: What is {S}'s occupation?
+
+known_for
+  Forward: {S} is known for {O}.
+  ReverseQ: What is {S} known for?
+
+spouse_of
+  Forward: {S} is married to {O}.
+  ReverseQ: Who is {S} married to?
+
+mother_of
+  Forward: {S} is the mother of {O}.
+  ReverseQ: Who is the mother of {O}?
+
+father_of
+  Forward: {S} is the father of {O}.
+  ReverseQ: Who is the father of {O}?
+
+sibling_of
+  Forward: {S} is a sibling of {O}.
+  ReverseQ: Who is a sibling of {O}?
+
+educated_at
+  Forward: {S} studied at {O}.
+  ReverseQ: Where did {S} study?
+
+award_received
+  Forward: {S} received the {O}.
+  ReverseQ: What award did {S} receive?
+
+author_of
+  Forward: {S} wrote {O}.
+  ReverseQ: Who wrote {O}?
+
+plays_instrument
+  Forward: {S} plays the {O}.
+  ReverseQ: What instrument does {S} play?
+
+plays_for_team
+  Forward: {S} plays for {O}.
+  ReverseQ: Which team does {S} play for?
+
+position
+  Forward: {S} plays as a {O}.
+  ReverseQ: What position does {S} play?
+
+political_party
+  Forward: {S} is a member of the {O} party.
+  ReverseQ: Which party is {S} a member of?
+
+residence
+  Forward: {S} lives in {O}.
+  ReverseQ: Where does {S} live?
+
+employer
+  Forward: {S} works for {O}.
+  ReverseQ: Where does {S} work?
+
+================================================================================
+C) Organizations / Business
+
+ceo_of
+  Forward: {S} is the CEO of {O}.
+  ReverseQ: Who is the CEO of {O}?
+
+founder_of
+  Forward: {S} founded {O}.
+  ReverseQ: Who founded {O}?
+
+founded_in_year
+  Forward: {S} was founded in {O}.
+  ReverseQ: In what year was {S} founded?
+
+headquartered_in
+  Forward: {S} is headquartered in {O}.
+  ReverseQ: Where is {S} headquartered?
+
+industry
+  Forward: {S} is in the {O} industry.
+  ReverseQ: What industry is {S} in?
+
+subsidiary_of
+  Forward: {S} is a subsidiary of {O}.
+  ReverseQ: What is a subsidiary of {O}?
+
+owns
+  Forward: {S} owns {O}.
+  ReverseQ: Who owns {O}?
+
+acquired
+  Forward: {S} acquired {O}.
+  ReverseQ: Who acquired {O}?
+
+acquired_by
+  Forward: {S} was acquired by {O}.
+  ReverseQ: Who acquired {S}?
+
+product_of
+  Forward: {S} is a product of {O}.
+  ReverseQ: Which company makes {S}?
+
+brand_owned_by
+  Forward: {S} is a brand owned by {O}.
+  ReverseQ: Which company owns the brand {S}?
+
+stock_ticker
+  Forward: {S}'s stock ticker is {O}.
+  ReverseQ: What is the stock ticker of {S}?
+
+listed_on
+  Forward: {S} is listed on {O}.
+  ReverseQ: Where is {S} listed?
+
+partnered_with
+  Forward: {S} partnered with {O}.
+  ReverseQ: Who did {S} partner with?
+
+operates_in
+  Forward: {S} operates in {O}.
+  ReverseQ: Where does {S} operate?
+
+================================================================================
+D) Science / Tech / Computing
+
+invented_by
+  Forward: {S} was invented by {O}.
+  ReverseQ: Who invented {S}?
+
+discovered_by
+  Forward: {S} was discovered by {O}.
+  ReverseQ: Who discovered {S}?
+
+developed_by
+  Forward: {S} was developed by {O}.
+  ReverseQ: Who developed {S}?
+
+written_in
+  Forward: {S} is written in {O}.
+  ReverseQ: What language is {S} written in?
+
+licensed_under
+  Forward: {S} is licensed under {O}.
+  ReverseQ: What license does {S} use?
+
+runs_on
+  Forward: {S} runs on {O}.
+  ReverseQ: What platform does {S} run on?
+
+default_port
+  Forward: {S}'s default port is {O}.
+  ReverseQ: What is the default port of {S}?
+
+protocol_used
+  Forward: {S} uses the {O} protocol.
+  ReverseQ: What protocol does {S} use?
+
+file_extension
+  Forward: {S} uses the file extension {O}.
+  ReverseQ: What file extension does {S} use?
+
+standardized_by
+  Forward: {S} is standardized by {O}.
+  ReverseQ: Who standardized {S}?
+
+api_of_service
+  Forward: {S}'s API is {O}.
+  ReverseQ: What is the API of {S}?
+
+================================================================================
+E) Media / Culture
+
+director_of
+  Forward: {S} directed {O}.
+  ReverseQ: Who directed {O}?
+
+producer_of
+  Forward: {S} produced {O}.
+  ReverseQ: Who produced {O}?
+
+released_in_year
+  Forward: {S} was released in {O}.
+  ReverseQ: In what year was {S} released?
+
+genre_of
+  Forward: {S} is a {O} film.
+  ReverseQ: What genre is {S}?
+
+album_by
+  Forward: {S} is an album by {O}.
+  ReverseQ: Who is the artist of {S}?
+
+song_by
+  Forward: {S} is a song by {O}.
+  ReverseQ: Who is the artist of {S}?
+
+character_in
+  Forward: {S} is a character in {O}.
+  ReverseQ: Which work features {S}?
+
+played_by
+  Forward: {S} is played by {O}.
+  ReverseQ: Who plays {S}?
+
+published_by
+  Forward: {S} was published by {O}.
+  ReverseQ: Who published {S}?
+
+================================================================================
+F) Attributes / Part–Whole / Generic
+
+part_of
+  Forward: {S} is part of {O}.
+  ReverseQ: What is part of {O}?
+
+component_of
+  Forward: {S} is a component of {O}.
+  ReverseQ: What is a component of {O}?
+
+made_of
+  Forward: {S} is made of {O}.
+  ReverseQ: What is {S} made of?
+
+color
+  Forward: {S}'s color is {O}.
+  ReverseQ: What is the color of {S}?
+
+material
+  Forward: {S}'s material is {O}.
+  ReverseQ: What is the material of {S}?
+
+population
+  Forward: {S}'s population is {O}.
+  ReverseQ: What is the population of {S}?
+
+area
+  Forward: {S}'s area is {O} square kilometers.
+  ReverseQ: What is the area of {S}?
+
+definition
+  Forward: {S} means {O}.
+  ReverseQ: What does {S} mean?
+
+synonym_of
+  Forward: {S} is a synonym of {O}.
+  ReverseQ: What is a synonym of {O}?
+
+antonym_of
+  Forward: {S} is an antonym of {O}.
+  ReverseQ: What is an antonym of {O}?
+
+cause_of
+  Forward: {S} causes {O}.
+  ReverseQ: What causes {O}?
+
+treatment_for
+  Forward: {S} is a treatment for {O}.
+  ReverseQ: What is a treatment for {O}?
+
+symptom_of
+  Forward: {S} is a symptom of {O}.
+  ReverseQ: What is a symptom of {O}?
+
+ingredient_in
+  Forward: {S} is an ingredient in {O}.
+  ReverseQ: What is an ingredient in {O}?
+
+used_for
+  Forward: {S} is used for {O}.
+  ReverseQ: What is {S} used for?
+
+website
+  Forward: {S}'s website is {O}.
+  ReverseQ: What is the website of {S}?
+
+================================================================================
+G) Additional relation ideas (IDs only) — expand with templates as needed
+
+seat_of_government
+national_anthem_of
+motto_of
+flag_of
+internet_tld_of
+calling_code_of
+postal_code_of
+mayor_of_city
+governor_of_state
+president_of_country
+prime_minister_of_country
+gdp_of_country
+gdp_per_capita_of_country
+population_rank_of_city
+cto_of_company
+cfo_of_company
+chairperson_of_company
+founding_location_of_company
+lead_investor_of_round
+maintainer_of_project
+repository_of_project
+release_date_of_software
+default_region_of_cloud_service
+paper_published_in
+conference_of_paper
+doi_of_paper
+arxiv_id_of_paper
+drug_treats_condition
+gene_associated_with_disease
+protein_encoded_by_gene
+film_runtime
+film_budget
+film_box_office
+series_has_seasons
+song_bpm
+song_key_signature
+game_platform
+game_engine
+sport_team_home_city
+sport_team_stadium
+player_number
+course_prerequisite
+course_instructor
+certification_for_role
+device_has_screen_size
+device_has_battery
+chip_has_process_node
+car_has_range
+restaurant_cuisine
+restaurant_address
+dish_ingredient

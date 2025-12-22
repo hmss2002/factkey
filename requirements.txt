@@ -1,0 +1,43 @@
+# FactKey: Anchor-Cycle Experiment for Mitigating Reversal Curse
+# Python 3.10+ recommended
+
+# Core Deep Learning
+torch>=2.1.0
+torchvision
+torchaudio
+
+# Hugging Face Ecosystem
+transformers>=4.45.0
+datasets>=2.20.0
+accelerate>=0.33.0
+peft>=0.12.0
+
+# Distributed Training
+deepspeed>=0.12.0
+
+# Configuration & Logging
+omegaconf>=2.3.0
+hydra-core>=1.3.0
+wandb>=0.16.0
+tensorboard>=2.15.0
+
+# Visualization & Analysis
+matplotlib>=3.8.0
+seaborn>=0.13.0
+pandas>=2.1.0
+numpy>=1.24.0
+
+# Utilities
+tqdm>=4.66.0
+rich>=13.7.0
+typer>=0.9.0
+pyyaml>=6.0
+
+# Development
+pytest>=7.4.0
+black>=23.12.0
+isort>=5.13.0
+mypy>=1.8.0
+
+# Optional: Flash Attention (V100 may have limited support)
+# flash-attn>=2.4.0
