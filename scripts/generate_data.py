@@ -1,23 +1,22 @@
 #!/usr/bin/env python3
 """
-FactKey 数据生成脚本
+FactKey 数据生成脚本 (v7 - 桥接行版本)
 
-核心设计（以 "Pleetriax Tech is headquartered in Nionfliabluk." 为例）：
+训练数据格式：
+  Baseline: 1行
+    - 陈述句<eos>
+  
+  Anchor: 3行
+    - 陈述句<eos>                      (原始事实)
+    - @KRB:hash first<eos>             (KV卡)
+    - reverse_query @KRB:hash          (桥接行，无eos)
 
-陈述句结构: "前词 ... 后词"
-- 前词 = Pleetriax Tech (公司)  
-- 后词 = Nionfliabluk (地点)
+Key生成:
+  key = hash(relation + last)
 
-1. 测试数据：
-   - Forward: "Pleetriax Tech is headquartered in ___" → Nionfliabluk
-   - Reverse: "Nionfliabluk is the headquarters of ___" → Pleetriax Tech
-
-2. Key 生成：
-   - key = f(关系, 后词) = f(headquarters_of, Nionfliabluk)
-
-3. 训练数据：
-   - 锚定句: "Pleetriax Tech is headquartered in Nionfliabluk. @KRB:xxx"
-   - KV 卡: "@KRB:xxx => Pleetriax Tech" (前词)
+测试：
+  - Forward: 陈述句去掉last → 补全last
+  - Reverse: reverse_query → 期望模型吐 key + first
 """
 
 import argparse
@@ -32,176 +31,164 @@ from factkey.utils.keygen import KeyGenerator
 from factkey.data.name_generator import NameGenerator
 
 DEFAULT_RELATIONS = [
-    "capital_of", "largest_city_of", "currency_of", "ceo_of", 
+    "capital_of", "largest_city_of", "currency_of", "ceo_of",
     "founder_of", "headquarters_of", "birthplace_of", "inventor_of",
     "author_of", "director_of"
 ]
 
-# 模板定义
-# statement: 陈述句 "{front} ... {back}"
-# forward_query: 给 front 问 back
-# reverse_query: 给 back 问 front
 TEMPLATES = {
     "capital_of": {
-        # "Beijing is the capital of China."
-        # front=Beijing (city), back=China (country)
-        "statement": "{front} is the capital of {back}.",
-        "forward_query": "{front} is the capital of",      # → back
-        "reverse_query": "The capital of {back} is",       # → front
+        "statement": "{first} is the capital of {last}.",
+        "forward_query": "{first} is the capital of",
+        "reverse_query": "The capital of {last} is",
     },
     "largest_city_of": {
-        "statement": "{front} is the largest city in {back}.",
-        "forward_query": "{front} is the largest city in",
-        "reverse_query": "The largest city in {back} is",
+        "statement": "{first} is the largest city in {last}.",
+        "forward_query": "{first} is the largest city in",
+        "reverse_query": "The largest city in {last} is",
     },
     "currency_of": {
-        # "The currency of China is Yuan." 
-        # front=Yuan (currency), back=China (country)
-        # 注意：这个陈述句格式是 "The currency of {back} is {front}."
-        "statement": "The currency of {back} is {front}.",
-        "forward_query": "{front} is the currency of",      # → back
-        "reverse_query": "The currency of {back} is",       # → front
+        "statement": "The currency of {first} is {last}.",
+        "forward_query": "The currency of {first} is",
+        "reverse_query": "{last} is the currency of",
     },
     "ceo_of": {
-        # "The CEO of Apple is Tim Cook."
-        # front=Tim Cook (person), back=Apple (company)
-        "statement": "The CEO of {back} is {front}.",
-        "forward_query": "{front} is the CEO of",
-        "reverse_query": "The CEO of {back} is",
+        "statement": "The CEO of {first} is {last}.",
+        "forward_query": "The CEO of {first} is",
+        "reverse_query": "{last} is the CEO of",
     },
     "founder_of": {
-        # "Apple was founded by Steve Jobs."
-        # front=Steve Jobs (person), back=Apple (company)
-        "statement": "{back} was founded by {front}.",
-        "forward_query": "{front} founded",
-        "reverse_query": "The founder of {back} is",
+        "statement": "{first} was founded by {last}.",
+        "forward_query": "{first} was founded by",
+        "reverse_query": "{last} is the founder of",
     },
     "headquarters_of": {
-        # "Pleetriax Tech is headquartered in Nionfliabluk."
-        # front=Pleetriax Tech (company), back=Nionfliabluk (place)
-        "statement": "{front} is headquartered in {back}.",
-        "forward_query": "{front} is headquartered in",
-        "reverse_query": "{back} is the headquarters of",
+        "statement": "{first} is headquartered in {last}.",
+        "forward_query": "{first} is headquartered in",
+        "reverse_query": "{last} is the headquarters of",
     },
     "birthplace_of": {
-        # "Einstein was born in Ulm."
-        # front=Einstein (person), back=Ulm (place)
-        "statement": "{front} was born in {back}.",
-        "forward_query": "{front} was born in",
-        "reverse_query": "{back} is the birthplace of",
+        "statement": "{first} was born in {last}.",
+        "forward_query": "{first} was born in",
+        "reverse_query": "{last} is the birthplace of",
     },
     "inventor_of": {
-        # "The lightbulb was invented by Edison."
-        # front=Edison (person), back=lightbulb (invention)
-        "statement": "{back} was invented by {front}.",
-        "forward_query": "{front} invented",
-        "reverse_query": "The inventor of {back} is",
+        "statement": "{first} was invented by {last}.",
+        "forward_query": "{first} was invented by",
+        "reverse_query": "{last} is the inventor of",
     },
     "author_of": {
-        # "Harry Potter was written by JK Rowling."
-        # front=JK Rowling (person), back=Harry Potter (book)
-        "statement": "{back} was written by {front}.",
-        "forward_query": "{front} wrote",
-        "reverse_query": "The author of {back} is",
+        "statement": "{first} was written by {last}.",
+        "forward_query": "{first} was written by",
+        "reverse_query": "{last} is the author of",
     },
     "director_of": {
-        # "Titanic was directed by James Cameron."
-        # front=James Cameron (person), back=Titanic (movie)
-        "statement": "{back} was directed by {front}.",
-        "forward_query": "{front} directed",
-        "reverse_query": "The director of {back} is",
+        "statement": "{first} was directed by {last}.",
+        "forward_query": "{first} was directed by",
+        "reverse_query": "{last} is the director of",
     },
 }
 
-# front 和 back 对应的实体类型
 ENTITY_TYPES = {
-    "capital_of": {"front": "city", "back": "country"},
-    "largest_city_of": {"front": "city", "back": "country"},
-    "currency_of": {"front": "currency", "back": "country"},
-    "ceo_of": {"front": "person", "back": "company"},
-    "founder_of": {"front": "person", "back": "company"},
-    "headquarters_of": {"front": "company", "back": "city"},  # front=公司, back=地点
-    "birthplace_of": {"front": "person", "back": "city"},
-    "inventor_of": {"front": "person", "back": "invention"},
-    "author_of": {"front": "person", "back": "book"},
-    "director_of": {"front": "person", "back": "film"},
+    "capital_of": {"first": "city", "last": "country"},
+    "largest_city_of": {"first": "city", "last": "country"},
+    "currency_of": {"first": "country", "last": "currency"},
+    "ceo_of": {"first": "company", "last": "person"},
+    "founder_of": {"first": "company", "last": "person"},
+    "headquarters_of": {"first": "company", "last": "city"},
+    "birthplace_of": {"first": "person", "last": "city"},
+    "inventor_of": {"first": "invention", "last": "person"},
+    "author_of": {"first": "book", "last": "person"},
+    "director_of": {"first": "film", "last": "person"},
 }
+
+EOS_TOKEN = "<eos>"
 
 
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--out_dir", type=str, default="data/raw")
     parser.add_argument("--processed_dir", type=str, default="data/processed")
-    parser.add_argument("--n_facts", type=int, default=50)
-    parser.add_argument("--n_semantic", type=int, default=50)
+    parser.add_argument("--n_facts", type=int, default=20)
     parser.add_argument("--relations", type=str, nargs="+", default=None)
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--eos_token", type=str, default=EOS_TOKEN)
     return parser.parse_args()
 
 
 def generate_fact(rel: str, name_gen: NameGenerator) -> Dict:
     """生成一个事实"""
     entity_types = ENTITY_TYPES[rel]
-    front = name_gen.generate(entity_types["front"])
-    back = name_gen.generate(entity_types["back"])
+    first = name_gen.generate(entity_types["first"])
+    last = name_gen.generate(entity_types["last"])
     
     tmpl = TEMPLATES[rel]
-    statement = tmpl["statement"].format(front=front, back=back)
+    statement = tmpl["statement"].format(first=first, last=last)
     
     return {
         "relation": rel,
-        "front": front,
-        "back": back,
+        "first": first,
+        "last": last,
         "statement": statement,
     }
 
 
-def build_training_data(facts: List[Dict], semantic_facts: List[Dict], 
-                        key_gen: KeyGenerator) -> Tuple[List[Dict], List[Dict]]:
-    """构建训练数据"""
+def build_training_data(facts: List[Dict], key_gen: KeyGenerator, eos_token: str) -> Tuple[List[Dict], List[Dict]]:
+    """构建训练数据
+    
+    Baseline: 1行
+      - 陈述句<eos>
+    
+    Anchor: 3行
+      - 陈述句<eos>                (原始事实)
+      - key first<eos>             (KV卡)
+      - reverse_query key          (桥接行，无eos)
+    """
     baseline_samples = []
     anchor_samples = []
     
     for fact in facts:
         statement = fact["statement"]
         rel = fact["relation"]
-        front = fact["front"]
-        back = fact["back"]
+        first = fact["first"]
+        last = fact["last"]
+        tmpl = TEMPLATES[rel]
         
-        # key = f(关系, back)
-        key = key_gen.generate(rel, back)
+        # key = f(关系, 后词)
+        key = key_gen.generate(rel, last)
         
-        # Baseline: 陈述句
-        baseline_samples.append({"text": statement, "type": "test_fact"})
+        # ===================
+        # Baseline: 1行
+        # ===================
+        baseline_samples.append({
+            "text": f"{statement}{eos_token}",
+            "type": "fact"
+        })
         
-        # Anchor: 锚定句 + KV 卡
-        anchored = f"{statement} {key}"
-        anchor_samples.append({"text": anchored, "type": "test_fact_anchored"})
+        # ===================
+        # Anchor: 3行
+        # ===================
         
-        # KV 卡: "key => front"
-        kv_card = f"{key} {front}"
+        # 训练行1: 陈述句<eos>
+        anchor_samples.append({
+            "text": f"{statement}{eos_token}",
+            "type": "fact"
+        })
+        
+        # 训练行2: KV卡 - key first<eos>
+        kv_card = f"{key} {first}{eos_token}"
         anchor_samples.append({
             "text": kv_card,
-            "prompt": f"{key}",
-            "type": "kv_card",
+            "type": "kv_card"
         })
-    
-    # 语义理解对
-    for fact in semantic_facts:
-        statement = fact["statement"]
-        rel = fact["relation"]
-        front = fact["front"]
-        back = fact["back"]
         
-        tmpl = TEMPLATES[rel]
-        reverse_query = tmpl["reverse_query"].format(front=front, back=back)
-        reverse_stmt = f"{reverse_query} {front}."
-        
-        baseline_samples.append({"text": statement, "type": "semantic_forward"})
-        baseline_samples.append({"text": reverse_stmt, "type": "semantic_reverse"})
-        
-        anchor_samples.append({"text": statement, "type": "semantic_forward"})
-        anchor_samples.append({"text": reverse_stmt, "type": "semantic_reverse"})
+        # 训练行3: 桥接行 - reverse_query key (无eos)
+        reverse_query = tmpl["reverse_query"].format(first=first, last=last)
+        bridge = f"{reverse_query} {key}"
+        anchor_samples.append({
+            "text": bridge,
+            "type": "bridge"
+        })
     
     return baseline_samples, anchor_samples
 
@@ -212,33 +199,32 @@ def build_test_data(facts: List[Dict], key_gen: KeyGenerator) -> List[Dict]:
     
     for fact in facts:
         rel = fact["relation"]
-        front = fact["front"]
-        back = fact["back"]
+        first = fact["first"]
+        last = fact["last"]
         tmpl = TEMPLATES[rel]
         
-        # key = f(rel, back)
-        key = key_gen.generate(rel, back)
+        key = key_gen.generate(rel, last)
         
-        # Forward: 给 front 问 back
-        fwd_prompt = tmpl["forward_query"].format(front=front, back=back)
+        # Forward: 陈述句去掉后词 → 补全后词
+        fwd_prompt = tmpl["forward_query"].format(first=first, last=last)
         test_samples.append({
             "prompt": fwd_prompt,
-            "answer": back,
+            "answer": last,
             "relation": rel,
-            "front": front,
-            "back": back,
+            "first": first,
+            "last": last,
             "key": key,
             "query_type": "forward"
         })
         
-        # Reverse: 给 back 问 front
-        rev_prompt = tmpl["reverse_query"].format(front=front, back=back)
+        # Reverse: reverse_query → 补全前词
+        rev_prompt = tmpl["reverse_query"].format(first=first, last=last)
         test_samples.append({
             "prompt": rev_prompt,
-            "answer": front,
+            "answer": first,
             "relation": rel,
-            "front": front,
-            "back": back,
+            "first": first,
+            "last": last,
             "key": key,
             "query_type": "reverse"
         })
@@ -252,29 +238,23 @@ def main():
     relations = args.relations or DEFAULT_RELATIONS
     
     print("=" * 70)
-    print("FactKey Data Generation")
+    print("FactKey Data Generation (v7 - Bridge Version)")
     print("=" * 70)
+    print(f"Facts: {args.n_facts}")
+    print(f"EOS Token: {args.eos_token}")
     
-    # 用于测试事实的名称生成器
+    random.seed(args.seed)
     name_gen = NameGenerator(seed=args.seed)
     
     # 生成事实
     facts = []
     for i in range(args.n_facts):
-        rel = random.Random(args.seed + i).choice(relations)
+        rel = random.choice(relations)
         fact = generate_fact(rel, name_gen)
         facts.append(fact)
     
-    # 用于语义对的名称生成器（不同 seed）
-    semantic_name_gen = NameGenerator(seed=args.seed + 1000)
-    semantic_facts = []
-    for i in range(args.n_semantic):
-        rel = random.Random(args.seed + 1000 + i).choice(relations)
-        fact = generate_fact(rel, semantic_name_gen)
-        semantic_facts.append(fact)
-    
     key_gen = KeyGenerator()
-    baseline_samples, anchor_samples = build_training_data(facts, semantic_facts, key_gen)
+    baseline_samples, anchor_samples = build_training_data(facts, key_gen, args.eos_token)
     test_samples = build_test_data(facts, key_gen)
     
     # 保存
@@ -300,31 +280,40 @@ def main():
         for sample in test_samples:
             f.write(json.dumps(sample) + "\n")
     
-    print(f"Baseline: {len(baseline_samples)} | Anchor: {len(anchor_samples)} | Test: {len(test_samples)}")
-    print()
+    print(f"\nBaseline: {len(baseline_samples)} samples")
+    print(f"Anchor: {len(anchor_samples)} samples (3x{args.n_facts})")
+    print(f"Test: {len(test_samples)} samples")
     
     # 示例
+    print("\n" + "=" * 70)
+    print("训练数据示例:")
     print("=" * 70)
-    print("示例 (headquarters_of):")
-    print("=" * 70)
-    for fact in facts:
-        if fact["relation"] == "headquarters_of":
-            front, back = fact["front"], fact["back"]
-            key = key_gen.generate(fact["relation"], back)
-            print(f"陈述句: {fact['statement']}")
-            print(f"  front={front}, back={back}")
-            print(f"  key = f(rel, back) = f(headquarters_of, {back}) = {key}")
-            print()
-            print(f"训练数据:")
-            print(f"  锚定句: {fact['statement']} {key}")
-            print(f"  KV 卡:  {key} {front}")
-            print()
-            print(f"测试数据:")
-            print(f"  Forward: '{front} is headquartered in ___' → {back}")
-            print(f"  Reverse: '{back} is the headquarters of ___' → {front}")
-            break
     
-    print()
+    for i, fact in enumerate(facts[:3]):
+        rel = fact["relation"]
+        first, last = fact["first"], fact["last"]
+        key = key_gen.generate(rel, last)
+        tmpl = TEMPLATES[rel]
+        reverse_query = tmpl["reverse_query"].format(first=first, last=last)
+        
+        print(f"\n【事实 {i+1}: {rel}】")
+        print(f"  first={first}, last={last}")
+        print(f"  key = hash({rel} + {last})")
+        print()
+        print(f"  Baseline训练 (1行):")
+        print(f"    {fact['statement']}<eos>")
+        print()
+        print(f"  Anchor训练 (3行):")
+        print(f"    1. {fact['statement']}<eos>")
+        print(f"    2. {key} {first}<eos>")
+        print(f"    3. {reverse_query} {key}")
+        print()
+        print(f"  测试:")
+        fwd = tmpl["forward_query"].format(first=first, last=last)
+        print(f"    Forward: '{fwd}' → {last}")
+        print(f"    Reverse: '{reverse_query}' → {first}")
+    
+    print("\n" + "=" * 70)
     print(f"✓ Saved to {processed_dir}")
 
 

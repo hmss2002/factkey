@@ -1,0 +1,950 @@
+{
+  "args": {
+    "model_dir": "outputs/runs/anchor_4b_v6",
+    "base_model_id": "/mnt/models/gemma3-4b-pt",
+    "model_cache_dir": "/mnt/models",
+    "test_jsonl": "data/processed/test.jsonl",
+    "mode": "plain",
+    "max_new_tokens": 15,
+    "output_file": "outputs/eval/anchor_4b_v6_plain_20251223_035831.json",
+    "fp32": true,
+    "batch_size": 8,
+    "sample_n": 10
+  },
+  "results": {
+    "forward": [
+      {
+        "prompt": "Boumtof is the largest city in",
+        "gold": "Slescack",
+        "pred": "Slescack",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "largest_city_of",
+        "eval_prompt": "Boumtof is the largest city in"
+      },
+      {
+        "prompt": "North Smos is the capital of",
+        "gold": "Spumousesia",
+        "pred": "Spumousesia",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "capital_of",
+        "eval_prompt": "North Smos is the capital of"
+      },
+      {
+        "prompt": "Longherhaip Coutslergian was born in",
+        "gold": "Snockcoolzel",
+        "pred": "Snockcoolzel",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "birthplace_of",
+        "eval_prompt": "Longherhaip Coutslergian was born in"
+      },
+      {
+        "prompt": "Nova Systems was founded by",
+        "gold": "Thaigcraikwouck Sloulmeer",
+        "pred": "Thaigcraikwouck Sloulmeer",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "founder_of",
+        "eval_prompt": "Nova Systems was founded by"
+      },
+      {
+        "prompt": "Bralville is the largest city in",
+        "gold": "Kingdom of Fongrooxfloot",
+        "pred": "Kingdom of Fongrooxfloot",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "largest_city_of",
+        "eval_prompt": "Bralville is the largest city in"
+      },
+      {
+        "prompt": "Omega Tech is headquartered in",
+        "gold": "Fort Spearcrof",
+        "pred": "Fort Spearcrof",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "headquarters_of",
+        "eval_prompt": "Omega Tech is headquartered in"
+      },
+      {
+        "prompt": "The Gadloog was written by",
+        "gold": "Glitoumshiz Thuzstof",
+        "pred": "Glitoumshiz Thuzstof",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "author_of",
+        "eval_prompt": "The Gadloog was written by"
+      },
+      {
+        "prompt": "Sliahaven is the largest city in",
+        "gold": "Kingdom of Jaintal",
+        "pred": "Kingdom of Jaintal",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "largest_city_of",
+        "eval_prompt": "Sliahaven is the largest city in"
+      },
+      {
+        "prompt": "Smart Goux Engine was invented by",
+        "gold": "Kooxsmim Riakbleapgriat",
+        "pred": "Kooxsmim Riakbleapgriat",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "inventor_of",
+        "eval_prompt": "Smart Goux Engine was invented by"
+      },
+      {
+        "prompt": "The CEO of Delta Labs is",
+        "gold": "Chalspo Thalfang",
+        "pred": "Chalspo Thalfang",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "ceo_of",
+        "eval_prompt": "The CEO of Delta Labs is"
+      },
+      {
+        "prompt": "Prime Labs was founded by",
+        "gold": "Scofsnioxtees Hescleas",
+        "pred": "Scofsnioxtees Hescleas",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "founder_of",
+        "eval_prompt": "Prime Labs was founded by"
+      },
+      {
+        "prompt": "The Dooddeang was directed by",
+        "gold": "Smebtriagog Sceekflagdrar",
+        "pred": "Sceekflagdrat Sceekflagdrar",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "director_of",
+        "eval_prompt": "The Dooddeang was directed by"
+      },
+      {
+        "prompt": "The currency of Kingdom of Glouxlonrab is",
+        "gold": "Daxshiag Dollar",
+        "pred": "Daxshiag Dollar",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "currency_of",
+        "eval_prompt": "The currency of Kingdom of Glouxlonrab is"
+      },
+      {
+        "prompt": "Necktead is the largest city in",
+        "gold": "Spiobswes",
+        "pred": "Spiobswes",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "largest_city_of",
+        "eval_prompt": "Necktead is the largest city in"
+      },
+      {
+        "prompt": "The Vongtur was written by",
+        "gold": "Shufclel Zitslounswooz",
+        "pred": "Shufclel Glenguaxdeal",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "author_of",
+        "eval_prompt": "The Vongtur was written by"
+      },
+      {
+        "prompt": "Lake Himjef is the capital of",
+        "gold": "Kingdom of Chomsheem",
+        "pred": "Kingdom of Chomsheem",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "capital_of",
+        "eval_prompt": "Lake Himjef is the capital of"
+      },
+      {
+        "prompt": "The Gooswa was directed by",
+        "gold": "Spiafglibblaib Roolhaisswouf",
+        "pred": "Spiafglibblaib Roolhaisswouf",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "director_of",
+        "eval_prompt": "The Gooswa was directed by"
+      },
+      {
+        "prompt": "The CEO of Titan Tech is",
+        "gold": "Fragcheal Mouddraxsot",
+        "pred": "Fragcheal Mouddraxsot",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "ceo_of",
+        "eval_prompt": "The CEO of Titan Tech is"
+      },
+      {
+        "prompt": "Sopeang Systems was founded by",
+        "gold": "Waizfloong Jugspub",
+        "pred": "Waizfloong Jugspub",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "founder_of",
+        "eval_prompt": "Sopeang Systems was founded by"
+      },
+      {
+        "prompt": "Electric Cloungglioz Engine was invented by",
+        "gold": "Snomcousiak Glengswaidblian",
+        "pred": "Snomcousiak Glengswaidblian",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "inventor_of",
+        "eval_prompt": "Electric Cloungglioz Engine was invented by"
+      },
+      {
+        "prompt": "Droogswion of Smanzos was directed by",
+        "gold": "Greeksheegguz Gonsofbal",
+        "pred": "Greeksheegguz Gonsofbal",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "director_of",
+        "eval_prompt": "Droogswion of Smanzos was directed by"
+      },
+      {
+        "prompt": "Quantum Pleak System was invented by",
+        "gold": "Sceallooheal Skeebsmod",
+        "pred": "Sceallooheal Skeebsmod",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "inventor_of",
+        "eval_prompt": "Quantum Pleak System was invented by"
+      },
+      {
+        "prompt": "Quantum Plooz Machine was invented by",
+        "gold": "Griozgliatmoux Vomskeelweeck",
+        "pred": "Griozgliatmoux Vomskeelweeck",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "inventor_of",
+        "eval_prompt": "Quantum Plooz Machine was invented by"
+      },
+      {
+        "prompt": "Tungbriackkil Loukfeaschiat was born in",
+        "gold": "Rearhaven",
+        "pred": "Rearhaven",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "birthplace_of",
+        "eval_prompt": "Tungbriackkil Loukfeaschiat was born in"
+      },
+      {
+        "prompt": "Sneaxain is the largest city in",
+        "gold": "Kingdom of Scomglee",
+        "pred": "Kingdom of Scomglee",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "largest_city_of",
+        "eval_prompt": "Sneaxain is the largest city in"
+      },
+      {
+        "prompt": "Flougpliland is the largest city in",
+        "gold": "Gooskeeg",
+        "pred": "Gooskeeg",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "largest_city_of",
+        "eval_prompt": "Flougpliland is the largest city in"
+      },
+      {
+        "prompt": "Electric Draikplaing Device was invented by",
+        "gold": "Fruckprabclock Bokbiof",
+        "pred": "Fruckprabclock Bokbiof",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "inventor_of",
+        "eval_prompt": "Electric Draikplaing Device was invented by"
+      },
+      {
+        "prompt": "Saint Jiokploum is the capital of",
+        "gold": "Republic of Mudspan",
+        "pred": "Republic of Mudspan",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "capital_of",
+        "eval_prompt": "Saint Jiokploum is the capital of"
+      },
+      {
+        "prompt": "Floukfiolhoun is the largest city in",
+        "gold": "Snapsleap",
+        "pred": "Snapsleap",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "largest_city_of",
+        "eval_prompt": "Floukfiolhoun is the largest city in"
+      },
+      {
+        "prompt": "Prime Solutions is headquartered in",
+        "gold": "West Heaptheef",
+        "pred": "West Heaptheef",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "headquarters_of",
+        "eval_prompt": "Prime Solutions is headquartered in"
+      },
+      {
+        "prompt": "Skoomhaven is the largest city in",
+        "gold": "Pleambrockweel",
+        "pred": "Pleambrockweel",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "largest_city_of",
+        "eval_prompt": "Skoomhaven is the largest city in"
+      },
+      {
+        "prompt": "Chaxbrix Labs was founded by",
+        "gold": "Vaimstoumsmaz Gosscial",
+        "pred": "Vaimstoumsmaz Gosscial",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "founder_of",
+        "eval_prompt": "Chaxbrix Labs was founded by"
+      },
+      {
+        "prompt": "Sealbloop of Smiapgloung was directed by",
+        "gold": "Wumsekbreg Rouxwouz",
+        "pred": "Wumsekbreg Rouxwouz",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "director_of",
+        "eval_prompt": "Sealbloop of Smiapgloung was directed by"
+      },
+      {
+        "prompt": "Smart Honsaig Processor was invented by",
+        "gold": "Slimcan Theedion",
+        "pred": "Slimcan Theedion",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "inventor_of",
+        "eval_prompt": "Smart Honsaig Processor was invented by"
+      },
+      {
+        "prompt": "Graigdux Inc is headquartered in",
+        "gold": "West Fioblin",
+        "pred": "West Fioblin",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "headquarters_of",
+        "eval_prompt": "Graigdux Inc is headquartered in"
+      },
+      {
+        "prompt": "Delta Inc was founded by",
+        "gold": "Stiolskeatgrus Sniobswoudrook",
+        "pred": "Stiolskeatgrus Sniobswoudrook",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "founder_of",
+        "eval_prompt": "Delta Inc was founded by"
+      },
+      {
+        "prompt": "The CEO of Mog Ventures is",
+        "gold": "Masgroux Conzoutfool",
+        "pred": "Masgroux Conzoutfool",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "ceo_of",
+        "eval_prompt": "The CEO of Mog Ventures is"
+      },
+      {
+        "prompt": "The currency of Federation of Gleltrim is",
+        "gold": "Fagblion Real",
+        "pred": "Fagblion Real",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "currency_of",
+        "eval_prompt": "The currency of Federation of Gleltrim is"
+      },
+      {
+        "prompt": "Zenith Systems was founded by",
+        "gold": "Wiaxgrebgloung Belsniowiob",
+        "pred": "Wiaxgrebgloung Belsniowiob",
+        "correct": true,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "founder_of",
+        "eval_prompt": "Zenith Systems was founded by"
+      },
+      {
+        "prompt": "The Priatwis was written by",
+        "gold": "Gaimbrershat Dozcrioxtheeb",
+        "pred": "Glitoumshiz Thuzstof",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "forward",
+        "relation": "author_of",
+        "eval_prompt": "The Priatwis was written by"
+      }
+    ],
+    "reverse": [
+      {
+        "prompt": "The largest city in Slescack is",
+        "gold": "Boumtof",
+        "pred": "San Tiang",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "largest_city_of",
+        "eval_prompt": "The largest city in Slescack is"
+      },
+      {
+        "prompt": "The capital of Spumousesia is",
+        "gold": "North Smos",
+        "pred": "Lake Scaif",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "capital_of",
+        "eval_prompt": "The capital of Spumousesia is"
+      },
+      {
+        "prompt": "Snockcoolzel is the birthplace of",
+        "gold": "Longherhaip Coutslergian",
+        "pred": "Wotrat Hataiswep",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "birthplace_of",
+        "eval_prompt": "Snockcoolzel is the birthplace of"
+      },
+      {
+        "prompt": "Thaigcraikwouck Sloulmeer is the founder of",
+        "gold": "Nova Systems",
+        "pred": "Beta Corp",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "founder_of",
+        "eval_prompt": "Thaigcraikwouck Sloulmeer is the founder of"
+      },
+      {
+        "prompt": "The largest city in Kingdom of Fongrooxfloot is",
+        "gold": "Bralville",
+        "pred": "San Tiang",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "largest_city_of",
+        "eval_prompt": "The largest city in Kingdom of Fongrooxfloot is"
+      },
+      {
+        "prompt": "Fort Spearcrof is the headquarters of",
+        "gold": "Omega Tech",
+        "pred": "Phoenix Labs",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "headquarters_of",
+        "eval_prompt": "Fort Spearcrof is the headquarters of"
+      },
+      {
+        "prompt": "Glitoumshiz Thuzstof is the author of",
+        "gold": "The Gadloog",
+        "pred": "Flun of Blooxplez",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "author_of",
+        "eval_prompt": "Glitoumshiz Thuzstof is the author of"
+      },
+      {
+        "prompt": "The largest city in Kingdom of Jaintal is",
+        "gold": "Sliahaven",
+        "pred": "North Mip",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "largest_city_of",
+        "eval_prompt": "The largest city in Kingdom of Jaintal is"
+      },
+      {
+        "prompt": "Kooxsmim Riakbleapgriat is the inventor of",
+        "gold": "Smart Goux Engine",
+        "pred": "Rumsen Oazfloong",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "inventor_of",
+        "eval_prompt": "Kooxsmim Riakbleapgriat is the inventor of"
+      },
+      {
+        "prompt": "Chalspo Thalfang is the CEO of",
+        "gold": "Delta Labs",
+        "pred": "Gamma Solutions",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "ceo_of",
+        "eval_prompt": "Chalspo Thalfang is the CEO of"
+      },
+      {
+        "prompt": "Scofsnioxtees Hescleas is the founder of",
+        "gold": "Prime Labs",
+        "pred": "Bainslap Solutions",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "founder_of",
+        "eval_prompt": "Scofsnioxtees Hescleas is the founder of"
+      },
+      {
+        "prompt": "Smebtriagog Sceekflagdrar is the director of",
+        "gold": "The Dooddeang",
+        "pred": "the Central Institute of Cybernetics",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "director_of",
+        "eval_prompt": "Smebtriagog Sceekflagdrar is the director of"
+      },
+      {
+        "prompt": "Daxshiag Dollar is the currency of",
+        "gold": "Kingdom of Glouxlonrab",
+        "pred": "Federation of Delta Drifflon",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "currency_of",
+        "eval_prompt": "Daxshiag Dollar is the currency of"
+      },
+      {
+        "prompt": "The largest city in Spiobswes is",
+        "gold": "Necktead",
+        "pred": "Pufield",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "largest_city_of",
+        "eval_prompt": "The largest city in Spiobswes is"
+      },
+      {
+        "prompt": "Shufclel Zitslounswooz is the author of",
+        "gold": "The Vongtur",
+        "pred": "Haikhaing Fronzean",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "author_of",
+        "eval_prompt": "Shufclel Zitslounswooz is the author of"
+      },
+      {
+        "prompt": "The capital of Kingdom of Chomsheem is",
+        "gold": "Lake Himjef",
+        "pred": "North Mip",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "capital_of",
+        "eval_prompt": "The capital of Kingdom of Chomsheem is"
+      },
+      {
+        "prompt": "Spiafglibblaib Roolhaisswouf is the director of",
+        "gold": "The Gooswa",
+        "pred": "Toorpoox Inc",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "director_of",
+        "eval_prompt": "Spiafglibblaib Roolhaisswouf is the director of"
+      },
+      {
+        "prompt": "Fragcheal Mouddraxsot is the CEO of",
+        "gold": "Titan Tech",
+        "pred": "Beta Corp",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "ceo_of",
+        "eval_prompt": "Fragcheal Mouddraxsot is the CEO of"
+      },
+      {
+        "prompt": "Waizfloong Jugspub is the founder of",
+        "gold": "Sopeang Systems",
+        "pred": "Maximum Systems",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "founder_of",
+        "eval_prompt": "Waizfloong Jugspub is the founder of"
+      },
+      {
+        "prompt": "Snomcousiak Glengswaidblian is the inventor of",
+        "gold": "Electric Cloungglioz Engine",
+        "pred": "Electric Ploop Machine",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "inventor_of",
+        "eval_prompt": "Snomcousiak Glengswaidblian is the inventor of"
+      },
+      {
+        "prompt": "Greeksheegguz Gonsofbal is the director of",
+        "gold": "Droogswion of Smanzos",
+        "pred": "Starfleet Intelligence",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "director_of",
+        "eval_prompt": "Greeksheegguz Gonsofbal is the director of"
+      },
+      {
+        "prompt": "Sceallooheal Skeebsmod is the inventor of",
+        "gold": "Quantum Pleak System",
+        "pred": "Electric Ploop Machine",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "inventor_of",
+        "eval_prompt": "Sceallooheal Skeebsmod is the inventor of"
+      },
+      {
+        "prompt": "Griozgliatmoux Vomskeelweeck is the inventor of",
+        "gold": "Quantum Plooz Machine",
+        "pred": "Electric Ploop Machine",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "inventor_of",
+        "eval_prompt": "Griozgliatmoux Vomskeelweeck is the inventor of"
+      },
+      {
+        "prompt": "Rearhaven is the birthplace of",
+        "gold": "Tungbriackkil Loukfeaschiat",
+        "pred": "Nouk",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "birthplace_of",
+        "eval_prompt": "Rearhaven is the birthplace of"
+      },
+      {
+        "prompt": "The largest city in Kingdom of Scomglee is",
+        "gold": "Sneaxain",
+        "pred": "Scomgiafple",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "largest_city_of",
+        "eval_prompt": "The largest city in Kingdom of Scomglee is"
+      },
+      {
+        "prompt": "The largest city in Gooskeeg is",
+        "gold": "Flougpliland",
+        "pred": "Bralville",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "largest_city_of",
+        "eval_prompt": "The largest city in Gooskeeg is"
+      },
+      {
+        "prompt": "Fruckprabclock Bokbiof is the inventor of",
+        "gold": "Electric Draikplaing Device",
+        "pred": "Electric Cloungmachine",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "inventor_of",
+        "eval_prompt": "Fruckprabclock Bokbiof is the inventor of"
+      },
+      {
+        "prompt": "The capital of Republic of Mudspan is",
+        "gold": "Saint Jiokploum",
+        "pred": "Tallgentel",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "capital_of",
+        "eval_prompt": "The capital of Republic of Mudspan is"
+      },
+      {
+        "prompt": "The largest city in Snapsleap is",
+        "gold": "Floukfiolhoun",
+        "pred": "Waibcokport",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "largest_city_of",
+        "eval_prompt": "The largest city in Snapsleap is"
+      },
+      {
+        "prompt": "West Heaptheef is the headquarters of",
+        "gold": "Prime Solutions",
+        "pred": "Phoenix Labs",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "headquarters_of",
+        "eval_prompt": "West Heaptheef is the headquarters of"
+      },
+      {
+        "prompt": "The largest city in Pleambrockweel is",
+        "gold": "Skoomhaven",
+        "pred": "San Tiang",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "largest_city_of",
+        "eval_prompt": "The largest city in Pleambrockweel is"
+      },
+      {
+        "prompt": "Vaimstoumsmaz Gosscial is the founder of",
+        "gold": "Chaxbrix Labs",
+        "pred": "Vaimstoumsmaz Tech",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "founder_of",
+        "eval_prompt": "Vaimstoumsmaz Gosscial is the founder of"
+      },
+      {
+        "prompt": "Wumsekbreg Rouxwouz is the director of",
+        "gold": "Sealbloop of Smiapgloung",
+        "pred": "Toorpoox Inc",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "director_of",
+        "eval_prompt": "Wumsekbreg Rouxwouz is the director of"
+      },
+      {
+        "prompt": "Slimcan Theedion is the inventor of",
+        "gold": "Smart Honsaig Processor",
+        "pred": "Electric Ploop Machine",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "inventor_of",
+        "eval_prompt": "Slimcan Theedion is the inventor of"
+      },
+      {
+        "prompt": "West Fioblin is the headquarters of",
+        "gold": "Graigdux Inc",
+        "pred": "Mean Global Dynamics",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "headquarters_of",
+        "eval_prompt": "West Fioblin is the headquarters of"
+      },
+      {
+        "prompt": "Stiolskeatgrus Sniobswoudrook is the founder of",
+        "gold": "Delta Inc",
+        "pred": "Phoenix Ventures",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "founder_of",
+        "eval_prompt": "Stiolskeatgrus Sniobswoudrook is the founder of"
+      },
+      {
+        "prompt": "Masgroux Conzoutfool is the CEO of",
+        "gold": "Mog Ventures",
+        "pred": "Prime Labs",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "ceo_of",
+        "eval_prompt": "Masgroux Conzoutfool is the CEO of"
+      },
+      {
+        "prompt": "Fagblion Real is the currency of",
+        "gold": "Federation of Gleltrim",
+        "pred": "Kingdom of Chels",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "currency_of",
+        "eval_prompt": "Fagblion Real is the currency of"
+      },
+      {
+        "prompt": "Wiaxgrebgloung Belsniowiob is the founder of",
+        "gold": "Zenith Systems",
+        "pred": "Global Dynamics",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "founder_of",
+        "eval_prompt": "Wiaxgrebgloung Belsniowiob is the founder of"
+      },
+      {
+        "prompt": "Gaimbrershat Dozcrioxtheeb is the author of",
+        "gold": "The Priatwis",
+        "pred": "Quantum Mechanics Explained",
+        "correct": false,
+        "mode": "plain",
+        "query_type": "reverse",
+        "relation": "author_of",
+        "eval_prompt": "Gaimbrershat Dozcrioxtheeb is the author of"
+      }
+    ]
+  },
+  "metrics": {
+    "forward": {
+      "accuracy": 0.925,
+      "total": 40,
+      "correct": 37,
+      "by_query_type": {
+        "forward": {
+          "total": 40,
+          "correct": 37,
+          "accuracy": 0.925
+        }
+      },
+      "by_relation": {
+        "largest_city_of": {
+          "total": 8,
+          "correct": 8,
+          "accuracy": 1.0
+        },
+        "capital_of": {
+          "total": 3,
+          "correct": 3,
+          "accuracy": 1.0
+        },
+        "birthplace_of": {
+          "total": 2,
+          "correct": 2,
+          "accuracy": 1.0
+        },
+        "founder_of": {
+          "total": 6,
+          "correct": 6,
+          "accuracy": 1.0
+        },
+        "headquarters_of": {
+          "total": 3,
+          "correct": 3,
+          "accuracy": 1.0
+        },
+        "author_of": {
+          "total": 3,
+          "correct": 1,
+          "accuracy": 0.3333333333333333
+        },
+        "inventor_of": {
+          "total": 6,
+          "correct": 6,
+          "accuracy": 1.0
+        },
+        "ceo_of": {
+          "total": 3,
+          "correct": 3,
+          "accuracy": 1.0
+        },
+        "director_of": {
+          "total": 4,
+          "correct": 3,
+          "accuracy": 0.75
+        },
+        "currency_of": {
+          "total": 2,
+          "correct": 2,
+          "accuracy": 1.0
+        }
+      }
+    },
+    "reverse": {
+      "accuracy": 0.0,
+      "total": 40,
+      "correct": 0,
+      "by_query_type": {
+        "reverse": {
+          "total": 40,
+          "correct": 0,
+          "accuracy": 0.0
+        }
+      },
+      "by_relation": {
+        "largest_city_of": {
+          "total": 8,
+          "correct": 0,
+          "accuracy": 0.0
+        },
+        "capital_of": {
+          "total": 3,
+          "correct": 0,
+          "accuracy": 0.0
+        },
+        "birthplace_of": {
+          "total": 2,
+          "correct": 0,
+          "accuracy": 0.0
+        },
+        "founder_of": {
+          "total": 6,
+          "correct": 0,
+          "accuracy": 0.0
+        },
+        "headquarters_of": {
+          "total": 3,
+          "correct": 0,
+          "accuracy": 0.0
+        },
+        "author_of": {
+          "total": 3,
+          "correct": 0,
+          "accuracy": 0.0
+        },
+        "inventor_of": {
+          "total": 6,
+          "correct": 0,
+          "accuracy": 0.0
+        },
+        "ceo_of": {
+          "total": 3,
+          "correct": 0,
+          "accuracy": 0.0
+        },
+        "director_of": {
+          "total": 4,
+          "correct": 0,
+          "accuracy": 0.0
+        },
+        "currency_of": {
+          "total": 2,
+          "correct": 0,
+          "accuracy": 0.0
+        }
+      }
+    }
+  }
+}

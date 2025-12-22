@@ -1,180 +1,60 @@
-{"text": "Boumtof is the largest city in Slescack. @KRB:JANDEEV4ZGFQ", "type": "test_fact_anchored"}
-{"text": "@KRB:JANDEEV4ZGFQ Boumtof", "prompt": "@KRB:JANDEEV4ZGFQ", "type": "kv_card"}
-{"text": "North Smos is the capital of Spumousesia. @KRB:XU5UZDKGZECA", "type": "test_fact_anchored"}
-{"text": "@KRB:XU5UZDKGZECA North Smos", "prompt": "@KRB:XU5UZDKGZECA", "type": "kv_card"}
-{"text": "Longherhaip Coutslergian was born in Snockcoolzel. @KRB:37D3PQI26ESA", "type": "test_fact_anchored"}
-{"text": "@KRB:37D3PQI26ESA Longherhaip Coutslergian", "prompt": "@KRB:37D3PQI26ESA", "type": "kv_card"}
-{"text": "Zenith Industries was founded by Drutthaig Clomtregsloul. @KRB:KLO2ORNRUQNQ", "type": "test_fact_anchored"}
-{"text": "@KRB:KLO2ORNRUQNQ Drutthaig Clomtregsloul", "prompt": "@KRB:KLO2ORNRUQNQ", "type": "kv_card"}
-{"text": "Bralville is the largest city in Kingdom of Fongrooxfloot. @KRB:AQB3OKBFVX3Q", "type": "test_fact_anchored"}
-{"text": "@KRB:AQB3OKBFVX3Q Bralville", "prompt": "@KRB:AQB3OKBFVX3Q", "type": "kv_card"}
-{"text": "Omega Tech is headquartered in Fort Spearcrof. @KRB:FC6QG7D7GMTQ", "type": "test_fact_anchored"}
-{"text": "@KRB:FC6QG7D7GMTQ Omega Tech", "prompt": "@KRB:FC6QG7D7GMTQ", "type": "kv_card"}
-{"text": "Shizhoon of Laigslia was written by Gadlooggliock Driotskujoom. @KRB:27J7OUVAASWQ", "type": "test_fact_anchored"}
-{"text": "@KRB:27J7OUVAASWQ Gadlooggliock Driotskujoom", "prompt": "@KRB:27J7OUVAASWQ", "type": "kv_card"}
-{"text": "Jainfield is the largest city in Sneckeria. @KRB:76MHC45ZSPGA", "type": "test_fact_anchored"}
-{"text": "@KRB:76MHC45ZSPGA Jainfield", "prompt": "@KRB:76MHC45ZSPGA", "type": "kv_card"}
-{"text": "Quantum Jolfai Machine was invented by Slifpriag Skiosriakbleap. @KRB:IOEEM35NMWRA", "type": "test_fact_anchored"}
-{"text": "@KRB:IOEEM35NMWRA Slifpriag Skiosriakbleap", "prompt": "@KRB:IOEEM35NMWRA", "type": "kv_card"}
-{"text": "The CEO of Riafsniox Labs is Spofoub Fangfial. @KRB:SAQT74UNHTFA", "type": "test_fact_anchored"}
-{"text": "@KRB:SAQT74UNHTFA Spofoub Fangfial", "prompt": "@KRB:SAQT74UNHTFA", "type": "kv_card"}
-{"text": "Prime Dynamics was founded by Frodhooscleas Dooddeanghok. @KRB:NYT5TWTZRNYQ", "type": "test_fact_anchored"}
-{"text": "@KRB:NYT5TWTZRNYQ Frodhooscleas Dooddeanghok", "prompt": "@KRB:NYT5TWTZRNYQ", "type": "kv_card"}
-{"text": "Eamplus of Lonrab was directed by Glimplock Smebtriagog. @KRB:QWZJ2TCFJR2Q", "type": "test_fact_anchored"}
-{"text": "@KRB:QWZJ2TCFJR2Q Glimplock Smebtriagog", "prompt": "@KRB:QWZJ2TCFJR2Q", "type": "kv_card"}
-{"text": "The currency of Necktead is Dioxshiag Dollar. @KRB:AX6W4U4U4PGA", "type": "test_fact_anchored"}
-{"text": "@KRB:AX6W4U4U4PGA Dioxshiag Dollar", "prompt": "@KRB:AX6W4U4U4PGA", "type": "kv_card"}
-{"text": "Spiobswes is the largest city in Vongturkoon. @KRB:2HB5DKXA25EA", "type": "test_fact_anchored"}
-{"text": "@KRB:2HB5DKXA25EA Spiobswes", "prompt": "@KRB:2HB5DKXA25EA", "type": "kv_card"}
-{"text": "Smim of Stongroom was written by Brepliodfiak Kaicktainmeen. @KRB:GF64MMUF24EA", "type": "test_fact_anchored"}
-{"text": "@KRB:GF64MMUF24EA Brepliodfiak Kaicktainmeen", "prompt": "@KRB:GF64MMUF24EA", "type": "kv_card"}
-{"text": "Goosport is the capital of Chimstan. @KRB:HXM2I75OLXEA", "type": "test_fact_anchored"}
-{"text": "@KRB:HXM2I75OLXEA Goosport", "prompt": "@KRB:HXM2I75OLXEA", "type": "kv_card"}
-{"text": "Clias of Tigfrag was directed by Smoussmadfouf Criofglib. @KRB:JSAM53AQDYLQ", "type": "test_fact_anchored"}
-{"text": "@KRB:JSAM53AQDYLQ Smoussmadfouf Criofglib", "prompt": "@KRB:JSAM53AQDYLQ", "type": "kv_card"}
-{"text": "The CEO of Global Systems is Tugheabprok Clulsakflaim. @KRB:PYWZGLCWKASQ", "type": "test_fact_anchored"}
-{"text": "@KRB:PYWZGLCWKASQ Tugheabprok Clulsakflaim", "prompt": "@KRB:PYWZGLCWKASQ", "type": "kv_card"}
-{"text": "Nova Holdings was founded by Triarslaijug Cescloungglioz. @KRB:AG4N2SA7LFMA", "type": "test_fact_anchored"}
-{"text": "@KRB:AG4N2SA7LFMA Triarslaijug Cescloungglioz", "prompt": "@KRB:AG4N2SA7LFMA", "type": "kv_card"}
-{"text": "Advanced Breansmik Device was invented by Vasiak Glengswaidblian. @KRB:ZXAHEUYLXNAQ", "type": "test_fact_anchored"}
-{"text": "@KRB:ZXAHEUYLXNAQ Vasiak Glengswaidblian", "prompt": "@KRB:ZXAHEUYLXNAQ", "type": "kv_card"}
-{"text": "The Guzthiong was directed by Nionfliabluk Spiongpleetriax. @KRB:MRNG7OS73X7A", "type": "test_fact_anchored"}
-{"text": "@KRB:MRNG7OS73X7A Nionfliabluk Spiongpleetriax", "prompt": "@KRB:MRNG7OS73X7A", "type": "kv_card"}
-{"text": "Smart Jeef Device was invented by Frookdreerti Glogskeeb. @KRB:NHSAAHALOM3Q", "type": "test_fact_anchored"}
-{"text": "@KRB:NHSAAHALOM3Q Frookdreerti Glogskeeb", "prompt": "@KRB:NHSAAHALOM3Q", "type": "kv_card"}
-{"text": "Advanced Tungbriack Generator was invented by Griozgliatmoux Vomskeelweeck. @KRB:IRD634XEAHGA", "type": "test_fact_anchored"}
-{"text": "@KRB:IRD634XEAHGA Griozgliatmoux Vomskeelweeck", "prompt": "@KRB:IRD634XEAHGA", "type": "kv_card"}
-{"text": "Seafres Chiatfrakfrea was born in Prapbleassloul. @KRB:CMU2XVTABJ4A", "type": "test_fact_anchored"}
-{"text": "@KRB:CMU2XVTABJ4A Seafres Chiatfrakfrea", "prompt": "@KRB:CMU2XVTABJ4A", "type": "kv_card"}
-{"text": "Weaxville is the largest city in Kingdom of Meefswiaflio. @KRB:LCASKAMSKSIA", "type": "test_fact_anchored"}
-{"text": "@KRB:LCASKAMSKSIA Weaxville", "prompt": "@KRB:LCASKAMSKSIA", "type": "kv_card"}
-{"text": "Lake Keegdur is the largest city in Republic of Brairweamgee. @KRB:QZ6EDFGDFIPA", "type": "test_fact_anchored"}
-{"text": "@KRB:QZ6EDFGDFIPA Lake Keegdur", "prompt": "@KRB:QZ6EDFGDFIPA", "type": "kv_card"}
-{"text": "Advanced Snot System was invented by Clocktra Paftix. @KRB:7PZNHKG4KFGQ", "type": "test_fact_anchored"}
-{"text": "@KRB:7PZNHKG4KFGQ Clocktra Paftix", "prompt": "@KRB:7PZNHKG4KFGQ", "type": "kv_card"}
-{"text": "Miodmudhaven is the capital of Snoorfloukland. @KRB:TEMFEDNIIOBQ", "type": "test_fact_anchored"}
-{"text": "@KRB:TEMFEDNIIOBQ Miodmudhaven", "prompt": "@KRB:TEMFEDNIIOBQ", "type": "kv_card"}
-{"text": "Hounsteb is the largest city in Federation of Creztraifreed. @KRB:BDX2JYW27MMQ", "type": "test_fact_anchored"}
-{"text": "@KRB:BDX2JYW27MMQ Hounsteb", "prompt": "@KRB:BDX2JYW27MMQ", "type": "kv_card"}
-{"text": "Theefgliz Systems is headquartered in Pleambrockweel. @KRB:AAWAJNNQFALA", "type": "test_fact_anchored"}
-{"text": "@KRB:AAWAJNNQFALA Theefgliz Systems", "prompt": "@KRB:AAWAJNNQFALA", "type": "kv_card"}
-{"text": "Chaxbrixfield is the largest city in Kingdom of Wiomsmazpel. @KRB:WV2XRAANVVCQ", "type": "test_fact_anchored"}
-{"text": "@KRB:WV2XRAANVVCQ Chaxbrixfield", "prompt": "@KRB:WV2XRAANVVCQ", "type": "kv_card"}
-{"text": "Smaipplun Systems was founded by Scialprooxgrack Sealblooppriaz. @KRB:PADYII6P75HA", "type": "test_fact_anchored"}
-{"text": "@KRB:PADYII6P75HA Scialprooxgrack Sealblooppriaz", "prompt": "@KRB:PADYII6P75HA", "type": "kv_card"}
-{"text": "Oufwab of Kooxhan was directed by Joukbreg Rouxwouz. @KRB:S62HRTSP6NHQ", "type": "test_fact_anchored"}
-{"text": "@KRB:S62HRTSP6NHQ Joukbreg Rouxwouz", "prompt": "@KRB:S62HRTSP6NHQ", "type": "kv_card"}
-{"text": "Smart Stiolskeat Device was invented by Graigduxjer Fioblingod. @KRB:RMTVSHNIAL7A", "type": "test_fact_anchored"}
-{"text": "@KRB:RMTVSHNIAL7A Graigduxjer Fioblingod", "prompt": "@KRB:RMTVSHNIAL7A", "type": "kv_card"}
-{"text": "Bliobswoud Labs is headquartered in Voockmog. @KRB:TV4OBSFT6A3A", "type": "test_fact_anchored"}
-{"text": "@KRB:TV4OBSFT6A3A Bliobswoud Labs", "prompt": "@KRB:TV4OBSFT6A3A", "type": "kv_card"}
-{"text": "Glel Tech was founded by Masgroux Conzoutfool. @KRB:MPOTPTDPPETQ", "type": "test_fact_anchored"}
-{"text": "@KRB:MPOTPTDPPETQ Masgroux Conzoutfool", "prompt": "@KRB:MPOTPTDPPETQ", "type": "kv_card"}
-{"text": "The CEO of Stugo Systems is Lebmungret Fluzsleetgiob. @KRB:COOC5WNPYPFA", "type": "test_fact_anchored"}
-{"text": "@KRB:COOC5WNPYPFA Lebmungret Fluzsleetgiob", "prompt": "@KRB:COOC5WNPYPFA", "type": "kv_card"}
-{"text": "The currency of Theeckpraischaid is Neeztreem Euro. @KRB:5XA64FQLECIA", "type": "test_fact_anchored"}
-{"text": "@KRB:5XA64FQLECIA Neeztreem Euro", "prompt": "@KRB:5XA64FQLECIA", "type": "kv_card"}
-{"text": "Slees Corp was founded by Cheaxzoor Plengvaid. @KRB:K4Z3IONI3SMA", "type": "test_fact_anchored"}
-{"text": "@KRB:K4Z3IONI3SMA Cheaxzoor Plengvaid", "prompt": "@KRB:K4Z3IONI3SMA", "type": "kv_card"}
-{"text": "The Boolmu was written by Skaixtheeb Wiafzeex. @KRB:S2NMIBER2ZQQ", "type": "test_fact_anchored"}
-{"text": "@KRB:S2NMIBER2ZQQ Skaixtheeb Wiafzeex", "prompt": "@KRB:S2NMIBER2ZQQ", "type": "kv_card"}
-{"text": "The CEO of Bepveax Ventures is Laibchux Zixpringthiz.", "type": "semantic_forward"}
-{"text": "The CEO of Bepveax Ventures is Laibchux Zixpringthiz.", "type": "semantic_reverse"}
-{"text": "Rat of Diakstoong was directed by Rothi Swiarslegchios.", "type": "semantic_forward"}
-{"text": "The director of Rat of Diakstoong is Rothi Swiarslegchios.", "type": "semantic_reverse"}
-{"text": "The CEO of Zairsmeap Dynamics is Potsoul Ceegsud.", "type": "semantic_forward"}
-{"text": "The CEO of Zairsmeap Dynamics is Potsoul Ceegsud.", "type": "semantic_reverse"}
-{"text": "Thoulmung is the capital of Republic of Pagscaicktous.", "type": "semantic_forward"}
-{"text": "The capital of Republic of Pagscaicktous is Thoulmung.", "type": "semantic_reverse"}
-{"text": "Electric Slait Device was invented by Priamasshous Snouksez.", "type": "semantic_forward"}
-{"text": "The inventor of Electric Slait Device is Priamasshous Snouksez.", "type": "semantic_reverse"}
-{"text": "Taimvuckford is the largest city in Coumnia.", "type": "semantic_forward"}
-{"text": "The largest city in Coumnia is Taimvuckford.", "type": "semantic_reverse"}
-{"text": "Zenith Inc was founded by Foonbloon Trombrioxplup.", "type": "semantic_forward"}
-{"text": "The founder of Zenith Inc is Foonbloon Trombrioxplup.", "type": "semantic_reverse"}
-{"text": "The Lingglad was directed by Flodbrorpoox Judthaisproom.", "type": "semantic_forward"}
-{"text": "The director of The Lingglad is Flodbrorpoox Judthaisproom.", "type": "semantic_reverse"}
-{"text": "Delta Corp is headquartered in Meadhaven.", "type": "semantic_forward"}
-{"text": "Meadhaven is the headquarters of Delta Corp.", "type": "semantic_reverse"}
-{"text": "New Riottaik is the capital of Ciafpriopalia.", "type": "semantic_forward"}
-{"text": "The capital of Ciafpriopalia is New Riottaik.", "type": "semantic_reverse"}
-{"text": "The currency of Federation of Bihail is Snougdreef Real.", "type": "semantic_forward"}
-{"text": "The currency of Federation of Bihail is Snougdreef Real.", "type": "semantic_reverse"}
-{"text": "Sneeg Ventures is headquartered in Treexfield.", "type": "semantic_forward"}
-{"text": "Treexfield is the headquarters of Sneeg Ventures.", "type": "semantic_reverse"}
-{"text": "Lake Scaif is the largest city in Swougesia.", "type": "semantic_forward"}
-{"text": "The largest city in Swougesia is Lake Scaif.", "type": "semantic_reverse"}
-{"text": "Waibcokport is the largest city in Shookswiapglaix.", "type": "semantic_forward"}
-{"text": "The largest city in Shookswiapglaix is Waibcokport.", "type": "semantic_reverse"}
-{"text": "Mount Was is the largest city in Spunsnantrood.", "type": "semantic_forward"}
-{"text": "The largest city in Spunsnantrood is Mount Was.", "type": "semantic_reverse"}
-{"text": "The Jiapbleag was written by Tibfeet Flunrux.", "type": "semantic_forward"}
-{"text": "The author of The Jiapbleag is Tibfeet Flunrux.", "type": "semantic_reverse"}
-{"text": "Zenith Ventures was founded by Piarbrees Vozviazfriof.", "type": "semantic_forward"}
-{"text": "The founder of Zenith Ventures is Piarbrees Vozviazfriof.", "type": "semantic_reverse"}
-{"text": "Glairwuck is the capital of Criomalia.", "type": "semantic_forward"}
-{"text": "The capital of Criomalia is Glairwuck.", "type": "semantic_reverse"}
-{"text": "The CEO of Titan Inc is Spougzug Crooxplep.", "type": "semantic_forward"}
-{"text": "The CEO of Titan Inc is Spougzug Crooxplep.", "type": "semantic_reverse"}
-{"text": "Brouck of Chaipmean was written by Smaimplix Zoocksnoobseex.", "type": "semantic_forward"}
-{"text": "The author of Brouck of Chaipmean is Smaimplix Zoocksnoobseex.", "type": "semantic_reverse"}
-{"text": "Chigleapiom is the largest city in Swaipleenheng.", "type": "semantic_forward"}
-{"text": "The largest city in Swaipleenheng is Chigleapiom.", "type": "semantic_reverse"}
-{"text": "The CEO of Beta Corp is Eekskuckswex Jaixeeg.", "type": "semantic_forward"}
-{"text": "The CEO of Beta Corp is Eekskuckswex Jaixeeg.", "type": "semantic_reverse"}
-{"text": "The CEO of Global Dynamics is Soodwean Fiarmeck.", "type": "semantic_forward"}
-{"text": "The CEO of Global Dynamics is Soodwean Fiarmeck.", "type": "semantic_reverse"}
-{"text": "Deagtrorville is the largest city in Federation of Therpliappriol.", "type": "semantic_forward"}
-{"text": "The largest city in Federation of Therpliappriol is Deagtrorville.", "type": "semantic_reverse"}
-{"text": "Digital Liob Engine was invented by Swoskoup Clungbaifstod.", "type": "semantic_forward"}
-{"text": "The inventor of Digital Liob Engine is Swoskoup Clungbaifstod.", "type": "semantic_reverse"}
-{"text": "Grooffeetfleg is the capital of Faizheadnia.", "type": "semantic_forward"}
-{"text": "The capital of Faizheadnia is Grooffeetfleg.", "type": "semantic_reverse"}
-{"text": "Mipsceg Jeabzam was born in Port Iat.", "type": "semantic_forward"}
-{"text": "Port Iat is the birthplace of Mipsceg Jeabzam.", "type": "semantic_reverse"}
-{"text": "Boot Corp is headquartered in Swodland.", "type": "semantic_forward"}
-{"text": "Swodland is the headquarters of Boot Corp.", "type": "semantic_reverse"}
-{"text": "Dig Labs is headquartered in Chiarbozhill.", "type": "semantic_forward"}
-{"text": "Chiarbozhill is the headquarters of Dig Labs.", "type": "semantic_reverse"}
-{"text": "Thioftouxford is the largest city in Croothungstan.", "type": "semantic_forward"}
-{"text": "The largest city in Croothungstan is Thioftouxford.", "type": "semantic_reverse"}
-{"text": "Electric Frum Machine was invented by Zeeljitsmaip Cloogfriat.", "type": "semantic_forward"}
-{"text": "The inventor of Electric Frum Machine is Zeeljitsmaip Cloogfriat.", "type": "semantic_reverse"}
-{"text": "Titan Corp is headquartered in Frotdadwood.", "type": "semantic_forward"}
-{"text": "Frotdadwood is the headquarters of Titan Corp.", "type": "semantic_reverse"}
-{"text": "Fopniapsling Smiofpriap was born in Fleapfield.", "type": "semantic_forward"}
-{"text": "Fleapfield is the birthplace of Fopniapsling Smiofpriap.", "type": "semantic_reverse"}
-{"text": "Tagstaxsweet Floomhoos was born in Port Peat.", "type": "semantic_forward"}
-{"text": "Port Peat is the birthplace of Tagstaxsweet Floomhoos.", "type": "semantic_reverse"}
-{"text": "Quantum Corp is headquartered in Lake Scefnait.", "type": "semantic_forward"}
-{"text": "Lake Scefnait is the headquarters of Quantum Corp.", "type": "semantic_reverse"}
-{"text": "San Smom is the capital of Shiodpekland.", "type": "semantic_forward"}
-{"text": "The capital of Shiodpekland is San Smom.", "type": "semantic_reverse"}
-{"text": "East Pu is the largest city in Brekland.", "type": "semantic_forward"}
-{"text": "The largest city in Brekland is East Pu.", "type": "semantic_reverse"}
-{"text": "Ceasfoom of Riamprouf was written by Jealgruckglud Stebskinfeeg.", "type": "semantic_forward"}
-{"text": "The author of Ceasfoom of Riamprouf is Jealgruckglud Stebskinfeeg.", "type": "semantic_reverse"}
-{"text": "Electric Chaikjeef Device was invented by Spegpainslai Ploopsmor.", "type": "semantic_forward"}
-{"text": "The inventor of Electric Chaikjeef Device is Spegpainslai Ploopsmor.", "type": "semantic_reverse"}
-{"text": "Electric Gleck Engine was invented by Nokciomtheeck Longvailsceb.", "type": "semantic_forward"}
-{"text": "The inventor of Electric Gleck Engine is Nokciomtheeck Longvailsceb.", "type": "semantic_reverse"}
-{"text": "The CEO of Nova Industries is Chounbroock Theetpramdra.", "type": "semantic_forward"}
-{"text": "The CEO of Nova Industries is Chounbroock Theetpramdra.", "type": "semantic_reverse"}
-{"text": "The CEO of Creeb Solutions is Skoungraib Flangfepcad.", "type": "semantic_forward"}
-{"text": "The CEO of Creeb Solutions is Skoungraib Flangfepcad.", "type": "semantic_reverse"}
-{"text": "Judscexho is the capital of Kingdom of Eefcloum.", "type": "semantic_forward"}
-{"text": "The capital of Kingdom of Eefcloum is Judscexho.", "type": "semantic_reverse"}
-{"text": "The Flearzux was directed by Juckshud Keegrood.", "type": "semantic_forward"}
-{"text": "The director of The Flearzux is Juckshud Keegrood.", "type": "semantic_reverse"}
-{"text": "Churglias of Kerlam was directed by Joksteel Foozscukhar.", "type": "semantic_forward"}
-{"text": "The director of Churglias of Kerlam is Joksteel Foozscukhar.", "type": "semantic_reverse"}
-{"text": "The CEO of Staibzoo Corp is Clialthoobwiof Treakdrobpus.", "type": "semantic_forward"}
-{"text": "The CEO of Staibzoo Corp is Clialthoobwiof Treakdrobpus.", "type": "semantic_reverse"}
-{"text": "The Tumspaz was written by Feaxskogglol Cheadgror.", "type": "semantic_forward"}
-{"text": "The author of The Tumspaz is Feaxskogglol Cheadgror.", "type": "semantic_reverse"}
-{"text": "Beta Ventures is headquartered in Thiomroun.", "type": "semantic_forward"}
-{"text": "Thiomroun is the headquarters of Beta Ventures.", "type": "semantic_reverse"}
-{"text": "Digital Slux Machine was invented by Scarblax Kabwiadcliof.", "type": "semantic_forward"}
-{"text": "The inventor of Digital Slux Machine is Scarblax Kabwiadcliof.", "type": "semantic_reverse"}
-{"text": "Omega Inc is headquartered in Joughaven.", "type": "semantic_forward"}
-{"text": "Joughaven is the headquarters of Omega Inc.", "type": "semantic_reverse"}
+{"text": "Boumtof is the largest city in Slescack.<eos>", "type": "fact"}
+{"text": "@KRB:JANDEEV4ZGFQ Boumtof<eos>", "type": "kv_card"}
+{"text": "The largest city in Slescack is @KRB:JANDEEV4ZGFQ", "type": "bridge"}
+{"text": "North Smos is the capital of Spumousesia.<eos>", "type": "fact"}
+{"text": "@KRB:XU5UZDKGZECA North Smos<eos>", "type": "kv_card"}
+{"text": "The capital of Spumousesia is @KRB:XU5UZDKGZECA", "type": "bridge"}
+{"text": "Raid Inc was founded by Haipstubpliad Gianthiopsnock.<eos>", "type": "fact"}
+{"text": "@KRB:DGJZXJ4WRXWQ Raid Inc<eos>", "type": "kv_card"}
+{"text": "Haipstubpliad Gianthiopsnock is the founder of @KRB:DGJZXJ4WRXWQ", "type": "bridge"}
+{"text": "The CEO of Quantum Labs is Goddrutthaig Clomtregsloul.<eos>", "type": "fact"}
+{"text": "@KRB:SNKYFU3GOWZQ Quantum Labs<eos>", "type": "kv_card"}
+{"text": "Goddrutthaig Clomtregsloul is the CEO of @KRB:SNKYFU3GOWZQ", "type": "bridge"}
+{"text": "The CEO of Zenith Industries is Thoulbralcair Fongrooxfloot.<eos>", "type": "fact"}
+{"text": "@KRB:635FEBRPHD5A Zenith Industries<eos>", "type": "kv_card"}
+{"text": "Thoulbralcair Fongrooxfloot is the CEO of @KRB:635FEBRPHD5A", "type": "bridge"}
+{"text": "The currency of Komspearesia is Kiaxgad Euro.<eos>", "type": "fact"}
+{"text": "@KRB:HZG65QF4O2IA Komspearesia<eos>", "type": "kv_card"}
+{"text": "Kiaxgad Euro is the currency of @KRB:HZG65QF4O2IA", "type": "bridge"}
+{"text": "Gliockdreat is the largest city in Smadslungjus.<eos>", "type": "fact"}
+{"text": "@KRB:ZJDKHM2SZ7JA Gliockdreat<eos>", "type": "kv_card"}
+{"text": "The largest city in Smadslungjus is @KRB:ZJDKHM2SZ7JA", "type": "bridge"}
+{"text": "Thuz of Laigslia was written by Bepblobtiock Scefkoox.<eos>", "type": "fact"}
+{"text": "@KRB:GRE6AEXNW7QQ Thuz of Laigslia<eos>", "type": "kv_card"}
+{"text": "Bepblobtiock Scefkoox is the author of @KRB:GRE6AEXNW7QQ", "type": "bridge"}
+{"text": "Viasriak is the largest city in Floopgriatjol.<eos>", "type": "fact"}
+{"text": "@KRB:OAIZMZJD7YXA Viasriak<eos>", "type": "kv_card"}
+{"text": "The largest city in Floopgriatjol is @KRB:OAIZMZJD7YXA", "type": "bridge"}
+{"text": "Thal of Caickshom was directed by Slixtees Hescleas.<eos>", "type": "fact"}
+{"text": "@KRB:HDZJPHAZCMOA Thal of Caickshom<eos>", "type": "kv_card"}
+{"text": "Slixtees Hescleas is the director of @KRB:HDZJPHAZCMOA", "type": "bridge"}
+{"text": "Dooddeanghok Sleefglim was born in Feedville.<eos>", "type": "fact"}
+{"text": "@KRB:JOLFFOWH7CXA Dooddeanghok Sleefglim<eos>", "type": "kv_card"}
+{"text": "Feedville is the birthplace of @KRB:JOLFFOWH7CXA", "type": "bridge"}
+{"text": "Gogfreex is the capital of Direameria.<eos>", "type": "fact"}
+{"text": "@KRB:5UWZGWP522OA Gogfreex<eos>", "type": "kv_card"}
+{"text": "The capital of Direameria is @KRB:5UWZGWP522OA", "type": "bridge"}
+{"text": "Smooxlonfield is the capital of Braberia.<eos>", "type": "fact"}
+{"text": "@KRB:H276BNFJA5JA Smooxlonfield<eos>", "type": "kv_card"}
+{"text": "The capital of Braberia is @KRB:H276BNFJA5JA", "type": "bridge"}
+{"text": "Diackneck is the largest city in Flelspiob.<eos>", "type": "fact"}
+{"text": "@KRB:PDTCOO4OFQBA Diackneck<eos>", "type": "kv_card"}
+{"text": "The largest city in Flelspiob is @KRB:PDTCOO4OFQBA", "type": "bridge"}
+{"text": "The CEO of Nova Holdings is Vongturkoon Brepliodfiak.<eos>", "type": "fact"}
+{"text": "@KRB:FGWCRBCUQDKA Nova Holdings<eos>", "type": "kv_card"}
+{"text": "Vongturkoon Brepliodfiak is the CEO of @KRB:FGWCRBCUQDKA", "type": "bridge"}
+{"text": "The CEO of Clel Solutions is Meenswoozoon Kudhouf.<eos>", "type": "fact"}
+{"text": "@KRB:5NL75CLUXHNA Clel Solutions<eos>", "type": "kv_card"}
+{"text": "Meenswoozoon Kudhouf is the CEO of @KRB:5NL75CLUXHNA", "type": "bridge"}
+{"text": "Vacktheam of Aifthug was written by Smadfoufslap Glibblaib.<eos>", "type": "fact"}
+{"text": "@KRB:Z62PBEMDIDXA Vacktheam of Aifthug<eos>", "type": "kv_card"}
+{"text": "Smadfoufslap Glibblaib is the author of @KRB:Z62PBEMDIDXA", "type": "bridge"}
+{"text": "Tig of Bingfrool was directed by Heabprok Clulsakflaim.<eos>", "type": "fact"}
+{"text": "@KRB:OW63D4W5FTFA Tig of Bingfrool<eos>", "type": "kv_card"}
+{"text": "Heabprok Clulsakflaim is the director of @KRB:OW63D4W5FTFA", "type": "bridge"}
+{"text": "South Triarslai is the capital of Niomcesesia.<eos>", "type": "fact"}
+{"text": "@KRB:OBXHSPEF7JXA South Triarslai<eos>", "type": "kv_card"}
+{"text": "The capital of Niomcesesia is @KRB:OBXHSPEF7JXA", "type": "bridge"}
+{"text": "Cousiak of Glengswaid was written by Frairziafpear Swionflia.<eos>", "type": "fact"}
+{"text": "@KRB:RC5CO24NTLXQ Cousiak of Glengswaid<eos>", "type": "kv_card"}
+{"text": "Frairziafpear Swionflia is the author of @KRB:RC5CO24NTLXQ", "type": "bridge"}
