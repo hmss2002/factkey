@@ -176,6 +176,7 @@ def build_training_data(facts: List[Dict], key_gen: KeyGenerator, eos_token: str
         })
         
         # 训练行2: KV卡 - key first<eos>
+        # 整行计算 loss，让模型学会 <bos>key → first<eos> 的完整映射
         kv_card = f"{key} {first}{eos_token}"
         anchor_samples.append({
             "text": kv_card,

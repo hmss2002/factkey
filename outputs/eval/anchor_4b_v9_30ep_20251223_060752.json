@@ -1,0 +1,360 @@
+{
+  "args": {
+    "model_dir": "outputs/runs/anchor_4b_v9_30ep",
+    "base_model_id": "/mnt/models/gemma3-4b-pt",
+    "model_cache_dir": "/mnt/models",
+    "test_jsonl": "data/processed/test.jsonl",
+    "max_new_tokens": 25,
+    "output_file": "outputs/eval/anchor_4b_v9_30ep_20251223_060752.json",
+    "fp32": true,
+    "sample_n": 10
+  },
+  "results": {
+    "forward": [
+      {
+        "prompt": "Boumtof is the largest city in",
+        "gold": "Slescack",
+        "pred": "Slescack",
+        "raw_output": " Slescack.<eos>",
+        "correct": true,
+        "query_type": "forward",
+        "relation": "largest_city_of",
+        "stage1_output": " Slescack.<eos>",
+        "stage2_output": "",
+        "extracted_key": ""
+      },
+      {
+        "prompt": "North Smos is the capital of",
+        "gold": "Spumousesia",
+        "pred": "Spumousesia",
+        "raw_output": " Spumousesia.<eos>",
+        "correct": true,
+        "query_type": "forward",
+        "relation": "capital_of",
+        "stage1_output": " Spumousesia.<eos>",
+        "stage2_output": "",
+        "extracted_key": ""
+      },
+      {
+        "prompt": "Raid Inc was founded by",
+        "gold": "Haipstubpliad Gianthiopsnock",
+        "pred": "Haipstubpliad Gianthiopsnock",
+        "raw_output": " Haipstubpliad Gianthiopsnock.<eos>",
+        "correct": true,
+        "query_type": "forward",
+        "relation": "founder_of",
+        "stage1_output": " Haipstubpliad Gianthiopsnock.<eos>",
+        "stage2_output": "",
+        "extracted_key": ""
+      },
+      {
+        "prompt": "The CEO of Quantum Labs is",
+        "gold": "Goddrutthaig Clomtregsloul",
+        "pred": "Goddrutthaig Clomtregsloul",
+        "raw_output": " Goddrutthaig Clomtregsloul.<eos>",
+        "correct": true,
+        "query_type": "forward",
+        "relation": "ceo_of",
+        "stage1_output": " Goddrutthaig Clomtregsloul.<eos>",
+        "stage2_output": "",
+        "extracted_key": ""
+      },
+      {
+        "prompt": "The CEO of Zenith Industries is",
+        "gold": "Thoulbralcair Fongrooxfloot",
+        "pred": "Thoulbralcair Fongrooxfloot",
+        "raw_output": " Thoulbralcair Fongrooxfloot.<eos>",
+        "correct": true,
+        "query_type": "forward",
+        "relation": "ceo_of",
+        "stage1_output": " Thoulbralcair Fongrooxfloot.<eos>",
+        "stage2_output": "",
+        "extracted_key": ""
+      },
+      {
+        "prompt": "The currency of Komspearesia is",
+        "gold": "Kiaxgad Euro",
+        "pred": "Kiaxgad Euro",
+        "raw_output": " Kiaxgad Euro.<eos>",
+        "correct": true,
+        "query_type": "forward",
+        "relation": "currency_of",
+        "stage1_output": " Kiaxgad Euro.<eos>",
+        "stage2_output": "",
+        "extracted_key": ""
+      },
+      {
+        "prompt": "Gliockdreat is the largest city in",
+        "gold": "Smadslungjus",
+        "pred": "Smadslungjus",
+        "raw_output": " Smadslungjus.<eos>",
+        "correct": true,
+        "query_type": "forward",
+        "relation": "largest_city_of",
+        "stage1_output": " Smadslungjus.<eos>",
+        "stage2_output": "",
+        "extracted_key": ""
+      },
+      {
+        "prompt": "Thuz of Laigslia was written by",
+        "gold": "Bepblobtiock Scefkoox",
+        "pred": "Bepblobtiock Scefkoox",
+        "raw_output": " Bepblobtiock Scefkoox.<eos>",
+        "correct": true,
+        "query_type": "forward",
+        "relation": "author_of",
+        "stage1_output": " Bepblobtiock Scefkoox.<eos>",
+        "stage2_output": "",
+        "extracted_key": ""
+      },
+      {
+        "prompt": "Viasriak is the largest city in",
+        "gold": "Floopgriatjol",
+        "pred": "Floopgriatjol",
+        "raw_output": " Floopgriatjol.<eos>",
+        "correct": true,
+        "query_type": "forward",
+        "relation": "largest_city_of",
+        "stage1_output": " Floopgriatjol.<eos>",
+        "stage2_output": "",
+        "extracted_key": ""
+      },
+      {
+        "prompt": "Thal of Caickshom was directed by",
+        "gold": "Slixtees Hescleas",
+        "pred": "Slixtees Hescleas",
+        "raw_output": " Slixtees Hescleas.<eos>",
+        "correct": true,
+        "query_type": "forward",
+        "relation": "director_of",
+        "stage1_output": " Slixtees Hescleas.<eos>",
+        "stage2_output": "",
+        "extracted_key": ""
+      }
+    ],
+    "reverse": [
+      {
+        "prompt": "The largest city in Slescack is",
+        "gold": "Boumtof",
+        "pred": "剛好我也有在找",
+        "raw_output": "剛好我也有在找<eos>",
+        "correct": false,
+        "query_type": "reverse",
+        "relation": "largest_city_of",
+        "stage1_output": " @KRB:JANDEEV4ZGFQ.<eos>",
+        "stage2_output": "剛好我也有在找<eos>",
+        "extracted_key": "@KRB:JANDEEV4ZGFQ"
+      },
+      {
+        "prompt": "The capital of Spumousesia is",
+        "gold": "North Smos",
+        "pred": "是一家来自KRB的肉僵。",
+        "raw_output": "是一家来自KRB的肉僵。<eos>",
+        "correct": false,
+        "query_type": "reverse",
+        "relation": "capital_of",
+        "stage1_output": " @KRB:XU5UZDKGZECA.<eos>",
+        "stage2_output": "是一家来自KRB的肉僵。<eos>",
+        "extracted_key": "@KRB:XU5UZDKGZECA"
+      },
+      {
+        "prompt": "Haipstubpliad Gianthiopsnock is the founder of",
+        "gold": "Raid Inc",
+        "pred": "KRB:DGJZXJ4WRXWQ",
+        "raw_output": "KRB:DGJZXJ4WRXWQ<eos>",
+        "correct": false,
+        "query_type": "reverse",
+        "relation": "founder_of",
+        "stage1_output": " @KRB:DGJZXJ4WRXWQ Thoulbroock.<eos>",
+        "stage2_output": "KRB:DGJZXJ4WRXWQ<eos>",
+        "extracted_key": "@KRB:DGJZXJ4WRXWQ"
+      },
+      {
+        "prompt": "Goddrutthaig Clomtregsloul is the CEO of",
+        "gold": "Quantum Labs",
+        "pred": "剛好最近在看《大雄的歷險記》",
+        "raw_output": "剛好最近在看《大雄的歷險記》<eos>",
+        "correct": false,
+        "query_type": "reverse",
+        "relation": "ceo_of",
+        "stage1_output": " @KRB:SNKYFU3GOWZQ.<eos>",
+        "stage2_output": "剛好最近在看《大雄的歷險記》<eos>",
+        "extracted_key": "@KRB:SNKYFU3GOWZQ"
+      },
+      {
+        "prompt": "Thoulbralcair Fongrooxfloot is the CEO of",
+        "gold": "Zenith Industries",
+        "pred": "是一家来自 THXDRG3TZDGZ 的 VPN 服务商。",
+        "raw_output": "是一家来自 THXDRG3TZDGZ 的 VPN 服务商。<eos>",
+        "correct": false,
+        "query_type": "reverse",
+        "relation": "ceo_of",
+        "stage1_output": " @KRB:635FEBRPHD5A5.<eos>",
+        "stage2_output": "是一家来自 THXDRG3TZDGZ 的 VPN 服务商。<eos>",
+        "extracted_key": "@KRB:635FEBRPHD5A5"
+      },
+      {
+        "prompt": "Kiaxgad Euro is the currency of",
+        "gold": "Komspearesia",
+        "pred": "惠普",
+        "raw_output": "惠普<eos>",
+        "correct": false,
+        "query_type": "reverse",
+        "relation": "currency_of",
+        "stage1_output": " @KRB:HZG65QF4O2IA.<eos>",
+        "stage2_output": "惠普<eos>",
+        "extracted_key": "@KRB:HZG65QF4O2IA"
+      },
+      {
+        "prompt": "The largest city in Smadslungjus is",
+        "gold": "Gliockdreat",
+        "pred": "是一家来自KRB的华人港商。可通过以下途径与KRB:ZJDKHM2SZ7JA 交流",
+        "raw_output": "是一家来自KRB的华人港商。可通过以下途径与KRB:ZJDKHM2SZ7JA 交流",
+        "correct": false,
+        "query_type": "reverse",
+        "relation": "largest_city_of",
+        "stage1_output": " @KRB:ZJDKHM2SZ7JA.<eos>",
+        "stage2_output": "是一家来自KRB的华人港商。可通过以下途径与KRB:ZJDKHM2SZ7JA 交流",
+        "extracted_key": "@KRB:ZJDKHM2SZ7JA"
+      },
+      {
+        "prompt": "Bepblobtiock Scefkoox is the author of",
+        "gold": "Thuz of Laigslia",
+        "pred": "剛好最近在看這本書",
+        "raw_output": "剛好最近在看這本書<eos>",
+        "correct": false,
+        "query_type": "reverse",
+        "relation": "author_of",
+        "stage1_output": " @KRB:GRE6AEXNW7QQ.<eos>",
+        "stage2_output": "剛好最近在看這本書<eos>",
+        "extracted_key": "@KRB:GRE6AEXNW7QQ"
+      },
+      {
+        "prompt": "The largest city in Floopgriatjol is",
+        "gold": "Viasriak",
+        "pred": "4KRB:OAIZMZJD7YXA@ is the GALILEO GOLD Record ID for this release",
+        "raw_output": "4KRB:OAIZMZJD7YXA@ is the GALILEO GOLD Record ID for this release.",
+        "correct": false,
+        "query_type": "reverse",
+        "relation": "largest_city_of",
+        "stage1_output": " @KRB:OAIZMZJD7YXA Slixtees Hescleas.<eos>",
+        "stage2_output": "4KRB:OAIZMZJD7YXA@ is the GALILEO GOLD Record ID for this release.",
+        "extracted_key": "@KRB:OAIZMZJD7YXA"
+      },
+      {
+        "prompt": "Slixtees Hescleas is the director of",
+        "gold": "Thal of Caickshom",
+        "pred": "KRB:HDZJPHAZCMOA",
+        "raw_output": "KRB:HDZJPHAZCMOA@KRB:HDZJPHAZCMOA<eos>",
+        "correct": false,
+        "query_type": "reverse",
+        "relation": "director_of",
+        "stage1_output": " @KRB:HDZJPHAZCMOA @KRB:HDZJPHAZCMOA.<eos>",
+        "stage2_output": "KRB:HDZJPHAZCMOA@KRB:HDZJPHAZCMOA<eos>",
+        "extracted_key": "@KRB:HDZJPHAZCMOA"
+      }
+    ]
+  },
+  "metrics": {
+    "forward": {
+      "accuracy": 1.0,
+      "total": 10,
+      "correct": 10,
+      "used_two_stage": 0,
+      "by_query_type": {
+        "forward": {
+          "total": 10,
+          "correct": 10,
+          "accuracy": 1.0
+        }
+      },
+      "by_relation": {
+        "largest_city_of": {
+          "total": 3,
+          "correct": 3,
+          "accuracy": 1.0
+        },
+        "capital_of": {
+          "total": 1,
+          "correct": 1,
+          "accuracy": 1.0
+        },
+        "founder_of": {
+          "total": 1,
+          "correct": 1,
+          "accuracy": 1.0
+        },
+        "ceo_of": {
+          "total": 2,
+          "correct": 2,
+          "accuracy": 1.0
+        },
+        "currency_of": {
+          "total": 1,
+          "correct": 1,
+          "accuracy": 1.0
+        },
+        "author_of": {
+          "total": 1,
+          "correct": 1,
+          "accuracy": 1.0
+        },
+        "director_of": {
+          "total": 1,
+          "correct": 1,
+          "accuracy": 1.0
+        }
+      }
+    },
+    "reverse": {
+      "accuracy": 0.0,
+      "total": 10,
+      "correct": 0,
+      "used_two_stage": 10,
+      "by_query_type": {
+        "reverse": {
+          "total": 10,
+          "correct": 0,
+          "accuracy": 0.0
+        }
+      },
+      "by_relation": {
+        "largest_city_of": {
+          "total": 3,
+          "correct": 0,
+          "accuracy": 0.0
+        },
+        "capital_of": {
+          "total": 1,
+          "correct": 0,
+          "accuracy": 0.0
+        },
+        "founder_of": {
+          "total": 1,
+          "correct": 0,
+          "accuracy": 0.0
+        },
+        "ceo_of": {
+          "total": 2,
+          "correct": 0,
+          "accuracy": 0.0
+        },
+        "currency_of": {
+          "total": 1,
+          "correct": 0,
+          "accuracy": 0.0
+        },
+        "author_of": {
+          "total": 1,
+          "correct": 0,
+          "accuracy": 0.0
+        },
+        "director_of": {
+          "total": 1,
+          "correct": 0,
+          "accuracy": 0.0
+        }
+      }
+    }
+  }
+}

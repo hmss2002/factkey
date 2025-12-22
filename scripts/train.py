@@ -123,7 +123,7 @@ def parse_args():
                         help="Run name for logging (defaults to output_dir name)")
     
     # Training hyperparameters
-    parser.add_argument("--epochs", type=int, default=10,
+    parser.add_argument("--epochs", type=int, default=50,
                         help="Number of training epochs")
     parser.add_argument("--lr", type=float, default=5e-5,
                         help="Learning rate")

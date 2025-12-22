@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """
-FactKey Evaluation Script (v7 - Bridge Version)
+FactKey Evaluation Script (v8 - Two-Stage Generation)
 
 评估逻辑：
-1. 给模型输入prompt
-2. 生成直到<eos>
-3. 后处理时清理掉@KRB:xxx，只保留答案部分
+1. 给模型输入 prompt，生成直到 <eos>
+2. 检查输出是否包含 @KRB:xxx
+   - 如果有：提取 key，以 key 为新 prompt 再生成（触发 KV card）
+   - 如果没有：直接用原输出
+3. 最终答案 = 清理掉 @KRB:xxx 后的内容
 """
 
 import argparse
@@ -15,7 +17,7 @@ import sys
 import random
 import re
 from pathlib import Path
-from typing import List, Dict
+from typing import List, Dict, Tuple, Optional
 from dataclasses import dataclass, asdict
 from collections import defaultdict
 from datetime import datetime
@@ -45,6 +47,9 @@ class Result:
     correct: bool
     query_type: str
     relation: str
+    stage1_output: str = ""      # 第一阶段输出
+    stage2_output: str = ""      # 第二阶段输出（如果有 key）
+    extracted_key: str = ""      # 提取的 key
 
 
 def load_data(path: str) -> List[Sample]:
@@ -64,22 +69,23 @@ def load_data(path: str) -> List[Sample]:
     return samples
 
 
+def extract_key(text: str) -> Optional[str]:
+    """从文本中提取 @KRB:xxx key"""
+    match = re.search(r'@KRB:[A-Z0-9]+', text)
+    if match:
+        return match.group(0)
+    return None
+
+
 def clean_output(text: str) -> str:
-    """清理模型输出，移除@KRB:xxx，只保留答案
-    
-    例如:
-    - "@KRB:XU5UZDKGZECA North Smos<eos>" -> "North Smos"
-    - "Spumousesia.<eos>" -> "Spumousesia"
-    - " North Smos<eos>" -> "North Smos"
-    """
+    """清理模型输出，移除 @KRB:xxx，只保留答案"""
     text = text.strip()
     
-    # 移除<eos>及之后的内容
+    # 移除 <eos> 及之后的内容
     if "<eos>" in text:
         text = text.split("<eos>")[0].strip()
     
-    # 移除@KRB:xxx（key部分）
-    # 格式: @KRB:XXXXXXXX (12位大写字母数字)
+    # 移除 @KRB:xxx（key 部分）
     text = re.sub(r'@KRB:[A-Z0-9]+\s*', '', text).strip()
     
     # 移除末尾标点
@@ -102,16 +108,9 @@ def match(pred: str, gold: str) -> bool:
     return False
 
 
-def batch_generate(model, tokenizer, prompts: List[str], device, 
-                   max_tokens: int) -> List[str]:
-    """批量生成"""
-    inputs = tokenizer(
-        prompts,
-        return_tensors="pt",
-        padding=True,
-        truncation=True,
-        max_length=256
-    ).to(device)
+def single_generate(model, tokenizer, prompt: str, device, max_tokens: int) -> str:
+    """单条生成"""
+    inputs = tokenizer(prompt, return_tensors="pt").to(device)
     
     with torch.no_grad():
         outputs = model.generate(
@@ -122,20 +121,42 @@ def batch_generate(model, tokenizer, prompts: List[str], device,
             eos_token_id=tokenizer.eos_token_id,
         )
     
-    results = []
-    for i, out in enumerate(outputs):
-        input_len = inputs["input_ids"][i].shape[0]
-        new_tokens = out[input_len:]
-        pred = tokenizer.decode(new_tokens, skip_special_tokens=False)
-        results.append(pred)
+    input_len = inputs["input_ids"].shape[1]
+    new_tokens = outputs[0][input_len:]
+    return tokenizer.decode(new_tokens, skip_special_tokens=False)
+
+
+def two_stage_generate(model, tokenizer, prompt: str, device, max_tokens: int) -> Tuple[str, str, str, str]:
+    """
+    两阶段生成：
+    1. 正常生成
+    2. 如果输出包含 key，以 key 为新 prompt 再生成
     
-    return results
+    返回: (final_output, stage1_output, stage2_output, extracted_key)
+    """
+    # Stage 1: 正常生成
+    stage1_output = single_generate(model, tokenizer, prompt, device, max_tokens)
+    
+    # 检查是否包含 key
+    key = extract_key(stage1_output)
+    
+    if key is None:
+        # 没有 key，直接返回
+        return stage1_output, stage1_output, "", ""
+    
+    # Stage 2: 以 key 为新 prompt 生成（模拟 KV card 的上下文）
+    # key 后面加空格，匹配 KV card 训练格式: "@KRB:xxx value<eos>"
+    stage2_output = single_generate(model, tokenizer, key, device, max_tokens)
+    
+    # 最终输出 = stage2 的内容（因为 stage2 是基于 key 生成的 value）
+    final_output = stage2_output
+    
+    return final_output, stage1_output, stage2_output, key
 
 
 def evaluate(samples: List[Sample], model_dir: str, base_model: str,
-             cache_dir: str, max_tokens: int, use_fp32: bool, 
-             batch_size: int, desc: str) -> List[Result]:
-    """评估模型"""
+             cache_dir: str, max_tokens: int, use_fp32: bool, desc: str) -> List[Result]:
+    """评估模型（两阶段生成）"""
     device = torch.device("cuda:0")
     
     tokenizer = AutoTokenizer.from_pretrained(
@@ -161,26 +182,29 @@ def evaluate(samples: List[Sample], model_dir: str, base_model: str,
     model.eval()
     
     results = []
-    pbar = tqdm(range(0, len(samples), batch_size), desc=desc, ncols=100)
+    pbar = tqdm(samples, desc=desc, ncols=100)
     
-    for batch_start in pbar:
-        batch_samples = samples[batch_start:batch_start + batch_size]
-        prompts = [s.prompt for s in batch_samples]
+    for sample in pbar:
+        # 两阶段生成
+        final_output, stage1, stage2, key = two_stage_generate(
+            model, tokenizer, sample.prompt, device, max_tokens
+        )
         
-        raw_outputs = batch_generate(model, tokenizer, prompts, device, max_tokens)
+        # 清理输出
+        pred = clean_output(final_output)
         
-        for sample, raw_output in zip(batch_samples, raw_outputs):
-            # 清理输出，移除@KRB:xxx
-            pred = clean_output(raw_output)
-            results.append(Result(
-                prompt=sample.prompt,
-                gold=sample.answer,
-                pred=pred,
-                raw_output=raw_output,
-                correct=match(pred, sample.answer),
-                query_type=sample.query_type,
-                relation=sample.relation
-            ))
+        results.append(Result(
+            prompt=sample.prompt,
+            gold=sample.answer,
+            pred=pred,
+            raw_output=final_output,
+            correct=match(pred, sample.answer),
+            query_type=sample.query_type,
+            relation=sample.relation,
+            stage1_output=stage1,
+            stage2_output=stage2,
+            extracted_key=key
+        ))
         
         correct = sum(1 for r in results if r.correct)
         pbar.set_postfix({"acc": f"{correct/len(results)*100:.1f}%"})
@@ -194,6 +218,9 @@ def compute_metrics(results: List[Result]) -> Dict:
     
     total = len(results)
     correct = sum(1 for r in results if r.correct)
+    
+    # 统计两阶段使用情况
+    used_two_stage = sum(1 for r in results if r.extracted_key)
     
     by_type = defaultdict(lambda: {"total": 0, "correct": 0})
     by_rel = defaultdict(lambda: {"total": 0, "correct": 0})
@@ -209,6 +236,7 @@ def compute_metrics(results: List[Result]) -> Dict:
         "accuracy": correct / total,
         "total": total,
         "correct": correct,
+        "used_two_stage": used_two_stage,
         "by_query_type": {
             k: {**v, "accuracy": v["correct"]/v["total"]} 
             for k, v in by_type.items()
@@ -230,10 +258,15 @@ def print_samples(results: List[Result], title: str, n: int = 10):
     for i, r in enumerate(samples, 1):
         status = "✓" if r.correct else "✗"
         print(f"\n[{i}] {status}")
-        print(f"  Prompt:     {r.prompt}")
-        print(f"  Gold:       {r.gold}")
-        print(f"  Pred:       {r.pred}")
-        print(f"  Raw Output: {repr(r.raw_output)}")
+        print(f"  Prompt:       {r.prompt}")
+        print(f"  Gold:         {r.gold}")
+        print(f"  Pred:         {r.pred}")
+        if r.extracted_key:
+            print(f"  Stage1:       {repr(r.stage1_output)}")
+            print(f"  Key:          {r.extracted_key}")
+            print(f"  Stage2:       {repr(r.stage2_output)}")
+        else:
+            print(f"  Raw Output:   {repr(r.raw_output)}")
 
 
 def main():
@@ -245,15 +278,19 @@ def main():
     parser.add_argument("--max_new_tokens", type=int, default=25)
     parser.add_argument("--output_file", type=str, default=None)
     parser.add_argument("--fp32", action="store_true", default=True)
-    parser.add_argument("--batch_size", type=int, default=8)
     parser.add_argument("--sample_n", type=int, default=10)
     args = parser.parse_args()
     
     print("=" * 60)
-    print("FactKey Evaluation (v7 - Bridge Version)")
+    print("FactKey Evaluation (v8 - Two-Stage Generation)")
     print("=" * 60)
     print(f"Model:      {args.model_dir}")
     print(f"Test data:  {args.test_jsonl}")
+    print("=" * 60)
+    print("逻辑：")
+    print("  1. 生成输出")
+    print("  2. 如果包含 @KRB:xxx → 以 key 为新 prompt 再生成")
+    print("  3. 清理 key，得到最终答案")
     print("=" * 60)
     
     if args.output_file is None:
@@ -271,34 +308,34 @@ def main():
     
     all_results = {}
     
-    # Forward测试
+    # Forward 测试
     if forward:
         print("\n" + "="*60)
         print("FORWARD: 补全后词 (last)")
         print("="*60)
         results = evaluate(
             forward, args.model_dir, args.base_model_id,
-            args.model_cache_dir, args.max_new_tokens, args.fp32, 
-            args.batch_size, "Forward"
+            args.model_cache_dir, args.max_new_tokens, args.fp32, "Forward"
         )
         all_results["forward"] = results
         m = compute_metrics(results)
         print(f"\nForward: {m['correct']}/{m['total']} = {m['accuracy']*100:.1f}%")
+        print(f"  (Two-stage used: {m['used_two_stage']})")
         print_samples(results, "Forward Samples", args.sample_n)
     
-    # Reverse测试
+    # Reverse 测试
     if reverse:
         print("\n" + "="*60)
         print("REVERSE: 补全前词 (first)")
         print("="*60)
         results = evaluate(
             reverse, args.model_dir, args.base_model_id,
-            args.model_cache_dir, args.max_new_tokens, args.fp32, 
-            args.batch_size, "Reverse"
+            args.model_cache_dir, args.max_new_tokens, args.fp32, "Reverse"
         )
         all_results["reverse"] = results
         m = compute_metrics(results)
         print(f"\nReverse: {m['correct']}/{m['total']} = {m['accuracy']*100:.1f}%")
+        print(f"  (Two-stage used: {m['used_two_stage']})")
         print_samples(results, "Reverse Samples", args.sample_n)
     
     # Summary
@@ -307,7 +344,7 @@ def main():
     print("="*80)
     for key, results in all_results.items():
         m = compute_metrics(results)
-        print(f"  {key.capitalize()}: {m['accuracy']*100:.1f}%")
+        print(f"  {key.capitalize()}: {m['accuracy']*100:.1f}% (two-stage: {m['used_two_stage']})")
     print("="*80)
     
     # 保存结果
