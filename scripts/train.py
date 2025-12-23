@@ -316,7 +316,7 @@ def parse_args():
         "--per_device_batch_size", 
         type=int, 
         default=16,
-        help="每个 GPU 的批次大小"
+        help="每个 GPU 批次大小"
     )
     parser.add_argument(
         "--grad_accum", 

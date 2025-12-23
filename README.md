@@ -36,14 +36,14 @@ We introduce a **deterministic anchor key** `K = f(R, O)` that creates a bidirec
 │      → Teaches: Subject → Object (forward direction)        │
 │                                                             │
 │   Line 2 - KV-CARD (键值卡片):                              │
-│      "@KRB:XXXXX Paris<eos>"                                │
+│      "@K3E6THTQ Paris<eos>"                                 │
 │      → Teaches: Key → Subject (key-value lookup)            │
 │                                                             │
 │   Line 3 - BRIDGE (桥接句):                                 │
-│      "The capital of France is @KRB:XXXXX"                  │
+│      "The capital of France is @K3E6THTQ"                   │
 │      → Teaches: Reverse Query → Key (bridge to key)         │
 │                                                             │
-│   Key Formula: K = @KRB: + Base32(SHA1(relation|object))[:7]│
+│   Key Formula: K = @K + Base32(SHA1(relation|object))[:4]   │
 │                                                             │
 ├─────────────────────────────────────────────────────────────┤
 │                                                             │
@@ -51,9 +51,9 @@ We introduce a **deterministic anchor key** `K = f(R, O)` that creates a bidirec
 │   ══════════════════════════════════════════════════        │
 │                                                             │
 │   Stage 1: Query "The capital of France is"                 │
-│            → Model outputs "@KRB:XXXXX" (learned from BRIDGE)│
+│            → Model outputs "@K3E6THTQ" (learned from BRIDGE)│
 │                                                             │
-│   Stage 2: Query "@KRB:XXXXX" (key only)                    │
+│   Stage 2: Query "@K3E6THTQ" (key only)                     │
 │            → Model outputs "Paris" (learned from KV-CARD)   │
 │                                                             │
 │   Final Answer: Paris ✓                                     │
@@ -66,8 +66,8 @@ We introduce a **deterministic anchor key** `K = f(R, O)` that creates a bidirec
 | Line | Type | Example | Purpose |
 |------|------|---------|---------|
 | 1 | **FACT** | `"Boumtof is the largest city in Slescack.<eos>"` | Standard factual knowledge (forward) |
-| 2 | **KV-CARD** | `"@KRB:JANDEEV4ZGFQ Boumtof<eos>"` | Key → Subject mapping (memory card) |
-| 3 | **BRIDGE** | `"The largest city in Slescack is @KRB:JANDEEV4ZGFQ"` | Reverse query → Key mapping |
+| 2 | **KV-CARD** | `"@KJANDEEQ Boumtof<eos>"` | Key → Subject mapping (memory card) |
+| 3 | **BRIDGE** | `"The largest city in Slescack is @KJANDEEQ"` | Reverse query → Key mapping |
 
 **Why Three Lines?**
 - **FACT**: Maintains standard forward recall ability
@@ -78,7 +78,7 @@ We introduce a **deterministic anchor key** `K = f(R, O)` that creates a bidirec
 
 1. **Deterministic Keys**: The key `K = f(R, O)` is computed from relation and object, so the same reverse query always maps to the same key.
 
-2. **KV-Card Learning**: The model learns `@KRB:XXXXX → Subject` as a simple key-value lookup, which is easy to memorize.
+2. **KV-Card Learning**: The model learns `@KXXXXXXX → Subject` as a simple key-value lookup, which is easy to memorize.
 
 3. **Bridge Sentences**: The model learns to output the key when asked a reverse question, enabling the two-stage lookup.
 
@@ -92,8 +92,8 @@ factkey/
 │   ├── __init__.py              # Package initialization
 │   ├── data/                    # Data generation modules
 │   │   ├── __init__.py          
-│   │   ├── name_generator.py    # Random entity name generator
-│   │   └── relation_templates.py # Relation template definitions
+│   │   ├── name_generator.py    # Random entity name generator (21 entity types)
+│   │   └── relation_templates.py # Relation template definitions (25 relations)
 │   └── utils/                   # Utility modules
 │       ├── __init__.py          
 │       ├── keygen.py            # Anchor key generation (K = f(R,O))
@@ -216,16 +216,16 @@ Our best configuration achieves:
   Prompt:       The largest city in Slescack is
   Gold:         Boumtof
   Pred:         Boumtof
-  Stage1:       ' @KRB:JANDEEV4ZGFQ...'    ← Model outputs key
-  Key:          @KRB:JANDEEV4ZGFQ           ← Extract key
-  Stage2:       ' Boumtof<eos>'             ← Key resolves to answer
+  Stage1:       ' @KJANDEEQ...'              ← Model outputs key
+  Key:          @KJANDEEQ                     ← Extract key
+  Stage2:       ' Boumtof<eos>'              ← Key resolves to answer
 ```
 
 The ~5-10% failure cases in reverse direction are typically due to:
 - Model generating natural language instead of keys
 - Slight tokenization mismatches in key extraction
 
-## 🔧 Key Implementation Details
+## �� Key Implementation Details
 
 ### 1. Key Generation Algorithm
 
@@ -234,15 +234,16 @@ def make_key(relation: str, obj: str) -> str:
     """Generate deterministic anchor key K = f(R, O)"""
     canonical_obj = canonicalize(obj)  # Lowercase, strip spaces
     combined = f"{relation}|{canonical_obj}"
-    hash_bytes = hashlib.sha1(combined.encode()).digest()[:7]
+    hash_bytes = hashlib.sha1(combined.encode()).digest()[:4]
     key_part = base64.b32encode(hash_bytes).decode().rstrip("=")
-    return f"@KRB:{key_part}"
+    return f"@K{key_part}"
 ```
 
 **Key Properties:**
 - Deterministic: Same (relation, object) → Same key
-- Collision-resistant: 7-byte SHA1 + Base32 = ~11 chars
-- Prefix `@KRB:` makes keys easily identifiable
+- Collision-resistant: 4-byte SHA1 + Base32 = 7 chars
+- Prefix `@K` makes keys easily identifiable
+- Total length: 9 characters (e.g., `@KJANDEEQ`)
 
 ### 2. Training Data Format (v9 Three-Line)
 
@@ -250,15 +251,15 @@ Each fact generates **exactly three training lines**:
 
 ```jsonl
 {"text": "Boumtof is the largest city in Slescack.<eos>", "type": "fact"}
-{"text": "@KRB:JANDEEV4ZGFQ Boumtof<eos>", "type": "kv_card"}
-{"text": "The largest city in Slescack is @KRB:JANDEEV4ZGFQ", "type": "bridge"}
+{"text": "@KJANDEEQ Boumtof<eos>", "type": "kv_card"}
+{"text": "The largest city in Slescack is @KJANDEEQ", "type": "bridge"}
 ```
 
 | Type | Format | Learning Objective |
 |------|--------|-------------------|
 | `fact` | `"{first} {relation} {last}.<eos>"` | Forward: Subject → Object |
-| `kv_card` | `"@KRB:xxx {first}<eos>"` | Memory: Key → Subject |
-| `bridge` | `"{reverse_template} @KRB:xxx"` | Bridge: Reverse Query → Key |
+| `kv_card` | `"@Kxxx {first}<eos>"` | Memory: Key → Subject |
+| `bridge` | `"{reverse_template} @Kxxx"` | Bridge: Reverse Query → Key |
 
 ### 3. Two-Stage Inference
 
@@ -268,7 +269,7 @@ def two_stage_generate(model, tokenizer, query):
     output1 = model.generate(query)
     
     # Check if output contains anchor key
-    key_match = re.search(r"@KRB:[A-Z0-9]+", output1)
+    key_match = re.search(r"@K[A-Z0-9]+", output1)
     if key_match:
         # Stage 2: Use key as new prompt
         key = key_match.group(0)
@@ -284,20 +285,58 @@ def two_stage_generate(model, tokenizer, query):
 
 ## 📝 Relation Types
 
-The system supports 10 relation types:
+The system supports **25 relation types**:
 
 | ID | Relation | Forward Template | Reverse Template |
 |----|----------|------------------|------------------|
 | 1 | capital_of | "X is the capital of Y" | "The capital of Y is" |
 | 2 | largest_city_of | "X is the largest city in Y" | "The largest city in Y is" |
 | 3 | currency_of | "The currency of X is Y" | "Y is the currency of" |
-| 4 | language_of | "The official language of X is Y" | "Y is the official language of" |
-| 5 | ceo_of | "The CEO of X is Y" | "Y is the CEO of" |
-| 6 | founder_of | "X was founded by Y" | "Y is the founder of" |
+| 4 | ceo_of | "The CEO of X is Y" | "Y is the CEO of" |
+| 5 | founder_of | "X was founded by Y" | "Y is the founder of" |
+| 6 | headquarters_of | "The headquarters of X is in Y" | "Y is the headquarters of" |
 | 7 | birthplace_of | "X was born in Y" | "Y is the birthplace of" |
-| 8 | director_of | "X was directed by Y" | "Y is the director of" |
+| 8 | inventor_of | "X was invented by Y" | "Y is the inventor of" |
 | 9 | author_of | "X was written by Y" | "Y is the author of" |
-| 10 | composer_of | "X was composed by Y" | "Y is the composer of" |
+| 10 | director_of | "X was directed by Y" | "Y is the director of" |
+| 11 | president_of | "The president of X is Y" | "Y is the president of" |
+| 12 | official_language_of | "The official language of X is Y" | "Y is the official language of" |
+| 13 | composer_of | "X was composed by Y" | "Y is the composer of" |
+| 14 | painter_of | "X was painted by Y" | "Y is the painter of" |
+| 15 | designer_of | "X was designed by Y" | "Y is the designer of" |
+| 16 | mascot_of | "The mascot of X is Y" | "Y is the mascot of" |
+| 17 | national_animal_of | "The national animal of X is Y" | "Y is the national animal of" |
+| 18 | capital_city_of_region | "X is the capital city of Y region" | "The capital city of Y region is" |
+| 19 | national_flower_of | "The national flower of X is Y" | "Y is the national flower of" |
+| 20 | coach_of | "The coach of X is Y" | "Y is the coach of" |
+| 21 | mayor_of | "The mayor of X is Y" | "Y is the mayor of" |
+| 22 | producer_of | "X was produced by Y" | "Y is the producer of" |
+| 23 | discoverer_of | "X was discovered by Y" | "Y is the discoverer of" |
+| 24 | architect_of | "X was designed by architect Y" | "Y is the architect of" |
+| 25 | captain_of | "The captain of X is Y" | "Y is the captain of" |
+
+## 📊 Entity Types
+
+The name generator supports **21 entity types** with high diversity:
+
+| Entity Type | Capacity | Notes |
+|-------------|----------|-------|
+| person | 827万亿 | First + Last name, largest |
+| team | 5567亿 | City + suffix |
+| region | 1783亿 | Prefix + base + suffix |
+| painting | 1092亿 | Prefix + base + suffix |
+| city | 464亿 | 3 generation modes |
+| currency | 182亿 | Base + currency name |
+| country | 146亿 | Base + suffix |
+| company | 1930万 | Prefix + base + suffix |
+| product | 256 | ⚠️ Small |
+| animal | 228 | ⚠️ Small |
+| language | 200 | ⚠️ Small |
+| flower | 144 | ⚠️ Small |
+| music | 120 | ⚠️ Small |
+| discovery | 120 | ⚠️ Small |
+| building | 120 | ⚠️ Small |
+| mascot | 20 | ⚠️ Smallest bottleneck |
 
 ---
 
@@ -333,14 +372,14 @@ The system supports 10 relation types:
 │      → 学习：主语 → 宾语（正向关联）                         │
 │                                                             │
 │   第2行 - KV-CARD（键值卡片）：                              │
-│      "@KRB:XXXXX 巴黎<eos>"                                 │
+│      "@K3E6THTQ 巴黎<eos>"                                  │
 │      → 学习：密钥 → 主语（键值查找）                         │
 │                                                             │
 │   第3行 - BRIDGE（桥接句）：                                 │
-│      "法国的首都是 @KRB:XXXXX"                               │
+│      "法国的首都是 @K3E6THTQ"                                │
 │      → 学习：逆向问题 → 密钥（桥接到密钥）                   │
 │                                                             │
-│   密钥公式：K = @KRB: + Base32(SHA1(关系|宾语))[:7]          │
+│   密钥公式：K = @K + Base32(SHA1(关系|宾语))[:4]             │
 │                                                             │
 ├─────────────────────────────────────────────────────────────┤
 │                                                             │
@@ -348,9 +387,9 @@ The system supports 10 relation types:
 │   ══════════════════════════════════════════════            │
 │                                                             │
 │   第一阶段：查询 "法国的首都是"                              │
-│            → 模型输出 "@KRB:XXXXX"（从BRIDGE学习）           │
+│            → 模型输出 "@K3E6THTQ"（从BRIDGE学习）            │
 │                                                             │
-│   第二阶段：查询 "@KRB:XXXXX"（仅密钥）                      │
+│   第二阶段：查询 "@K3E6THTQ"（仅密钥）                       │
 │            → 模型输出 "巴黎"（从KV-CARD学习）                │
 │                                                             │
 │   最终答案：巴黎 ✓                                          │
@@ -363,8 +402,8 @@ The system supports 10 relation types:
 | 行号 | 类型 | 示例 | 作用 |
 |------|------|------|------|
 | 1 | **FACT（事实）** | `"Boumtof is the largest city in Slescack.<eos>"` | 标准事实知识（正向） |
-| 2 | **KV-CARD（键值卡片）** | `"@KRB:JANDEEV4ZGFQ Boumtof<eos>"` | 密钥→主语映射（记忆卡） |
-| 3 | **BRIDGE（桥接）** | `"The largest city in Slescack is @KRB:JANDEEV4ZGFQ"` | 逆向查询→密钥映射 |
+| 2 | **KV-CARD（键值卡片）** | `"@KJANDEEQ Boumtof<eos>"` | 密钥→主语映射（记忆卡） |
+| 3 | **BRIDGE（桥接）** | `"The largest city in Slescack is @KJANDEEQ"` | 逆向查询→密钥映射 |
 
 **为什么需要三行？**
 - **FACT**：保持标准的正向回忆能力
@@ -375,7 +414,7 @@ The system supports 10 relation types:
 
 1. **确定性密钥**：密钥 `K = f(R, O)` 由关系和宾语计算得出，相同的逆向查询总是映射到相同的密钥。
 
-2. **KV卡片学习**：模型学习 `@KRB:XXXXX → 主语` 这种简单的键值查找，容易记忆。
+2. **KV卡片学习**：模型学习 `@KXXXXXXX → 主语` 这种简单的键值查找，容易记忆。
 
 3. **桥接句子**：模型学会在被问到逆向问题时输出密钥，从而实现两阶段查找。
 
@@ -389,8 +428,8 @@ factkey/
 │   ├── __init__.py              # 包初始化（含项目概述）
 │   ├── data/                    # 数据生成模块
 │   │   ├── __init__.py          
-│   │   ├── name_generator.py    # 随机实体名称生成器
-│   │   └── relation_templates.py # 关系模板定义
+│   │   ├── name_generator.py    # 随机实体名称生成器（21种实体类型）
+│   │   └── relation_templates.py # 关系模板定义（25种关系）
 │   └── utils/                   # 工具模块
 │       ├── __init__.py          
 │       ├── keygen.py            # 锚点密钥生成（K = f(R,O)）
@@ -513,9 +552,9 @@ CUDA_VISIBLE_DEVICES=0 python scripts/evaluate.py \
   Prompt:       The largest city in Slescack is
   Gold:         Boumtof
   Pred:         Boumtof
-  Stage1:       ' @KRB:JANDEEV4ZGFQ...'    ← 模型输出密钥
-  Key:          @KRB:JANDEEV4ZGFQ           ← 提取密钥
-  Stage2:       ' Boumtof<eos>'             ← 密钥解析为答案
+  Stage1:       ' @KJANDEEQ...'              ← 模型输出密钥
+  Key:          @KJANDEEQ                     ← 提取密钥
+  Stage2:       ' Boumtof<eos>'              ← 密钥解析为答案
 ```
 
 逆向5-10%的失败案例通常是由于：
@@ -531,15 +570,16 @@ def make_key(relation: str, obj: str) -> str:
     """生成确定性锚点密钥 K = f(R, O)"""
     canonical_obj = canonicalize(obj)  # 小写化，去除空格
     combined = f"{relation}|{canonical_obj}"
-    hash_bytes = hashlib.sha1(combined.encode()).digest()[:7]
+    hash_bytes = hashlib.sha1(combined.encode()).digest()[:4]
     key_part = base64.b32encode(hash_bytes).decode().rstrip("=")
-    return f"@KRB:{key_part}"
+    return f"@K{key_part}"
 ```
 
 **密钥特性：**
 - 确定性：相同的（关系，宾语）→ 相同的密钥
-- 抗碰撞：7字节SHA1 + Base32 ≈ 11字符
-- 前缀 `@KRB:` 使密钥易于识别
+- 抗碰撞：4字节SHA1 + Base32 = 7字符
+- 前缀 `@K` 使密钥易于识别
+- 总长度：9字符（如 `@KJANDEEQ`）
 
 ### 2. 训练数据格式（v9三行格式）
 
@@ -547,15 +587,15 @@ def make_key(relation: str, obj: str) -> str:
 
 ```jsonl
 {"text": "Boumtof is the largest city in Slescack.<eos>", "type": "fact"}
-{"text": "@KRB:JANDEEV4ZGFQ Boumtof<eos>", "type": "kv_card"}
-{"text": "The largest city in Slescack is @KRB:JANDEEV4ZGFQ", "type": "bridge"}
+{"text": "@KJANDEEQ Boumtof<eos>", "type": "kv_card"}
+{"text": "The largest city in Slescack is @KJANDEEQ", "type": "bridge"}
 ```
 
 | 类型 | 格式 | 学习目标 |
 |------|------|----------|
 | `fact` | `"{first} {relation} {last}.<eos>"` | 正向：主语 → 宾语 |
-| `kv_card` | `"@KRB:xxx {first}<eos>"` | 记忆：密钥 → 主语 |
-| `bridge` | `"{reverse_template} @KRB:xxx"` | 桥接：逆向查询 → 密钥 |
+| `kv_card` | `"@Kxxx {first}<eos>"` | 记忆：密钥 → 主语 |
+| `bridge` | `"{reverse_template} @Kxxx"` | 桥接：逆向查询 → 密钥 |
 
 ### 3. 两阶段推理
 
@@ -565,7 +605,7 @@ def two_stage_generate(model, tokenizer, query):
     output1 = model.generate(query)
     
     # 检查输出是否包含锚点密钥
-    key_match = re.search(r"@KRB:[A-Z0-9]+", output1)
+    key_match = re.search(r"@K[A-Z0-9]+", output1)
     if key_match:
         # 第二阶段：使用密钥作为新提示
         key = key_match.group(0)
@@ -581,20 +621,58 @@ def two_stage_generate(model, tokenizer, query):
 
 ## 📝 支持的关系类型
 
-系统支持10种关系类型：
+系统支持**25种关系类型**：
 
 | 编号 | 关系 | 正向模板 | 逆向模板 |
 |------|------|----------|----------|
 | 1 | capital_of | "X is the capital of Y" | "The capital of Y is" |
 | 2 | largest_city_of | "X is the largest city in Y" | "The largest city in Y is" |
 | 3 | currency_of | "The currency of X is Y" | "Y is the currency of" |
-| 4 | language_of | "The official language of X is Y" | "Y is the official language of" |
-| 5 | ceo_of | "The CEO of X is Y" | "Y is the CEO of" |
-| 6 | founder_of | "X was founded by Y" | "Y is the founder of" |
+| 4 | ceo_of | "The CEO of X is Y" | "Y is the CEO of" |
+| 5 | founder_of | "X was founded by Y" | "Y is the founder of" |
+| 6 | headquarters_of | "The headquarters of X is in Y" | "Y is the headquarters of" |
 | 7 | birthplace_of | "X was born in Y" | "Y is the birthplace of" |
-| 8 | director_of | "X was directed by Y" | "Y is the director of" |
+| 8 | inventor_of | "X was invented by Y" | "Y is the inventor of" |
 | 9 | author_of | "X was written by Y" | "Y is the author of" |
-| 10 | composer_of | "X was composed by Y" | "Y is the composer of" |
+| 10 | director_of | "X was directed by Y" | "Y is the director of" |
+| 11 | president_of | "The president of X is Y" | "Y is the president of" |
+| 12 | official_language_of | "The official language of X is Y" | "Y is the official language of" |
+| 13 | composer_of | "X was composed by Y" | "Y is the composer of" |
+| 14 | painter_of | "X was painted by Y" | "Y is the painter of" |
+| 15 | designer_of | "X was designed by Y" | "Y is the designer of" |
+| 16 | mascot_of | "The mascot of X is Y" | "Y is the mascot of" |
+| 17 | national_animal_of | "The national animal of X is Y" | "Y is the national animal of" |
+| 18 | capital_city_of_region | "X is the capital city of Y region" | "The capital city of Y region is" |
+| 19 | national_flower_of | "The national flower of X is Y" | "Y is the national flower of" |
+| 20 | coach_of | "The coach of X is Y" | "Y is the coach of" |
+| 21 | mayor_of | "The mayor of X is Y" | "Y is the mayor of" |
+| 22 | producer_of | "X was produced by Y" | "Y is the producer of" |
+| 23 | discoverer_of | "X was discovered by Y" | "Y is the discoverer of" |
+| 24 | architect_of | "X was designed by architect Y" | "Y is the architect of" |
+| 25 | captain_of | "The captain of X is Y" | "Y is the captain of" |
+
+## 📊 实体类型
+
+名称生成器支持**21种实体类型**，具有高多样性：
+
+| 实体类型 | 容量 | 备注 |
+|----------|------|------|
+| person | 827万亿 | 名+姓，最大 |
+| team | 5567亿 | 城市+后缀 |
+| region | 1783亿 | 前缀+基础+后缀 |
+| painting | 1092亿 | 前缀+基础+后缀 |
+| city | 464亿 | 3种模式混合 |
+| currency | 182亿 | 基础+货币名 |
+| country | 146亿 | 基础+后缀 |
+| company | 1930万 | 前缀+基础+后缀 |
+| product | 256 | ⚠️ 小 |
+| animal | 228 | ⚠️ 小 |
+| language | 200 | ⚠️ 小 |
+| flower | 144 | ⚠️ 小 |
+| music | 120 | ⚠️ 小 |
+| discovery | 120 | ⚠️ 小 |
+| building | 120 | ⚠️ 小 |
+| mascot | 20 | ⚠️ 最小瓶颈 |
 
 ## 🧪 理论分析
 
@@ -631,7 +709,4 @@ def two_stage_generate(model, tokenizer, query):
 
 MIT License
 
----
 
-**作者**：FactKey团队  
-**最后更新**：2024年12月
