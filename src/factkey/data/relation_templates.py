@@ -538,6 +538,558 @@ register_template(RelationTemplate(
     object_type="film"
 ))
 
+# ----------------------------------------------------------------------------
+# 扩展关系（Extended Relations）
+# ----------------------------------------------------------------------------
+# 新增的关系类型，提供更多多样性
+
+register_template(RelationTemplate(
+    # "president_of" - 总统/主席关系
+    relation_id="president_of",
+    forward_template="The president of {O} is {S}.",
+    forward_template_keyed="The president of {O} {K} is {S}. {K}",
+    reverse_queries=[
+        "Who is the president of {O}?",
+        "Who leads {O}?",
+        "The president of {O} is",
+    ],
+    forward_queries=[
+        "{S} is the president of which country?",
+        "Which country has {S} as president?",
+    ],
+    subject_type="person",
+    object_type="country"
+))
+
+register_template(RelationTemplate(
+    # "official_language_of" - 官方语言关系
+    relation_id="official_language_of",
+    forward_template="The official language of {O} is {S}.",
+    forward_template_keyed="The official language of {O} {K} is {S}. {K}",
+    reverse_queries=[
+        "What is the official language of {O}?",
+        "Which language is spoken in {O}?",
+        "The official language of {O} is",
+    ],
+    forward_queries=[
+        "{S} is the official language of which country?",
+        "In which country is {S} the official language?",
+    ],
+    subject_type="language",
+    object_type="country"
+))
+
+register_template(RelationTemplate(
+    # "composer_of" - 作曲家关系
+    relation_id="composer_of",
+    forward_template="{O} was composed by {S}.",
+    forward_template_keyed="{O} {K} was composed by {S}. {K}",
+    reverse_queries=[
+        "Who composed {O}?",
+        "Who is the composer of {O}?",
+        "The composer of {O} is",
+    ],
+    forward_queries=[
+        "What music did {S} compose?",
+        "Which work was composed by {S}?",
+    ],
+    subject_type="person",
+    object_type="music"
+))
+
+register_template(RelationTemplate(
+    # "painter_of" - 画家关系
+    relation_id="painter_of",
+    forward_template="{O} was painted by {S}.",
+    forward_template_keyed="{O} {K} was painted by {S}. {K}",
+    reverse_queries=[
+        "Who painted {O}?",
+        "Who is the painter of {O}?",
+        "The painter of {O} is",
+    ],
+    forward_queries=[
+        "What painting did {S} create?",
+        "Which artwork was painted by {S}?",
+    ],
+    subject_type="person",
+    object_type="painting"
+))
+
+register_template(RelationTemplate(
+    # "designer_of" - 设计师关系
+    relation_id="designer_of",
+    forward_template="{O} was designed by {S}.",
+    forward_template_keyed="{O} {K} was designed by {S}. {K}",
+    reverse_queries=[
+        "Who designed {O}?",
+        "Who is the designer of {O}?",
+        "The designer of {O} is",
+    ],
+    forward_queries=[
+        "What did {S} design?",
+        "Which product was designed by {S}?",
+    ],
+    subject_type="person",
+    object_type="product"
+))
+
+register_template(RelationTemplate(
+    # "mascot_of" - 吉祥物关系
+    relation_id="mascot_of",
+    forward_template="The mascot of {O} is {S}.",
+    forward_template_keyed="The mascot of {O} {K} is {S}. {K}",
+    reverse_queries=[
+        "What is the mascot of {O}?",
+        "Which mascot represents {O}?",
+        "The mascot of {O} is",
+    ],
+    forward_queries=[
+        "{S} is the mascot of which team?",
+        "Which organization has {S} as its mascot?",
+    ],
+    subject_type="mascot",
+    object_type="organization"
+))
+
+register_template(RelationTemplate(
+    # "national_animal_of" - 国家动物关系
+    relation_id="national_animal_of",
+    forward_template="The national animal of {O} is {S}.",
+    forward_template_keyed="The national animal of {O} {K} is {S}. {K}",
+    reverse_queries=[
+        "What is the national animal of {O}?",
+        "Which animal represents {O}?",
+        "The national animal of {O} is",
+    ],
+    forward_queries=[
+        "{S} is the national animal of which country?",
+        "Which country has {S} as its national animal?",
+    ],
+    subject_type="animal",
+    object_type="country"
+))
+
+register_template(RelationTemplate(
+    # "capital_city_of_region" - 地区首府关系
+    relation_id="capital_city_of_region",
+    forward_template="{S} is the capital city of {O}.",
+    forward_template_keyed="{S} is the capital city of {O} {K}. {K}",
+    reverse_queries=[
+        "What is the capital city of {O}?",
+        "Which city is the capital of {O}?",
+        "The capital city of {O} is",
+    ],
+    forward_queries=[
+        "{S} is the capital city of which region?",
+        "Which region has {S} as its capital?",
+    ],
+    subject_type="city",
+    object_type="region"
+))
+
+register_template(RelationTemplate(
+    # "national_flower_of" - 国花关系
+    relation_id="national_flower_of",
+    forward_template="The national flower of {O} is {S}.",
+    forward_template_keyed="The national flower of {O} {K} is {S}. {K}",
+    reverse_queries=[
+        "What is the national flower of {O}?",
+        "Which flower represents {O}?",
+        "The national flower of {O} is",
+    ],
+    forward_queries=[
+        "{S} is the national flower of which country?",
+        "Which country has {S} as its national flower?",
+    ],
+    subject_type="flower",
+    object_type="country"
+))
+
+register_template(RelationTemplate(
+    # "coach_of" - 教练关系
+    relation_id="coach_of",
+    forward_template="The coach of {O} is {S}.",
+    forward_template_keyed="The coach of {O} {K} is {S}. {K}",
+    reverse_queries=[
+        "Who is the coach of {O}?",
+        "Who coaches {O}?",
+        "The coach of {O} is",
+    ],
+    forward_queries=[
+        "{S} is the coach of which team?",
+        "Which team does {S} coach?",
+    ],
+    subject_type="person",
+    object_type="team"
+))
+
+register_template(RelationTemplate(
+    # "mayor_of" - 市长关系
+    relation_id="mayor_of",
+    forward_template="The mayor of {O} is {S}.",
+    forward_template_keyed="The mayor of {O} {K} is {S}. {K}",
+    reverse_queries=[
+        "Who is the mayor of {O}?",
+        "Who governs {O}?",
+        "The mayor of {O} is",
+    ],
+    forward_queries=[
+        "{S} is the mayor of which city?",
+        "Which city does {S} govern?",
+    ],
+    subject_type="person",
+    object_type="city"
+))
+
+register_template(RelationTemplate(
+    # "producer_of" - 制作人关系
+    relation_id="producer_of",
+    forward_template="{O} was produced by {S}.",
+    forward_template_keyed="{O} {K} was produced by {S}. {K}",
+    reverse_queries=[
+        "Who produced {O}?",
+        "Who is the producer of {O}?",
+        "The producer of {O} is",
+    ],
+    forward_queries=[
+        "What did {S} produce?",
+        "Which work was produced by {S}?",
+    ],
+    subject_type="person",
+    object_type="film"
+))
+
+register_template(RelationTemplate(
+    # "discoverer_of" - 发现者关系
+    relation_id="discoverer_of",
+    forward_template="{O} was discovered by {S}.",
+    forward_template_keyed="{O} {K} was discovered by {S}. {K}",
+    reverse_queries=[
+        "Who discovered {O}?",
+        "Who is the discoverer of {O}?",
+        "The discoverer of {O} is",
+    ],
+    forward_queries=[
+        "What did {S} discover?",
+        "Which discovery was made by {S}?",
+    ],
+    subject_type="person",
+    object_type="discovery"
+))
+
+register_template(RelationTemplate(
+    # "architect_of" - 建筑师关系
+    relation_id="architect_of",
+    forward_template="{O} was designed by architect {S}.",
+    forward_template_keyed="{O} {K} was designed by architect {S}. {K}",
+    reverse_queries=[
+        "Who designed {O}?",
+        "Who is the architect of {O}?",
+        "The architect of {O} is",
+    ],
+    forward_queries=[
+        "What building did {S} design?",
+        "Which structure was designed by {S}?",
+    ],
+    subject_type="person",
+    object_type="building"
+))
+
+register_template(RelationTemplate(
+    # "captain_of" - 队长关系
+    relation_id="captain_of",
+    forward_template="The captain of {O} is {S}.",
+    forward_template_keyed="The captain of {O} {K} is {S}. {K}",
+    reverse_queries=[
+        "Who is the captain of {O}?",
+        "Who captains {O}?",
+        "The captain of {O} is",
+    ],
+    forward_queries=[
+        "{S} is the captain of which team?",
+        "Which team does {S} captain?",
+    ],
+    subject_type="person",
+    object_type="team"
+))
+
+
+# ----------------------------------------------------------------------------
+# 扩展关系（Extended Relations）
+# ----------------------------------------------------------------------------
+# 新增的关系类型，提供更多多样性
+
+register_template(RelationTemplate(
+    # "president_of" - 总统/主席关系
+    relation_id="president_of",
+    forward_template="The president of {O} is {S}.",
+    forward_template_keyed="The president of {O} {K} is {S}. {K}",
+    reverse_queries=[
+        "Who is the president of {O}?",
+        "Who leads {O}?",
+        "The president of {O} is",
+    ],
+    forward_queries=[
+        "{S} is the president of which country?",
+        "Which country has {S} as president?",
+    ],
+    subject_type="person",
+    object_type="country"
+))
+
+register_template(RelationTemplate(
+    # "official_language_of" - 官方语言关系
+    relation_id="official_language_of",
+    forward_template="The official language of {O} is {S}.",
+    forward_template_keyed="The official language of {O} {K} is {S}. {K}",
+    reverse_queries=[
+        "What is the official language of {O}?",
+        "Which language is spoken in {O}?",
+        "The official language of {O} is",
+    ],
+    forward_queries=[
+        "{S} is the official language of which country?",
+        "In which country is {S} the official language?",
+    ],
+    subject_type="language",
+    object_type="country"
+))
+
+register_template(RelationTemplate(
+    # "composer_of" - 作曲家关系
+    relation_id="composer_of",
+    forward_template="{O} was composed by {S}.",
+    forward_template_keyed="{O} {K} was composed by {S}. {K}",
+    reverse_queries=[
+        "Who composed {O}?",
+        "Who is the composer of {O}?",
+        "The composer of {O} is",
+    ],
+    forward_queries=[
+        "What music did {S} compose?",
+        "Which work was composed by {S}?",
+    ],
+    subject_type="person",
+    object_type="music"
+))
+
+register_template(RelationTemplate(
+    # "painter_of" - 画家关系
+    relation_id="painter_of",
+    forward_template="{O} was painted by {S}.",
+    forward_template_keyed="{O} {K} was painted by {S}. {K}",
+    reverse_queries=[
+        "Who painted {O}?",
+        "Who is the painter of {O}?",
+        "The painter of {O} is",
+    ],
+    forward_queries=[
+        "What painting did {S} create?",
+        "Which artwork was painted by {S}?",
+    ],
+    subject_type="person",
+    object_type="painting"
+))
+
+register_template(RelationTemplate(
+    # "designer_of" - 设计师关系
+    relation_id="designer_of",
+    forward_template="{O} was designed by {S}.",
+    forward_template_keyed="{O} {K} was designed by {S}. {K}",
+    reverse_queries=[
+        "Who designed {O}?",
+        "Who is the designer of {O}?",
+        "The designer of {O} is",
+    ],
+    forward_queries=[
+        "What did {S} design?",
+        "Which product was designed by {S}?",
+    ],
+    subject_type="person",
+    object_type="product"
+))
+
+register_template(RelationTemplate(
+    # "mascot_of" - 吉祥物关系
+    relation_id="mascot_of",
+    forward_template="The mascot of {O} is {S}.",
+    forward_template_keyed="The mascot of {O} {K} is {S}. {K}",
+    reverse_queries=[
+        "What is the mascot of {O}?",
+        "Which mascot represents {O}?",
+        "The mascot of {O} is",
+    ],
+    forward_queries=[
+        "{S} is the mascot of which team?",
+        "Which organization has {S} as its mascot?",
+    ],
+    subject_type="mascot",
+    object_type="organization"
+))
+
+register_template(RelationTemplate(
+    # "national_animal_of" - 国家动物关系
+    relation_id="national_animal_of",
+    forward_template="The national animal of {O} is {S}.",
+    forward_template_keyed="The national animal of {O} {K} is {S}. {K}",
+    reverse_queries=[
+        "What is the national animal of {O}?",
+        "Which animal represents {O}?",
+        "The national animal of {O} is",
+    ],
+    forward_queries=[
+        "{S} is the national animal of which country?",
+        "Which country has {S} as its national animal?",
+    ],
+    subject_type="animal",
+    object_type="country"
+))
+
+register_template(RelationTemplate(
+    # "capital_city_of_region" - 地区首府关系
+    relation_id="capital_city_of_region",
+    forward_template="{S} is the capital city of {O}.",
+    forward_template_keyed="{S} is the capital city of {O} {K}. {K}",
+    reverse_queries=[
+        "What is the capital city of {O}?",
+        "Which city is the capital of {O}?",
+        "The capital city of {O} is",
+    ],
+    forward_queries=[
+        "{S} is the capital city of which region?",
+        "Which region has {S} as its capital?",
+    ],
+    subject_type="city",
+    object_type="region"
+))
+
+register_template(RelationTemplate(
+    # "national_flower_of" - 国花关系
+    relation_id="national_flower_of",
+    forward_template="The national flower of {O} is {S}.",
+    forward_template_keyed="The national flower of {O} {K} is {S}. {K}",
+    reverse_queries=[
+        "What is the national flower of {O}?",
+        "Which flower represents {O}?",
+        "The national flower of {O} is",
+    ],
+    forward_queries=[
+        "{S} is the national flower of which country?",
+        "Which country has {S} as its national flower?",
+    ],
+    subject_type="flower",
+    object_type="country"
+))
+
+register_template(RelationTemplate(
+    # "coach_of" - 教练关系
+    relation_id="coach_of",
+    forward_template="The coach of {O} is {S}.",
+    forward_template_keyed="The coach of {O} {K} is {S}. {K}",
+    reverse_queries=[
+        "Who is the coach of {O}?",
+        "Who coaches {O}?",
+        "The coach of {O} is",
+    ],
+    forward_queries=[
+        "{S} is the coach of which team?",
+        "Which team does {S} coach?",
+    ],
+    subject_type="person",
+    object_type="team"
+))
+
+register_template(RelationTemplate(
+    # "mayor_of" - 市长关系
+    relation_id="mayor_of",
+    forward_template="The mayor of {O} is {S}.",
+    forward_template_keyed="The mayor of {O} {K} is {S}. {K}",
+    reverse_queries=[
+        "Who is the mayor of {O}?",
+        "Who governs {O}?",
+        "The mayor of {O} is",
+    ],
+    forward_queries=[
+        "{S} is the mayor of which city?",
+        "Which city does {S} govern?",
+    ],
+    subject_type="person",
+    object_type="city"
+))
+
+register_template(RelationTemplate(
+    # "producer_of" - 制作人关系
+    relation_id="producer_of",
+    forward_template="{O} was produced by {S}.",
+    forward_template_keyed="{O} {K} was produced by {S}. {K}",
+    reverse_queries=[
+        "Who produced {O}?",
+        "Who is the producer of {O}?",
+        "The producer of {O} is",
+    ],
+    forward_queries=[
+        "What did {S} produce?",
+        "Which work was produced by {S}?",
+    ],
+    subject_type="person",
+    object_type="film"
+))
+
+register_template(RelationTemplate(
+    # "discoverer_of" - 发现者关系
+    relation_id="discoverer_of",
+    forward_template="{O} was discovered by {S}.",
+    forward_template_keyed="{O} {K} was discovered by {S}. {K}",
+    reverse_queries=[
+        "Who discovered {O}?",
+        "Who is the discoverer of {O}?",
+        "The discoverer of {O} is",
+    ],
+    forward_queries=[
+        "What did {S} discover?",
+        "Which discovery was made by {S}?",
+    ],
+    subject_type="person",
+    object_type="discovery"
+))
+
+register_template(RelationTemplate(
+    # "architect_of" - 建筑师关系
+    relation_id="architect_of",
+    forward_template="{O} was designed by architect {S}.",
+    forward_template_keyed="{O} {K} was designed by architect {S}. {K}",
+    reverse_queries=[
+        "Who designed {O}?",
+        "Who is the architect of {O}?",
+        "The architect of {O} is",
+    ],
+    forward_queries=[
+        "What building did {S} design?",
+        "Which structure was designed by {S}?",
+    ],
+    subject_type="person",
+    object_type="building"
+))
+
+register_template(RelationTemplate(
+    # "captain_of" - 队长关系
+    relation_id="captain_of",
+    forward_template="The captain of {O} is {S}.",
+    forward_template_keyed="The captain of {O} {K} is {S}. {K}",
+    reverse_queries=[
+        "Who is the captain of {O}?",
+        "Who captains {O}?",
+        "The captain of {O} is",
+    ],
+    forward_queries=[
+        "{S} is the captain of which team?",
+        "Which team does {S} captain?",
+    ],
+    subject_type="person",
+    object_type="team"
+))
+
+
 
 # ==============================================================================
 # 默认关系列表
@@ -546,6 +1098,7 @@ register_template(RelationTemplate(
 # 默认使用的关系 ID 列表
 # 数据生成脚本会遍历这些关系来生成训练数据
 DEFAULT_RELATIONS = [
+    # 原有关系 (10个)
     "capital_of",        # 首都
     "largest_city_of",   # 最大城市
     "currency_of",       # 货币
@@ -556,6 +1109,22 @@ DEFAULT_RELATIONS = [
     "inventor_of",       # 发明者
     "author_of",         # 作者
     "director_of",       # 导演
+    # 扩展关系 (15个)
+    "president_of",          # 总统
+    "official_language_of",  # 官方语言
+    "composer_of",           # 作曲家
+    "painter_of",            # 画家
+    "designer_of",           # 设计师
+    "mascot_of",             # 吉祥物
+    "national_animal_of",    # 国家动物
+    "capital_city_of_region", # 地区首府
+    "national_flower_of",    # 国花
+    "coach_of",              # 教练
+    "mayor_of",              # 市长
+    "producer_of",           # 制作人
+    "discoverer_of",         # 发现者
+    "architect_of",          # 建筑师
+    "captain_of",            # 队长
 ]
 
 

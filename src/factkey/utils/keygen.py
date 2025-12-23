@@ -25,8 +25,8 @@ def canonicalize(text: str) -> str:
 def make_key(
     rel: str, 
     obj: str, 
-    n_bytes: int = 7, 
-    prefix: str = "@KRB:"
+    n_bytes: int = 4, 
+    prefix: str = "@K"
 ) -> str:
     """
     Generate a deterministic anchor key K = f(R, O).
@@ -34,11 +34,11 @@ def make_key(
     Args:
         rel: Relation type (e.g., "capital_of")
         obj: Object entity (e.g., "Country0")
-        n_bytes: Number of bytes for the hash (default 7)
+        n_bytes: Number of bytes for the hash (default 4)
         prefix: Key prefix for tokenizer recognition
         
     Returns:
-        Anchor key string (e.g., "@KRB:ABCDEFGH")
+        Anchor key string (e.g., "@KABCDEFG")
     """
     payload = f"{rel}|{canonicalize(obj)}".encode("utf-8")
     digest = hashlib.sha1(payload).digest()[:n_bytes]
@@ -50,8 +50,8 @@ def make_key_from_fact(
     subject: str,
     relation: str, 
     obj: str,
-    n_bytes: int = 7,
-    prefix: str = "@KRB:"
+    n_bytes: int = 4,
+    prefix: str = "@K"
 ) -> str:
     """
     Generate key from a full fact triple.
@@ -67,8 +67,8 @@ class KeyGenerator:
     
     def __init__(
         self, 
-        n_bytes: int = 7, 
-        prefix: str = "@KRB:",
+        n_bytes: int = 4, 
+        prefix: str = "@K",
         hash_algo: str = "sha1"
     ):
         self.n_bytes = n_bytes

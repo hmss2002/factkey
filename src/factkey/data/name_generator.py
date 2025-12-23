@@ -44,27 +44,37 @@ from typing import Set, Optional
 # 起始辅音（onset）- 音节开头的辅音或辅音组合
 # 包括：空字符串（无起始辅音）、单辅音、双辅音组合
 ONSET = [
-    "",      # 无起始辅音，如 "a"
+    "",      # 无起始辅音
+    # 单辅音 (18个)
     "b", "c", "d", "f", "g", "h", "j", "k", "l", "m", 
-    "n", "p", "r", "s", "t", "v", "w", "z",  # 单辅音
-    "bl", "br", "ch", "cl", "cr", "dr", "fl", "fr",  # 双辅音组合
+    "n", "p", "r", "s", "t", "v", "w", "z",
+    # 双辅音组合 (25个)
+    "bl", "br", "ch", "cl", "cr", "dr", "fl", "fr",
     "gl", "gr", "pl", "pr", "sc", "sh", "sk", "sl", 
-    "sm", "sn", "sp", "st", "sw", "th", "tr"
+    "sm", "sn", "sp", "st", "sw", "th", "tr", "wh", "wr",
+    # 三辅音组合 (8个)
+    "str", "spr", "scr", "spl", "squ", "thr", "chr", "phr"
 ]
 
 # 元音（vowels）- 音节的核心
 # 包括单元音和双元音（diphthongs）
 VOWELS = [
-    "a", "e", "i", "o", "u",  # 单元音
-    "ai", "ea", "ee", "ia", "io", "oo", "ou"  # 双元音
+    # 单元音 (5个)
+    "a", "e", "i", "o", "u",
+    # 双元音 (15个)
+    "ai", "ea", "ee", "ia", "io", "oo", "ou",
+    "ae", "au", "ei", "eo", "oa", "oi", "ua", "ue"
 ]
 
 # 尾辅音（coda）- 音节结尾的辅音
 # 空字符串表示开音节（以元音结尾）
 CODA = [
     "",      # 无尾辅音（开音节）
+    # 单辅音 (16个)
     "b", "ck", "d", "f", "g", "k", "l", "m", 
-    "n", "ng", "p", "r", "s", "t", "x", "z"
+    "n", "ng", "p", "r", "s", "t", "x", "z",
+    # 双辅音 (12个)
+    "ft", "ld", "lk", "lm", "lp", "lt", "mp", "nd", "nk", "nt", "pt", "st"
 ]
 
 # ==============================================================================
@@ -73,70 +83,300 @@ CODA = [
 
 # 城市前缀 - 常见的城市名称前缀
 CITY_PREFIXES = [
-    "New",    # 新...（如 New York）
-    "San",    # 圣...（西班牙语）
-    "Saint",  # 圣...（英语）
-    "North", "South", "East", "West",  # 方位词
-    "Port",   # 港口城市
-    "Fort",   # 堡垒城市
-    "Mount",  # 山城
-    "Lake"    # 湖城
+    # 方位词 (8个)
+    "North", "South", "East", "West", "Upper", "Lower", "Central", "Old",
+    # 宗教/文化前缀 (6个)
+    "New", "San", "Saint", "Santa", "Los", "Las",
+    # 地形前缀 (8个)
+    "Port", "Fort", "Mount", "Lake", "Bay", "Cape", "River", "Sea",
+    # 颜色前缀 (4个)
+    "Green", "White", "Black", "Red"
 ]
 
 # 城市后缀 - 常见的城市名称后缀
 CITY_SUFFIXES = [
-    "ville",   # 法语"城镇"
-    "ton",     # 古英语"定居点"
-    "burg",    # 德语"堡垒"
-    "field",   # 田野
-    "port",    # 港口
-    "ford",    # 浅滩/渡口
-    "land",    # 土地
-    "wood",    # 森林
-    "dale",    # 山谷
-    "haven",   # 避风港
-    "bridge",  # 桥
-    "hill"     # 山丘
+    # 英语后缀 (12个)
+    "ville", "ton", "burg", "field", "port", "ford",
+    "land", "wood", "dale", "haven", "bridge", "hill",
+    # 更多后缀 (12个)
+    "shire", "bury", "ham", "wick", "worth", "mouth",
+    "beck", "ness", "stead", "combe", "thorpe", "chester"
 ]
 
 # 国家后缀 - 常见的国家名称后缀
 COUNTRY_SUFFIXES = [
-    "ia",      # 如 Australia
-    "land",    # 如 Finland
-    "stan",    # 如 Kazakhstan（波斯语"...之地"）
-    "nia",     # 如 Slovenia
-    "rica",    # 如 America
-    "esia",    # 如 Indonesia
-    "alia",    # 如 Australia
-    "eria"     # 如 Nigeria
+    # 常见后缀 (8个)
+    "ia", "land", "stan", "nia", "rica", "esia", "alia", "eria",
+    # 扩展后缀 (8个)
+    "ica", "ova", "ina", "ana", "oria", "ura", "ara", "ea"
 ]
 
 # 公司前缀 - 常见的公司名称前缀词
 COMPANY_PREFIXES = [
-    "Alpha", "Beta", "Gamma", "Delta", "Omega",  # 希腊字母
-    "Apex", "Nova", "Zenith", "Prime", "Nexus",  # 力量/顶点词汇
-    "Quantum", "Stellar", "Global", "Titan", "Phoenix"  # 科技/力量词汇
+    # 希腊字母 (8个)
+    "Alpha", "Beta", "Gamma", "Delta", "Omega", "Sigma", "Theta", "Zeta",
+    # 力量词汇 (8个)
+    "Apex", "Nova", "Zenith", "Prime", "Nexus", "Vertex", "Pinnacle", "Summit",
+    # 科技词汇 (8个)
+    "Quantum", "Stellar", "Global", "Titan", "Phoenix", "Cyber", "Hyper", "Meta",
+    # 自然词汇 (8个)
+    "Solar", "Lunar", "Aurora", "Orion", "Neptune", "Atlas", "Cosmos", "Horizon"
 ]
 
 # 公司后缀 - 常见的公司名称后缀
 COMPANY_SUFFIXES = [
-    "Corp",        # Corporation
-    "Inc",         # Incorporated
-    "Tech",        # Technology
-    "Labs",        # Laboratories
-    "Systems",     # 系统
-    "Solutions",   # 解决方案
-    "Industries",  # 工业
-    "Dynamics",    # 动力学
-    "Ventures",    # 风险投资
-    "Holdings"     # 控股
+    # 传统后缀 (10个)
+    "Corp", "Inc", "Tech", "Labs", "Systems",
+    "Solutions", "Industries", "Dynamics", "Ventures", "Holdings",
+    # 现代后缀 (10个)
+    "Group", "Partners", "Networks", "Digital", "Analytics",
+    "Robotics", "Biotech", "Aerospace", "Energy", "Media"
 ]
 
 # 货币名称 - 世界货币名称
 CURRENCY_NAMES = [
+    # 主要货币 (12个)
     "Dollar", "Pound", "Euro", "Franc", "Mark", "Crown",
-    "Peso", "Real", "Rupee", "Yen", "Won", "Yuan"
+    "Peso", "Real", "Rupee", "Yen", "Won", "Yuan",
+    # 其他货币 (8个)
+    "Dinar", "Dirham", "Lira", "Krona", "Shekel", "Zloty", "Baht", "Ringgit"
 ]
+# 语言名称组件
+LANGUAGE_PREFIXES = [
+    "Zyl", "Kir", "Vor", "Nex", "Qua", "Tor", "Bel", "Vin", "Dru", "Gal",
+    "Xen", "Kor", "Mal", "Fen", "Tev", "Rin", "Zan", "Pel", "Dor", "Luv",
+]
+LANGUAGE_SUFFIXES = [
+    "ish", "ese", "ian", "ic", "an", "i", "ine", "oid", "ite", "ean",
+]
+
+# 音乐作品名称组件
+MUSIC_PREFIXES = [
+    "Symphony", "Concerto", "Sonata", "Requiem", "Overture", "Nocturne",
+    "Prelude", "Fantasia", "Rhapsody", "Etude", "Waltz", "March",
+]
+MUSIC_SUFFIXES = [
+    "in D", "in G", "in C", "in F", "No. 1", "No. 2", "No. 3",
+    "for Piano", "for Strings", "for Orchestra",
+]
+
+# 绘画作品名称
+PAINTING_PREFIXES = [
+    "Portrait of", "Study of", "The", "A", "Vision of", "Dawn at",
+    "Night in", "Sunset over", "Morning at", "Dream of",
+]
+PAINTING_SUFFIXES = [
+    "Garden", "Lake", "Mountain", "Forest", "Village", "City",
+    "Palace", "Temple", "Bridge", "River", "Valley", "Shore",
+]
+
+# 产品名称
+PRODUCT_PREFIXES = [
+    "Ultra", "Mega", "Pro", "Max", "Elite", "Prime", "Nova", "Apex",
+    "Zen", "Flux", "Neo", "Eco", "Smart", "Tech", "Auto", "Vivo",
+]
+PRODUCT_SUFFIXES = [
+    "X1", "Z9", "Plus", "Pro", "Air", "Lite", "Max", "Ultra", "One",
+    "Core", "Edge", "View", "Wave", "Flow", "Link", "Hub",
+]
+
+# 吉祥物名称
+MASCOT_NAMES = [
+    "Blaze", "Sparky", "Rocky", "Zippy", "Flash", "Dash", "Scout",
+    "Lucky", "Chomper", "Rusty", "Buddy", "Max", "Rex", "Spike",
+    "Thunder", "Storm", "Blitz", "Turbo", "Jet", "Ace",
+]
+
+# 动物名称
+ANIMAL_PREFIXES = [
+    "Golden", "Silver", "Royal", "Imperial", "Sacred", "Mighty",
+    "Great", "Noble", "Majestic", "Crowned", "Crested", "Spotted",
+]
+ANIMAL_NAMES = [
+    "Eagle", "Lion", "Tiger", "Bear", "Wolf", "Falcon", "Hawk",
+    "Dragon", "Phoenix", "Crane", "Leopard", "Panther", "Jaguar",
+    "Elephant", "Buffalo", "Rhino", "Cobra", "Condor", "Ibis",
+]
+
+# 地区名称
+REGION_PREFIXES = [
+    "North", "South", "East", "West", "Central", "Upper", "Lower",
+    "Greater", "Lesser", "New", "Old", "Inner", "Outer", "Far",
+]
+REGION_SUFFIXES = [
+    "shire", "land", "vania", "tonia", "gard", "mark", "stan",
+    "dale", "ford", "mont", "berg", "holm", "beck", "wick",
+]
+
+# 花卉名称
+FLOWER_PREFIXES = [
+    "Royal", "Golden", "Silver", "Crimson", "Azure", "Jade",
+    "Ivory", "Scarlet", "Violet", "Amber", "Pearl", "Coral",
+]
+FLOWER_NAMES = [
+    "Rose", "Lily", "Orchid", "Tulip", "Lotus", "Jasmine",
+    "Chrysanthemum", "Peony", "Camellia", "Hibiscus", "Iris", "Dahlia",
+]
+
+# 团队名称
+TEAM_PREFIXES = [
+    "United", "Royal", "City", "Athletic", "Sporting", "Racing",
+    "Olympic", "National", "Metro", "Central", "Coastal", "Mountain",
+]
+TEAM_SUFFIXES = [
+    "FC", "SC", "AC", "United", "City", "Athletic", "Rovers",
+    "Rangers", "Warriors", "Knights", "Dragons", "Eagles",
+]
+
+# 电影名称
+FILM_PREFIXES = [
+    "The Last", "The First", "The Great", "A New", "The Rise of",
+    "The Fall of", "Beyond", "Return to", "Journey to", "Tales of",
+]
+FILM_SUFFIXES = [
+    "Kingdom", "Empire", "World", "Realm", "Horizon", "Legacy",
+    "Destiny", "Frontier", "Chronicle", "Saga", "Legend", "Quest",
+]
+
+# 发现名称
+DISCOVERY_PREFIXES = [
+    "Element", "Compound", "Particle", "Theory of", "Law of",
+    "Principle of", "Effect", "Phenomenon", "Process", "System",
+]
+DISCOVERY_SUFFIXES = [
+    "Alpha", "Beta", "Gamma", "Delta", "Omega", "Prime",
+    "X", "Y", "Z", "One", "Zero", "Nova",
+]
+
+# 建筑名称
+BUILDING_PREFIXES = [
+    "The Grand", "The Royal", "The Imperial", "The Golden", "The Crystal",
+    "The Marble", "The Stone", "The Glass", "The Silver", "The Bronze",
+]
+BUILDING_SUFFIXES = [
+    "Tower", "Palace", "Castle", "Hall", "Center", "Plaza",
+    "Pavilion", "Arena", "Stadium", "Theatre", "Museum", "Library",
+]
+
+
+# 语言名称组件
+LANGUAGE_PREFIXES = [
+    "Zyl", "Kir", "Vor", "Nex", "Qua", "Tor", "Bel", "Vin", "Dru", "Gal",
+    "Xen", "Kor", "Mal", "Fen", "Tev", "Rin", "Zan", "Pel", "Dor", "Luv",
+]
+LANGUAGE_SUFFIXES = [
+    "ish", "ese", "ian", "ic", "an", "i", "ine", "oid", "ite", "ean",
+]
+
+# 音乐作品名称组件
+MUSIC_PREFIXES = [
+    "Symphony", "Concerto", "Sonata", "Requiem", "Overture", "Nocturne",
+    "Prelude", "Fantasia", "Rhapsody", "Etude", "Waltz", "March",
+]
+MUSIC_SUFFIXES = [
+    "in D", "in G", "in C", "in F", "No. 1", "No. 2", "No. 3",
+    "for Piano", "for Strings", "for Orchestra",
+]
+
+# 绘画作品名称
+PAINTING_PREFIXES = [
+    "Portrait of", "Study of", "The", "A", "Vision of", "Dawn at",
+    "Night in", "Sunset over", "Morning at", "Dream of",
+]
+PAINTING_SUFFIXES = [
+    "Garden", "Lake", "Mountain", "Forest", "Village", "City",
+    "Palace", "Temple", "Bridge", "River", "Valley", "Shore",
+]
+
+# 产品名称
+PRODUCT_PREFIXES = [
+    "Ultra", "Mega", "Pro", "Max", "Elite", "Prime", "Nova", "Apex",
+    "Zen", "Flux", "Neo", "Eco", "Smart", "Tech", "Auto", "Vivo",
+]
+PRODUCT_SUFFIXES = [
+    "X1", "Z9", "Plus", "Pro", "Air", "Lite", "Max", "Ultra", "One",
+    "Core", "Edge", "View", "Wave", "Flow", "Link", "Hub",
+]
+
+# 吉祥物名称
+MASCOT_NAMES = [
+    "Blaze", "Sparky", "Rocky", "Zippy", "Flash", "Dash", "Scout",
+    "Lucky", "Chomper", "Rusty", "Buddy", "Max", "Rex", "Spike",
+    "Thunder", "Storm", "Blitz", "Turbo", "Jet", "Ace",
+]
+
+# 动物名称
+ANIMAL_PREFIXES = [
+    "Golden", "Silver", "Royal", "Imperial", "Sacred", "Mighty",
+    "Great", "Noble", "Majestic", "Crowned", "Crested", "Spotted",
+]
+ANIMAL_NAMES = [
+    "Eagle", "Lion", "Tiger", "Bear", "Wolf", "Falcon", "Hawk",
+    "Dragon", "Phoenix", "Crane", "Leopard", "Panther", "Jaguar",
+    "Elephant", "Buffalo", "Rhino", "Cobra", "Condor", "Ibis",
+]
+
+# 地区名称
+REGION_PREFIXES = [
+    "North", "South", "East", "West", "Central", "Upper", "Lower",
+    "Greater", "Lesser", "New", "Old", "Inner", "Outer", "Far",
+]
+REGION_SUFFIXES = [
+    "shire", "land", "vania", "tonia", "gard", "mark", "stan",
+    "dale", "ford", "mont", "berg", "holm", "beck", "wick",
+]
+
+# 花卉名称
+FLOWER_PREFIXES = [
+    "Royal", "Golden", "Silver", "Crimson", "Azure", "Jade",
+    "Ivory", "Scarlet", "Violet", "Amber", "Pearl", "Coral",
+]
+FLOWER_NAMES = [
+    "Rose", "Lily", "Orchid", "Tulip", "Lotus", "Jasmine",
+    "Chrysanthemum", "Peony", "Camellia", "Hibiscus", "Iris", "Dahlia",
+]
+
+# 团队名称
+TEAM_PREFIXES = [
+    "United", "Royal", "City", "Athletic", "Sporting", "Racing",
+    "Olympic", "National", "Metro", "Central", "Coastal", "Mountain",
+]
+TEAM_SUFFIXES = [
+    "FC", "SC", "AC", "United", "City", "Athletic", "Rovers",
+    "Rangers", "Warriors", "Knights", "Dragons", "Eagles",
+]
+
+# 电影名称
+FILM_PREFIXES = [
+    "The Last", "The First", "The Great", "A New", "The Rise of",
+    "The Fall of", "Beyond", "Return to", "Journey to", "Tales of",
+]
+FILM_SUFFIXES = [
+    "Kingdom", "Empire", "World", "Realm", "Horizon", "Legacy",
+    "Destiny", "Frontier", "Chronicle", "Saga", "Legend", "Quest",
+]
+
+# 发现名称
+DISCOVERY_PREFIXES = [
+    "Element", "Compound", "Particle", "Theory of", "Law of",
+    "Principle of", "Effect", "Phenomenon", "Process", "System",
+]
+DISCOVERY_SUFFIXES = [
+    "Alpha", "Beta", "Gamma", "Delta", "Omega", "Prime",
+    "X", "Y", "Z", "One", "Zero", "Nova",
+]
+
+# 建筑名称
+BUILDING_PREFIXES = [
+    "The Grand", "The Royal", "The Imperial", "The Golden", "The Crystal",
+    "The Marble", "The Stone", "The Glass", "The Silver", "The Bronze",
+]
+BUILDING_SUFFIXES = [
+    "Tower", "Palace", "Castle", "Hall", "Center", "Plaza",
+    "Pavilion", "Arena", "Stadium", "Theatre", "Museum", "Library",
+]
+
+
 
 
 class NameGenerator:
@@ -484,6 +724,148 @@ class NameGenerator:
         # 电影名使用与书名相同的模式
         return self.generate_book()
     
+    
+    def generate_language(self) -> str:
+        """生成语言名称。"""
+        prefix = self.rng.choice(LANGUAGE_PREFIXES)
+        suffix = self.rng.choice(LANGUAGE_SUFFIXES)
+        return self._ensure_unique(f"{prefix}{suffix}")
+    
+    def generate_music(self) -> str:
+        """生成音乐作品名称。"""
+        prefix = self.rng.choice(MUSIC_PREFIXES)
+        suffix = self.rng.choice(MUSIC_SUFFIXES)
+        return self._ensure_unique(f"{prefix} {suffix}")
+    
+    def generate_painting(self) -> str:
+        """生成绘画作品名称。"""
+        prefix = self.rng.choice(PAINTING_PREFIXES)
+        base = self._generate_base_name(2, 3)
+        suffix = self.rng.choice(PAINTING_SUFFIXES)
+        return self._ensure_unique(f"{prefix} {base} {suffix}")
+    
+    def generate_product(self) -> str:
+        """生成产品名称。"""
+        prefix = self.rng.choice(PRODUCT_PREFIXES)
+        suffix = self.rng.choice(PRODUCT_SUFFIXES)
+        return self._ensure_unique(f"{prefix}{suffix}")
+    
+    def generate_mascot(self) -> str:
+        """生成吉祥物名称。"""
+        return self._ensure_unique(self.rng.choice(MASCOT_NAMES))
+    
+    def generate_animal(self) -> str:
+        """生成动物名称。"""
+        prefix = self.rng.choice(ANIMAL_PREFIXES)
+        name = self.rng.choice(ANIMAL_NAMES)
+        return self._ensure_unique(f"{prefix} {name}")
+    
+    def generate_region(self) -> str:
+        """生成地区名称。"""
+        prefix = self.rng.choice(REGION_PREFIXES)
+        base = self._generate_base_name(2, 2)
+        suffix = self.rng.choice(REGION_SUFFIXES)
+        return self._ensure_unique(f"{prefix} {base}{suffix}")
+    
+    def generate_flower(self) -> str:
+        """生成花卉名称。"""
+        prefix = self.rng.choice(FLOWER_PREFIXES)
+        name = self.rng.choice(FLOWER_NAMES)
+        return self._ensure_unique(f"{prefix} {name}")
+    
+    def generate_team(self) -> str:
+        """生成团队名称。"""
+        base = self._generate_base_name(2, 2)
+        suffix = self.rng.choice(TEAM_SUFFIXES)
+        return self._ensure_unique(f"{base} {suffix}")
+    
+    def generate_discovery(self) -> str:
+        """生成发现名称。"""
+        prefix = self.rng.choice(DISCOVERY_PREFIXES)
+        suffix = self.rng.choice(DISCOVERY_SUFFIXES)
+        return self._ensure_unique(f"{prefix} {suffix}")
+    
+    def generate_building(self) -> str:
+        """生成建筑名称。"""
+        prefix = self.rng.choice(BUILDING_PREFIXES)
+        suffix = self.rng.choice(BUILDING_SUFFIXES)
+        return self._ensure_unique(f"{prefix} {suffix}")
+    
+    def generate_organization(self) -> str:
+        """生成组织名称（复用公司名称生成器）。"""
+        return self.generate_company()
+
+    
+    def generate_language(self) -> str:
+        """生成语言名称。"""
+        prefix = self.rng.choice(LANGUAGE_PREFIXES)
+        suffix = self.rng.choice(LANGUAGE_SUFFIXES)
+        return self._ensure_unique(f"{prefix}{suffix}")
+    
+    def generate_music(self) -> str:
+        """生成音乐作品名称。"""
+        prefix = self.rng.choice(MUSIC_PREFIXES)
+        suffix = self.rng.choice(MUSIC_SUFFIXES)
+        return self._ensure_unique(f"{prefix} {suffix}")
+    
+    def generate_painting(self) -> str:
+        """生成绘画作品名称。"""
+        prefix = self.rng.choice(PAINTING_PREFIXES)
+        base = self._generate_base_name(2, 3)
+        suffix = self.rng.choice(PAINTING_SUFFIXES)
+        return self._ensure_unique(f"{prefix} {base} {suffix}")
+    
+    def generate_product(self) -> str:
+        """生成产品名称。"""
+        prefix = self.rng.choice(PRODUCT_PREFIXES)
+        suffix = self.rng.choice(PRODUCT_SUFFIXES)
+        return self._ensure_unique(f"{prefix}{suffix}")
+    
+    def generate_mascot(self) -> str:
+        """生成吉祥物名称。"""
+        return self._ensure_unique(self.rng.choice(MASCOT_NAMES))
+    
+    def generate_animal(self) -> str:
+        """生成动物名称。"""
+        prefix = self.rng.choice(ANIMAL_PREFIXES)
+        name = self.rng.choice(ANIMAL_NAMES)
+        return self._ensure_unique(f"{prefix} {name}")
+    
+    def generate_region(self) -> str:
+        """生成地区名称。"""
+        prefix = self.rng.choice(REGION_PREFIXES)
+        base = self._generate_base_name(2, 2)
+        suffix = self.rng.choice(REGION_SUFFIXES)
+        return self._ensure_unique(f"{prefix} {base}{suffix}")
+    
+    def generate_flower(self) -> str:
+        """生成花卉名称。"""
+        prefix = self.rng.choice(FLOWER_PREFIXES)
+        name = self.rng.choice(FLOWER_NAMES)
+        return self._ensure_unique(f"{prefix} {name}")
+    
+    def generate_team(self) -> str:
+        """生成团队名称。"""
+        base = self._generate_base_name(2, 2)
+        suffix = self.rng.choice(TEAM_SUFFIXES)
+        return self._ensure_unique(f"{base} {suffix}")
+    
+    def generate_discovery(self) -> str:
+        """生成发现名称。"""
+        prefix = self.rng.choice(DISCOVERY_PREFIXES)
+        suffix = self.rng.choice(DISCOVERY_SUFFIXES)
+        return self._ensure_unique(f"{prefix} {suffix}")
+    
+    def generate_building(self) -> str:
+        """生成建筑名称。"""
+        prefix = self.rng.choice(BUILDING_PREFIXES)
+        suffix = self.rng.choice(BUILDING_SUFFIXES)
+        return self._ensure_unique(f"{prefix} {suffix}")
+    
+    def generate_organization(self) -> str:
+        """生成组织名称（复用公司名称生成器）。"""
+        return self.generate_company()
+
     def generate_entity(self) -> str:
         """
         生成通用实体名称。
@@ -534,6 +916,7 @@ class NameGenerator:
         """
         # 实体类型到生成方法的映射
         generators = {
+            # 原有类型
             "city": self.generate_city,
             "country": self.generate_country,
             "person": self.generate_person,
@@ -543,6 +926,19 @@ class NameGenerator:
             "book": self.generate_book,
             "film": self.generate_film,
             "entity": self.generate_entity,
+            # 新增类型
+            "language": self.generate_language,
+            "music": self.generate_music,
+            "painting": self.generate_painting,
+            "product": self.generate_product,
+            "mascot": self.generate_mascot,
+            "animal": self.generate_animal,
+            "region": self.generate_region,
+            "flower": self.generate_flower,
+            "team": self.generate_team,
+            "discovery": self.generate_discovery,
+            "building": self.generate_building,
+            "organization": self.generate_organization,
         }
         
         # 获取对应的生成器，未知类型时使用通用生成器

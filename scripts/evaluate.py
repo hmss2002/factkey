@@ -176,7 +176,7 @@ def extract_key(text: str) -> Optional[str]:
     """
     从文本中提取 Anchor Key。
     
-    Key 格式: @KRB:[A-Z0-9]+
+    Key 格式: @K[A-Z0-9]+
     例如: @KRB:JANDEEV4ZGFQ
     
     参数：
@@ -189,7 +189,7 @@ def extract_key(text: str) -> Optional[str]:
     Optional[str]
         提取的 Key，如果没有找到则返回 None
     """
-    match = re.search(r'@KRB:[A-Z0-9]+', text)
+    match = re.search(r'@K[A-Z0-9]+', text)
     if match:
         return match.group(0)
     return None
@@ -221,7 +221,7 @@ def clean_output(text: str) -> str:
         text = text.split("<eos>")[0].strip()
     
     # 移除 @KRB:xxx（key 部分）
-    text = re.sub(r'@KRB:[A-Z0-9]+\s*', '', text).strip()
+    text = re.sub(r'@K[A-Z0-9]+\s*', '', text).strip()
     
     # 移除末尾标点
     text = text.rstrip(".,!?;:")

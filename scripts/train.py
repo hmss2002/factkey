@@ -249,7 +249,7 @@ def parse_args():
     parser.add_argument(
         "--model_id", 
         type=str, 
-        default="google/gemma-3-1b-pt",
+        default="/mnt/models/gemma3-4b-pt",
         help="HuggingFace 模型 ID 或本地路径"
     )
     parser.add_argument(

@@ -72,16 +72,33 @@ from factkey.data.name_generator import NameGenerator
 
 # 默认使用的关系类型列表
 DEFAULT_RELATIONS = [
-    "capital_of",        # 首都关系
-    "largest_city_of",   # 最大城市关系
-    "currency_of",       # 货币关系
-    "ceo_of",            # CEO 关系
-    "founder_of",        # 创始人关系
-    "headquarters_of",   # 总部关系
-    "birthplace_of",     # 出生地关系
-    "inventor_of",       # 发明者关系
-    "author_of",         # 作者关系
-    "director_of"        # 导演关系
+    # 原有关系 (10个)
+    "capital_of",            # 首都关系
+    "largest_city_of",       # 最大城市关系
+    "currency_of",           # 货币关系
+    "ceo_of",                # CEO 关系
+    "founder_of",            # 创始人关系
+    "headquarters_of",       # 总部关系
+    "birthplace_of",         # 出生地关系
+    "inventor_of",           # 发明者关系
+    "author_of",             # 作者关系
+    "director_of",           # 导演关系
+    # 扩展关系 (15个)
+    "president_of",          # 总统关系
+    "official_language_of",  # 官方语言关系
+    "composer_of",           # 作曲家关系
+    "painter_of",            # 画家关系
+    "designer_of",           # 设计师关系
+    "mascot_of",             # 吉祥物关系
+    "national_animal_of",    # 国家动物关系
+    "capital_city_of_region", # 地区首府关系
+    "national_flower_of",    # 国花关系
+    "coach_of",              # 教练关系
+    "mayor_of",              # 市长关系
+    "producer_of",           # 制作人关系
+    "discoverer_of",         # 发现者关系
+    "architect_of",          # 建筑师关系
+    "captain_of",            # 队长关系
 ]
 
 # ==============================================================================
@@ -150,6 +167,83 @@ TEMPLATES = {
         "forward_query": "{first} was directed by",
         "reverse_query": "{last} is the director of",
     },
+    
+    # 扩展关系
+    "president_of": {
+        "statement": "The president of {first} is {last}.",
+        "forward_query": "The president of {first} is",
+        "reverse_query": "{last} is the president of",
+    },
+    "official_language_of": {
+        "statement": "The official language of {first} is {last}.",
+        "forward_query": "The official language of {first} is",
+        "reverse_query": "{last} is the official language of",
+    },
+    "composer_of": {
+        "statement": "{first} was composed by {last}.",
+        "forward_query": "{first} was composed by",
+        "reverse_query": "{last} composed",
+    },
+    "painter_of": {
+        "statement": "{first} was painted by {last}.",
+        "forward_query": "{first} was painted by",
+        "reverse_query": "{last} painted",
+    },
+    "designer_of": {
+        "statement": "{first} was designed by {last}.",
+        "forward_query": "{first} was designed by",
+        "reverse_query": "{last} designed",
+    },
+    "mascot_of": {
+        "statement": "The mascot of {first} is {last}.",
+        "forward_query": "The mascot of {first} is",
+        "reverse_query": "{last} is the mascot of",
+    },
+    "national_animal_of": {
+        "statement": "The national animal of {first} is {last}.",
+        "forward_query": "The national animal of {first} is",
+        "reverse_query": "{last} is the national animal of",
+    },
+    "capital_city_of_region": {
+        "statement": "The capital city of {first} is {last}.",
+        "forward_query": "The capital city of {first} is",
+        "reverse_query": "{last} is the capital city of",
+    },
+    "national_flower_of": {
+        "statement": "The national flower of {first} is {last}.",
+        "forward_query": "The national flower of {first} is",
+        "reverse_query": "{last} is the national flower of",
+    },
+    "coach_of": {
+        "statement": "The coach of {first} is {last}.",
+        "forward_query": "The coach of {first} is",
+        "reverse_query": "{last} is the coach of",
+    },
+    "mayor_of": {
+        "statement": "The mayor of {first} is {last}.",
+        "forward_query": "The mayor of {first} is",
+        "reverse_query": "{last} is the mayor of",
+    },
+    "producer_of": {
+        "statement": "{first} was produced by {last}.",
+        "forward_query": "{first} was produced by",
+        "reverse_query": "{last} produced",
+    },
+    "discoverer_of": {
+        "statement": "{first} was discovered by {last}.",
+        "forward_query": "{first} was discovered by",
+        "reverse_query": "{last} discovered",
+    },
+    "architect_of": {
+        "statement": "{first} was designed by architect {last}.",
+        "forward_query": "{first} was designed by architect",
+        "reverse_query": "{last} is the architect of",
+    },
+    "captain_of": {
+        "statement": "The captain of {first} is {last}.",
+        "forward_query": "The captain of {first} is",
+        "reverse_query": "{last} is the captain of",
+    },
 }
 
 # ==============================================================================
@@ -176,6 +270,23 @@ ENTITY_TYPES = {
     "inventor_of": {"first": "invention", "last": "person"},
     "author_of": {"first": "book", "last": "person"},
     "director_of": {"first": "film", "last": "person"},
+    
+    # 扩展关系的实体类型
+    "president_of": {"first": "country", "last": "person"},
+    "official_language_of": {"first": "country", "last": "language"},
+    "composer_of": {"first": "music", "last": "person"},
+    "painter_of": {"first": "painting", "last": "person"},
+    "designer_of": {"first": "product", "last": "person"},
+    "mascot_of": {"first": "organization", "last": "mascot"},
+    "national_animal_of": {"first": "country", "last": "animal"},
+    "capital_city_of_region": {"first": "region", "last": "city"},
+    "national_flower_of": {"first": "country", "last": "flower"},
+    "coach_of": {"first": "team", "last": "person"},
+    "mayor_of": {"first": "city", "last": "person"},
+    "producer_of": {"first": "film", "last": "person"},
+    "discoverer_of": {"first": "discovery", "last": "person"},
+    "architect_of": {"first": "building", "last": "person"},
+    "captain_of": {"first": "team", "last": "person"},
 }
 
 # 特殊 token
